@@ -1,0 +1,1229 @@
+  
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website SMAN 15 Tebo</title>
+    <link rel="icon" type="image/png" href="./logo.png">
+    <link rel="preconnect" href="https://script.google.com">
+    <link rel="preconnect" href="https://drive.google.com">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+    
+    <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#1e3a8a', secondary: '#f59e0b' } } } }</script>
+    <style>
+      html { scroll-behavior: smooth; }
+      .page-section { display: none !important; animation: fadeIn 0.3s ease-out; }
+      .page-section.active { display: block !important; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+      .dark #loader { background: rgba(17,24,39,0.95); }
+      .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1e3a8a; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px;}
+      @keyframes spin { 100% { transform: rotate(360deg); } }
+      .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #e5e7eb;}
+      .dark .glass { background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid #1f2937; }
+      .slide-item { position: absolute; inset: 0; opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 1;}
+      .slide-item.active { opacity: 1; z-index: 10; }
+      .group:hover .dropdown-menu { display: block; }
+      .dark .swal2-popup { background: #1f2937; color: #f3f4f6; border: 1px solid #374151; }
+      .dark .swal2-title, .dark .swal2-html-container { color: #f3f4f6; }
+      .ql-container { font-family: inherit !important; font-size: 1rem !important; }
+      .dark .ql-toolbar, .dark .ql-container { background-color: #f9fafb; color: #111827; border-color: #d1d5db !important; }
+      .ql-editor img { border-radius: 0.5rem; margin-top: 1rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+    
+    <div id="loader">
+        <div class="spinner"></div>
+        <p id="loader-text" class="font-bold text-gray-700 dark:text-gray-300 mt-2 text-center text-lg">Menarik Data Terbaru...</p>
+        <div class="mt-4 px-5 py-2 bg-blue-100 dark:bg-gray-800 text-blue-700 dark:text-secondary rounded-full font-bold text-sm tracking-widest shadow-inner border border-blue-200 dark:border-gray-700 animate-pulse">
+            Estimasi Waktu: <span id="loader-timer" class="text-xl font-black">15</span> detik
+        </div>
+    </div>
+
+    <div id="float-btn" class="fixed bottom-24 md:bottom-6 right-6 z-[80] flex flex-col gap-3 transition-all duration-500 opacity-0 pointer-events-none translate-y-10">
+        <button onclick="refreshHalamanLunak()" class="w-12 h-12 bg-blue-600 text-white rounded-full shadow-2xl hover:bg-blue-700 flex items-center justify-center text-lg transition-transform hover:scale-110" title="Refresh Halaman"><i class="fas fa-sync-alt"></i></button>
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="w-12 h-12 bg-secondary text-gray-900 rounded-full shadow-2xl hover:bg-yellow-400 flex items-center justify-center text-xl transition-transform hover:scale-110" title="Ke Atas"><i class="fas fa-arrow-up"></i></button>
+    </div>
+
+    <div id="crop-modal" class="fixed inset-0 bg-black/90 z-[99999] hidden flex-col items-center justify-center p-4">
+       <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl w-full max-w-4xl shadow-2xl">
+          <h3 class="font-bold mb-4 text-xl text-primary dark:text-secondary">Sesuaikan Gambar (Crop)</h3>
+          <div class="w-full h-[60vh] bg-gray-200 dark:bg-gray-900 mb-6 relative rounded overflow-hidden"><img id="crop-image" class="block max-w-full"></div>
+          <div class="flex justify-end space-x-4"><button onclick="batalCrop()" class="px-6 py-2 bg-gray-300 dark:bg-gray-700 rounded font-bold hover:bg-gray-400">Batal</button><button onclick="terapkanCrop()" class="px-6 py-2 bg-primary text-white rounded font-bold hover:bg-blue-800"><i class="fas fa-crop-alt mr-2"></i> Potong & Gunakan</button></div>
+       </div>
+    </div>
+
+    <nav id="nav-publik" class="fixed w-full z-50 glass transition-all">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between h-20 items-center">
+        <div class="flex items-center cursor-pointer" onclick="navigate('home')">
+            <img id="nav-logo" src="" class="h-10 w-10 md:h-12 md:w-12 object-contain mr-3 hidden rounded">
+            <div class="flex flex-col justify-center"><span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 leading-tight">Website Resmi</span><span id="nav-nama-sekolah" class="font-black text-lg md:text-2xl text-primary dark:text-secondary leading-tight tracking-wide">NAMA SEKOLAH</span></div>
+        </div>
+        <button onclick="toggleMobileMenu('mobile-menu', 'btn-mobile-icon')" class="md:hidden text-2xl text-gray-700 dark:text-gray-300 focus:outline-none p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition"><i class="fas fa-bars" id="btn-mobile-icon"></i></button>
+        <div class="hidden md:flex space-x-6 items-center font-bold text-sm tracking-wide z-50">
+          <button onclick="navigate('home')" class="hover:text-primary transition">Beranda</button>
+          <div class="relative group"><button class="hover:text-primary transition flex items-center py-6">Profil <i class="fas fa-chevron-down ml-1 text-xs"></i></button><div class="dropdown-menu absolute left-0 top-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2"><button onclick="navigate('profil-sejarah')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Sejarah Singkat</button><button onclick="navigate('profil-identitas')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Identitas Sekolah</button><button onclick="navigate('profil-visimisi')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Visi Misi</button><button onclick="navigate('profil-pegawai-stat')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Statistik Pegawai</button><button onclick="navigate('profil-struktur')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Struktur Organisasi</button><button onclick="navigate('profil-sarpras')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Sarana Prasarana</button></div></div>
+          <div class="relative group"><button class="hover:text-primary transition flex items-center py-6">Pegawai <i class="fas fa-chevron-down ml-1 text-xs"></i></button><div class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2"><button onclick="navigate('guru')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Guru</button><button onclick="navigate('tu')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Tata Usaha</button></div></div>
+          <button onclick="navigate('siswa')" class="hover:text-primary transition">Siswa</button>
+          <div class="relative group"><button class="hover:text-primary transition flex items-center py-6">Informasi <i class="fas fa-chevron-down ml-1 text-xs"></i></button><div class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2"><button onclick="navigate('halaman-berita')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Berita Sekolah</button><button onclick="navigate('halaman-pengumuman')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition">Pengumuman</button></div></div>
+          <div class="relative group"><button class="hover:text-primary transition flex items-center py-6">Galeri <i class="fas fa-chevron-down ml-1 text-xs"></i></button><div class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2"><button onclick="navigate('galeri-foto')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"><i class="fas fa-image text-primary mr-2"></i> Galeri Foto</button><button onclick="navigate('galeri-video')" class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"><i class="fas fa-video text-red-500 mr-2"></i> Galeri Video</button></div></div>
+          <button onclick="navigate('kontak-kami')" class="hover:text-primary transition">Kontak</button>
+          <button id="theme-toggle" class="text-gray-500 hover:text-primary text-lg ml-2"><i class="fas fa-moon" id="theme-icon"></i></button>
+          <button onclick="navigate('login')" class="px-6 py-2 bg-primary text-white rounded-full hover:bg-blue-800 shadow ml-2">Login</button>
+        </div>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden absolute top-20 left-0 w-full bg-white dark:bg-gray-900 border-b-4 border-secondary shadow-2xl flex-col font-bold text-sm z-[80] max-h-[80vh] overflow-y-auto">
+          <button onclick="toggleMobileSub('mob-profil')" class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition">Profil Sekolah <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-profil"></i></button>
+          <div id="mob-profil" class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700"><button onclick="navigate('profil-sejarah')" class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium">Sejarah Singkat</button><button onclick="navigate('profil-identitas')" class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium">Identitas Sekolah</button><button onclick="navigate('profil-visimisi')" class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium">Visi Misi</button><button onclick="navigate('profil-pegawai-stat')" class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium">Statistik Pegawai</button><button onclick="navigate('profil-struktur')" class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium">Struktur Organisasi</button><button onclick="navigate('profil-sarpras')" class="p-3 text-left font-medium">Sarana Prasarana</button></div>
+          
+          <button onclick="toggleMobileSub('mob-pegawai')" class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition">Direktori Pegawai <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-pegawai"></i></button>
+          <div id="mob-pegawai" class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700"><button onclick="navigate('guru')" class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium">Tenaga Pendidik (Guru)</button><button onclick="navigate('tu')" class="p-3 text-left font-medium">Tata Usaha (TU)</button></div>
+          
+          <button onclick="navigate('siswa')" class="p-4 text-left border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition">Data Siswa</button>
+          
+          <button onclick="toggleMobileSub('mob-galeri')" class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition">Galeri <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-galeri"></i></button>
+          <div id="mob-galeri" class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700"><button onclick="navigate('galeri-foto')" class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"><i class="fas fa-image text-primary mr-2"></i> Galeri Foto</button><button onclick="navigate('galeri-video')" class="p-3 text-left font-medium"><i class="fas fa-video text-red-500 mr-2"></i> Galeri Video</button></div>
+          
+          <div class="p-5 flex justify-between items-center bg-gray-50 dark:bg-gray-950"><button id="theme-toggle-mobile" class="text-gray-500 hover:text-primary text-xl px-4 py-2 border rounded shadow-sm"><i class="fas fa-moon" id="theme-icon-mobile"></i></button><button onclick="navigate('login')" class="px-8 py-3 bg-primary text-white rounded-full shadow-lg hover:bg-blue-800">Login User</button></div>
+      </div>
+    </nav>
+
+    <nav id="nav-admin" class="fixed w-full z-50 bg-gray-800 text-white hidden shadow-lg border-b-4 border-secondary">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
+        <div class="font-bold text-lg md:text-xl text-secondary flex items-center cursor-pointer" onclick="navigate('admin-dashboard')"><i class="fas fa-cogs mr-2"></i> <span class="hidden md:inline">SUPER</span>ADMIN</div>
+        <button class="hidden text-2xl focus:outline-none"><i class="fas fa-bars" id="btn-admin-icon"></i></button>
+        <div class="hidden md:flex space-x-6 items-center text-sm font-bold">
+          <button onclick="navigate('admin-dashboard')" class="hover:text-secondary"><i class="fas fa-tachometer-alt mr-1"></i> Dashboard</button>
+          <button onclick="navigate('home')" class="hover:text-secondary"><i class="fas fa-globe mr-1"></i> Web Publik</button>
+          <button onclick="logout()" class="px-4 py-1.5 bg-red-600 rounded shadow hover:bg-red-700 transition">Logout</button>
+        </div>
+      </div>
+      <div id="mobile-admin" class="hidden md:hidden absolute top-16 left-0 w-full bg-gray-700 border-b-4 border-secondary flex-col font-bold text-sm z-40"><button onclick="navigate('admin-dashboard')" class="p-4 text-left border-b border-gray-600"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard Admin</button><button onclick="navigate('home')" class="p-4 text-left border-b border-gray-600"><i class="fas fa-globe mr-2"></i> Lihat Web Publik</button><button onclick="logout()" class="p-4 text-left text-red-400"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button></div>
+    </nav>
+
+    <nav id="nav-pegawai" class="fixed w-full z-50 bg-green-800 text-white hidden shadow-lg border-b-4 border-secondary">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
+        <div class="font-bold text-lg md:text-xl text-secondary flex items-center cursor-pointer" onclick="navigate('pegawai-dashboard')"><i class="fas fa-user-circle mr-2"></i> PANEL PEGAWAI</div>
+        <button class="hidden text-2xl focus:outline-none"><i class="fas fa-bars" id="btn-pegawai-icon"></i></button>
+        <div class="hidden md:flex space-x-6 items-center text-sm font-bold">
+          <button onclick="navigate('pegawai-dashboard')" class="hover:text-secondary transition"><i class="fas fa-id-card mr-1"></i> Profil Saya</button>
+          <button onclick="navigate('pegawai-galeri')" class="hover:text-secondary transition"><i class="fas fa-camera-retro mr-1"></i> Galeri</button>
+          <button id="menu-berita-pegawai" onclick="navigate('pegawai-berita')" class="hover:text-secondary transition hidden"><i class="fas fa-newspaper mr-1"></i> Tulis Berita</button>
+          
+          <span class="border-l border-green-600 h-6 mx-2"></span>
+          <button onclick="navigate('home')" class="hover:text-secondary transition"><i class="fas fa-globe mr-1"></i> Web Publik</button>
+          <button onclick="logout()" class="px-4 py-1.5 bg-red-600 rounded shadow hover:bg-red-700 transition">Logout</button>
+        </div>
+      </div>
+      <div id="mobile-pegawai" class="hidden md:hidden absolute top-16 left-0 w-full bg-green-700 border-b-4 border-secondary flex-col font-bold text-sm z-40">
+          <button onclick="navigate('pegawai-dashboard')" class="p-4 text-left border-b border-green-600"><i class="fas fa-id-card mr-2"></i> Profil Saya</button>
+          <button onclick="navigate('pegawai-galeri')" class="p-4 text-left border-b border-green-600"><i class="fas fa-camera-retro mr-2"></i> Upload Galeri</button>
+          <button id="menu-berita-pegawai-mob" onclick="navigate('pegawai-berita')" class="p-4 text-left border-b border-green-600 hidden"><i class="fas fa-newspaper mr-2"></i> Tulis Berita</button>
+          <button onclick="navigate('home')" class="p-4 text-left border-b border-green-600"><i class="fas fa-globe mr-2"></i> Lihat Web Publik</button>
+          <button onclick="logout()" class="p-4 text-left text-red-200"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
+      </div>
+    </nav>
+
+    <main class="min-h-screen pt-20 pb-20 md:pb-0">
+        <section id="home" class="page-section active">
+            <div class="relative w-full aspect-[5/3] md:aspect-auto md:h-[80vh] bg-gray-900 overflow-hidden" id="slider-container"></div>
+            <div class="bg-primary dark:bg-gray-950 py-8 md:py-12 border-b-4 border-secondary shadow-inner">
+                <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
+                    <div><h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-guru">0</h3><p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Pegawai</p></div>
+                    <div><h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-siswa">0</h3><p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Siswa Aktif</p></div>
+                    <div><h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-berita">0</h3><p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Informasi</p></div>
+                    <div><h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-alumni">0</h3><p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Total Alumni</p></div>
+                </div>
+                <div class="max-w-7xl mx-auto px-4 mt-8 md:mt-10">
+                    <div class="bg-blue-900/60 dark:bg-gray-900/60 text-blue-100 dark:text-gray-300 py-2.5 px-5 rounded-full text-xs md:text-sm font-bold flex items-center border border-blue-700/50 shadow-inner">
+                        <i class="fas fa-bullhorn mr-3 text-secondary animate-pulse"></i>
+                        <marquee scrollamount="6" id="teks-berjalan">Selamat Datang di Website Resmi Sekolah Kami.</marquee>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 py-10 md:py-16">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div class="lg:col-span-2 space-y-12 md:space-y-16">
+                        <div class="flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-800 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+                            <div class="w-full md:w-1/3"><img id="home-kepsek-foto" src="" loading="lazy" class="w-full aspect-[3/4] object-cover rounded-2xl shadow-lg border-4 border-gray-50 dark:border-gray-700"></div>
+                            <div class="w-full md:w-2/3 flex flex-col justify-center">
+                                <h4 class="text-secondary font-bold uppercase tracking-widest mb-2 text-xs md:text-sm">Sambutan Kepala Sekolah</h4>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm md:text-base leading-relaxed mb-3 italic line-clamp-4" id="home-kepsek-sambutan">"..."</p>
+                                <button onclick="navigate('profil-kepsek')" class="text-left text-sm font-bold text-primary hover:text-secondary mb-6 transition">Baca Selengkapnya →</button>
+                                <h5 class="font-bold text-base md:text-lg text-gray-800 dark:text-white" id="home-kepsek-nama">-</h5>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-end mb-6 border-b-2 pb-2 dark:border-gray-700 border-primary"><h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white">Berita <span class="text-primary dark:text-secondary">Terbaru</span></h2><button onclick="navigate('halaman-berita')" class="text-xs md:text-sm font-bold text-primary hover:underline dark:text-secondary">Lihat Semua →</button></div>
+                            <div id="home-berita-list" class="space-y-6"><div class="animate-pulse flex space-x-4"><div class="rounded-xl bg-gray-300 h-24 w-24"></div><div class="flex-1 space-y-4 py-1"><div class="h-4 bg-gray-300 rounded w-3/4"></div><div class="space-y-2"><div class="h-4 bg-gray-300 rounded"></div><div class="h-4 bg-gray-300 rounded w-5/6"></div></div></div></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-end mb-6 border-b-2 pb-2 dark:border-gray-700 border-secondary"><h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white">Papan <span class="text-secondary">Pengumuman</span></h2><button onclick="navigate('halaman-pengumuman')" class="text-xs md:text-sm font-bold text-secondary hover:underline">Lihat Semua →</button></div>
+                            <div id="home-pengumuman-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+                        </div>
+                        <div id="wrapper-maps" class="hidden">
+                            <div class="flex justify-between items-end mb-6 border-b-2 pb-2 dark:border-gray-700 border-red-500"><h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white"><i class="fas fa-map-marker-alt text-red-500 mr-2"></i> Peta <span class="text-red-500">Lokasi</span></h2></div>
+                            <div class="w-full rounded-3xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700 bg-gray-200"><iframe id="iframe-maps" loading="lazy" src="" width="100%" height="300" style="border:0;" allowfullscreen=""></iframe></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div class="bg-gradient-to-br from-primary to-blue-800 p-6 md:p-8 rounded-3xl shadow-xl text-white">
+                            <h3 class="text-lg md:text-xl font-bold mb-4 border-b border-blue-600 pb-3"><i class="fas fa-bullhorn text-secondary mr-2"></i> Info Cepat</h3>
+                            <p class="text-blue-100 text-xs md:text-sm leading-relaxed mb-6">Untuk Layanan Pengaduan dan Informasi Sekolah, Silakan hubungi bagian Tata Usaha untuk informasi lebih lanjut.</p>
+                            <button onclick="navigate('kontak-kami')" class="w-full bg-secondary text-gray-900 py-3 rounded-xl font-bold hover:bg-yellow-400 transition shadow-lg text-sm md:text-base">Hubungi Kami</button>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="widget-eksternal">
+                            <h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fas fa-link text-cyan-500 mr-2"></i> Tautan Aplikasi</h3>
+                            <div id="eksternal-container" class="grid grid-cols-3 gap-4 justify-items-center"></div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fas fa-id-badge text-primary mr-2"></i> Profil Pegawai</h3><div id="widget-pegawai" class="relative h-48 overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-center"><p class="text-sm text-gray-500 animate-pulse">Memuat profil...</p></div></div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="box-yt"><h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fab fa-youtube text-red-500 mr-2"></i> Video Profil</h3><div class="w-full aspect-video rounded-xl overflow-hidden shadow-inner bg-gray-200"><iframe id="iframe-yt" class="w-full h-full" src="" title="YouTube video player" frameborder="0" allowfullscreen loading="lazy"></iframe></div></div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="box-fb"><h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fab fa-facebook text-blue-600 mr-2"></i> Temukan Kami</h3><div class="w-full h-64 bg-gray-100 dark:bg-gray-900 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-gray-700"><iframe id="iframe-fb" src="" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" loading="lazy"></iframe></div></div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="box-cal"><h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fas fa-calendar-alt text-green-500 mr-2"></i> Kalender Akademik</h3><div class="w-full h-72 rounded-xl overflow-hidden shadow-inner bg-white border border-gray-200 dark:border-gray-700"><iframe id="iframe-cal" loading="lazy" src="" style="border-width:0" width="100%" height="100%" frameborder="0" scrolling="no"></iframe></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kontak-kami" class="page-section py-24 px-4 max-w-6xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-12 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">Kontak & Hubungi Kami</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-10"><div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white border-b dark:border-gray-700 pb-2"><i class="fas fa-address-book text-primary mr-2"></i> Informasi Kontak</h3><ul class="space-y-5 text-gray-600 dark:text-gray-300 text-sm md:text-base"><li class="flex items-start"><i class="fas fa-building text-primary mt-1 mr-4 w-5 text-xl"></i><div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Nama Sekolah</strong><span id="kk-nama">-</span></div></li><li class="flex items-start"><i class="fas fa-map-marker-alt text-red-500 mt-1 mr-4 w-5 text-xl"></i><div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Alamat Lengkap</strong><span id="kk-alamat">-</span></div></li><li class="flex items-start"><i class="fab fa-whatsapp text-green-500 mt-1 mr-4 w-5 text-xl"></i><div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Telepon / WhatsApp</strong><a href="#" id="kk-link-wa" target="_blank" class="text-blue-500 hover:underline"><span id="kk-wa">-</span></a></div></li><li class="flex items-start"><i class="fas fa-envelope text-blue-500 mt-1 mr-4 w-5 text-xl"></i><div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Email Utama</strong><a href="#" id="kk-link-email" class="text-blue-500 hover:underline"><span id="kk-email">-</span></a></div></li><li class="flex items-start"><i class="fas fa-globe text-purple-500 mt-1 mr-4 w-5 text-xl"></i><div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Website Resmi</strong><span id="kk-web">-</span></div></li></ul></div><div class="flex flex-col gap-8"><div class="bg-gradient-to-br from-primary to-blue-800 p-8 rounded-3xl shadow-xl text-white"><h3 class="text-xl font-bold mb-4 border-b border-blue-600 pb-2"><i class="fas fa-hashtag text-secondary mr-2"></i> Media Sosial</h3><div class="flex flex-col space-y-4"><a id="kk-link-fb" href="#" target="_blank" class="flex items-center hover:text-secondary transition bg-white/10 p-3 rounded-xl"><i class="fab fa-facebook-f w-8 text-center mr-2 text-xl"></i> <span id="kk-fb">-</span></a><a id="kk-link-ig" href="#" target="_blank" class="flex items-center hover:text-secondary transition bg-white/10 p-3 rounded-xl"><i class="fab fa-instagram w-8 text-center mr-2 text-xl"></i> <span id="kk-ig">-</span></a></div></div><div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><h3 class="text-xl font-bold mb-4 border-b dark:border-gray-700 pb-2 text-gray-800 dark:text-white"><i class="fas fa-external-link-alt text-green-500 mr-2"></i> Tautan Terkait</h3><ul class="space-y-4 text-gray-600 dark:text-gray-300 text-sm font-bold"><li><a id="kk-link-ppdb" href="#" target="_blank" class="hover:text-primary dark:hover:text-secondary transition flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-xl shadow-sm"><i class="fas fa-chevron-right mr-3 text-secondary"></i> Info Pendaftaran (PPDB)</a></li><li><a id="kk-link-dinas" href="#" target="_blank" class="hover:text-primary dark:hover:text-secondary transition flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-xl shadow-sm"><i class="fas fa-chevron-right mr-3 text-secondary"></i> Website Dinas Pendidikan</a></li><li><a id="kk-link-dapodik" href="#" target="_blank" class="hover:text-primary dark:hover:text-secondary transition flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-xl shadow-sm"><i class="fas fa-chevron-right mr-3 text-secondary"></i> Portal Data Dapodik</a></li></ul></div></div></div></section>
+        <section id="profil-kepsek" class="page-section py-24 px-4 max-w-5xl mx-auto"><button onclick="navigate('home')" class="mb-8 px-5 py-2 bg-gray-200 dark:bg-gray-800 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-700 transition"><i class="fas fa-arrow-left mr-2"></i> Kembali ke Beranda</button><div class="bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-10"><div class="w-full md:w-1/3 flex flex-col items-center text-center"><img id="detail-kepsek-foto" src="" loading="lazy" class="w-full aspect-[3/4] object-cover rounded-2xl shadow-xl border-4 border-gray-50 dark:border-gray-700 mb-6 bg-gray-200"><h5 class="font-bold text-2xl text-gray-800 dark:text-white mb-1" id="detail-kepsek-nama">-</h5><p class="text-secondary font-black text-sm uppercase tracking-widest">Kepala Sekolah</p></div><div class="w-full md:w-2/3"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Sambutan Kepala Sekolah</h2><p id="detail-kepsek-sambutan" class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap"></p></div></div></section>
+        <section id="profil-sejarah" class="page-section py-24 px-4 max-w-4xl mx-auto"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Sejarah Singkat</h2><div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><p id="teks-sejarah" class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap"></p></div></section>
+        <section id="profil-identitas" class="page-section py-24 px-4 max-w-4xl mx-auto"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Identitas Organisasi</h2><div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-x-auto"><table class="w-full text-left"><tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm md:text-lg"><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 w-1/3 font-bold">Nama Satuan Pendidikan</th><td class="p-4 md:p-6 font-medium" id="id-nama">-</td></tr><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">NPSN</th><td class="p-4 md:p-6 font-medium" id="id-npsn">-</td></tr><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">NSS</th><td class="p-4 md:p-6 font-medium" id="id-nss">-</td></tr><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Status & Jenjang</th><td class="p-4 md:p-6 font-medium" id="id-status">-</td></tr><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Akreditasi/ No.Sert.</th><td class="p-4 md:p-6 font-medium"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full font-black text-xs md:text-sm" id="id-akreditasi">-</span></td></tr><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Tahun Berdiri</th><td class="p-4 md:p-6 font-medium" id="id-tahun">-</td></tr><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Alamat Lengkap</th><td class="p-4 md:p-6 font-medium" id="id-alamat">-</td></tr><tr><th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Slogan Sekolah</th><td class="p-4 md:p-6 font-medium text-gray-500 italic" id="id-desc">-</td></tr></tbody></table></div></section>
+        <section id="profil-visimisi" class="page-section py-24 px-4 max-w-4xl mx-auto"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Visi & Misi</h2><div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><p id="teks-visimisi" class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap font-medium"></p></div></section>
+        <section id="profil-sarpras" class="page-section py-24 px-4 max-w-4xl mx-auto"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Sarana & Prasarana</h2><div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><p id="teks-sarpras" class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap font-medium"></p></div></section>
+        <section id="halaman-privasi" class="page-section py-24 px-4 max-w-4xl mx-auto"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Kebijakan Privasi</h2><div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><p id="teks-privasi" class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap"></p></div></section>
+        <section id="halaman-syarat" class="page-section py-24 px-4 max-w-4xl mx-auto"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Syarat & Ketentuan</h2><div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><p id="teks-syarat" class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap"></p></div></section>
+        <section id="profil-pegawai-stat" class="page-section py-24 px-4 max-w-4xl mx-auto text-center"><h2 class="text-3xl md:text-4xl font-black mb-12 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Statistik Pegawai</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-xl border-t-8 border-primary"><i class="fas fa-chalkboard-teacher text-5xl text-primary mb-4"></i><h3 class="text-6xl font-black mb-2" id="stat-p-guru">0</h3><p class="text-xl font-bold text-gray-500 uppercase">Tenaga Pendidik</p></div><div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-xl border-t-8 border-secondary"><i class="fas fa-user-tie text-5xl text-secondary mb-4"></i><h3 class="text-6xl font-black mb-2" id="stat-p-tu">0</h3><p class="text-xl font-bold text-gray-500 uppercase">Tenaga Kependidikan</p></div></div></section>
+        <section id="profil-struktur" class="page-section py-24 px-4 max-w-5xl mx-auto text-center"><h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">Struktur Organisasi</h2><div class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"><img id="img-struktur" src="" loading="lazy" class="w-full object-contain rounded-2xl"></div></section>
+        
+        <section id="guru" class="page-section py-24 px-4 max-w-7xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">Tenaga Pendidik (Guru)</h2><div id="guru-container" class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10"><p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i> Mengambil direktori guru...</p></div></section>
+        <section id="tu" class="page-section py-24 px-4 max-w-7xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">Tenaga Kependidikan (TU)</h2><div id="tu-container" class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10"><p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i> Mengambil data staff...</p></div></section>
+        
+        <section id="detail-pegawai" class="page-section py-24 px-4 max-w-5xl mx-auto">
+            <button id="btn-back-pegawai" onclick="navigate('guru')" class="mb-8 px-5 py-2 bg-gray-200 dark:bg-gray-800 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-700 transition"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+            <div class="bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-10">
+                <div class="w-full md:w-1/3 flex flex-col items-center text-center">
+                    <img id="dp-foto" src="" loading="lazy" class="w-48 h-64 object-cover rounded-2xl shadow-xl border-4 border-white dark:border-gray-700 mb-6 bg-gray-200">
+                    <span id="dp-status" class="px-5 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-black tracking-wide shadow-sm"></span>
+                </div>
+                <div class="w-full md:w-2/3">
+                    <h4 class="text-secondary font-bold uppercase tracking-widest mb-2 text-sm" id="dp-jabatan">Jabatan</h4>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-primary dark:text-white mb-8" id="dp-nama">Nama Lengkap</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8 text-base">
+                        <div class="border-b dark:border-gray-700 pb-2"><p class="text-gray-500 text-xs font-bold uppercase mb-1">NIP/NIPPPK/NIK</p><p class="font-bold text-gray-800 dark:text-gray-200 text-lg font-mono" id="dp-nip">-</p></div>
+                        <div class="border-b dark:border-gray-700 pb-2"><p class="text-gray-500 text-xs font-bold uppercase mb-1">Jenis Kelamin</p><p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-jk">-</p></div>
+                        <div class="border-b dark:border-gray-700 pb-2"><p class="text-gray-500 text-xs font-bold uppercase mb-1">Pangkat/Golongan</p><p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-gol">-</p></div>
+                        <div class="border-b dark:border-gray-700 pb-2"><p class="text-gray-500 text-xs font-bold uppercase mb-1">Mulai Tugas (TMT)</p><p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-tmt">-</p></div>
+                        <div class="border-b dark:border-gray-700 pb-2 md:col-span-2"><p class="text-gray-500 text-xs font-bold uppercase mb-1" id="dp-lbl-tugas">Tugas/Bagian</p><p class="font-semibold text-gray-800 dark:text-gray-200 text-lg" id="dp-tugas">-</p></div>
+                        <div class="border-b dark:border-gray-700 pb-2"><p class="text-gray-500 text-xs font-bold uppercase mb-1">No. HP / WA</p><p class="font-semibold text-gray-800 dark:text-gray-200"><a id="dp-nohp" href="#" target="_blank" class="text-blue-500 hover:underline">-</a></p></div>
+                        <div class="border-b dark:border-gray-700 pb-2 md:col-span-2"><p class="text-gray-500 text-xs font-bold uppercase mb-1">Email Pribadi</p><p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-email">-</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="siswa" class="page-section py-24 px-4 max-w-6xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">Data Siswa & Alumni</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-12"><div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700"><div class="bg-primary text-white p-6"><h3 class="text-xl md:text-2xl font-bold"><i class="fas fa-users mr-2"></i> Siswa Aktif</h3></div><table class="w-full text-left text-sm md:text-lg"><thead class="bg-gray-50 dark:bg-gray-700"><tr><th class="p-4">Kelas / Info</th><th class="p-4 text-center">L</th><th class="p-4 text-center">P</th><th class="p-4 text-center">Total</th></tr></thead><tbody id="tbl-siswa-aktif" class="divide-y divide-gray-200 dark:divide-gray-700"><tr><td colspan="4" class="p-4 text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr></tbody><tfoot id="foot-siswa-aktif" class="bg-gray-100 dark:bg-gray-700 font-black border-t-4 border-primary"></tfoot></table></div><div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700"><div class="bg-secondary text-gray-900 p-6"><h3 class="text-xl md:text-2xl font-bold"><i class="fas fa-user-graduate mr-2"></i> Data Alumni</h3></div><table class="w-full text-left text-sm md:text-lg"><thead class="bg-gray-50 dark:bg-gray-700"><tr><th class="p-4">Tahun / Lulusan</th><th class="p-4 text-center">L</th><th class="p-4 text-center">P</th><th class="p-4 text-center">Total</th></tr></thead><tbody id="tbl-alumni" class="divide-y divide-gray-200 dark:divide-gray-700"><tr><td colspan="4" class="p-4 text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr></tbody><tfoot id="foot-alumni" class="bg-gray-100 dark:bg-gray-700 font-black border-t-4 border-secondary"></tfoot></table></div></div></section>
+        
+        <section id="halaman-berita" class="page-section py-24 px-4 max-w-7xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">Berita Sekolah Terkini</h2><div id="berita-utama-container" class="grid grid-cols-1 md:grid-cols-3 gap-10"><p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i> Menarik berita arsip...</p></div></section>
+        <section id="halaman-pengumuman" class="page-section py-24 px-4 max-w-7xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">Papan Pengumuman Resmi</h2><div id="pengumuman-utama-container" class="grid grid-cols-1 md:grid-cols-3 gap-10"><p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i> Menarik data pengumuman...</p></div></section>
+        
+        <section id="detail-berita" class="page-section py-24 px-4 max-w-4xl mx-auto">
+            <button onclick="navigate('halaman-berita')" class="mb-8 px-5 py-2 bg-gray-200 dark:bg-gray-800 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-700 transition"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+            <img id="detail-img" src="" loading="lazy" class="w-full aspect-[5/3] object-cover rounded-3xl shadow-2xl mb-8 border-4 border-white dark:border-gray-800">
+            <span id="detail-tgl" class="px-4 py-1.5 bg-blue-100 text-primary rounded-full text-xs md:text-sm font-bold tracking-wide mr-2"></span>
+            <span id="detail-cat" class="px-4 py-1.5 bg-yellow-100 text-yellow-800 rounded-full text-xs md:text-sm font-bold tracking-wide"></span>
+            <h1 id="detail-judul" class="text-3xl md:text-5xl font-extrabold mt-6 mb-8 text-gray-800 dark:text-white leading-tight"></h1>
+            <div id="detail-konten" class="ql-editor prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-loose mb-12" style="padding:0; overflow:visible;"></div>
+            <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h4 class="font-bold text-gray-800 dark:text-white mb-4">Bagikan Informasi Ini:</h4>
+                <div class="flex flex-wrap gap-3"><button onclick="bagikanBerita('wa')" class="px-4 py-2 bg-[#25D366] text-white rounded-xl font-bold shadow hover:bg-[#1ebe57] transition text-sm"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</button><button onclick="bagikanBerita('fb')" class="px-4 py-2 bg-[#1877F2] text-white rounded-xl font-bold shadow hover:bg-[#1464cc] transition text-sm"><i class="fab fa-facebook-f mr-2"></i> Facebook</button><button onclick="bagikanBerita('x')" class="px-4 py-2 bg-black text-white rounded-xl font-bold shadow hover:bg-gray-800 transition text-sm"><i class="fab fa-x-twitter mr-2"></i> Post</button><button onclick="bagikanBerita('copy')" class="px-4 py-2 bg-gray-500 text-white rounded-xl font-bold shadow hover:bg-gray-600 transition text-sm"><i class="fas fa-link mr-2"></i> Salin Link</button></div>
+            </div>
+        </section>
+
+        <section id="galeri-foto" class="page-section py-24 px-4 max-w-7xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max"><i class="fas fa-camera-retro mr-2"></i> Galeri Foto Kegiatan</h2><div id="galeri-foto-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8"><p class="col-span-full text-center"><i class="fas fa-spinner fa-spin"></i></p></div></section>
+        <section id="galeri-video" class="page-section py-24 px-4 max-w-7xl mx-auto"><h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-red-600 dark:text-red-500 border-b-4 inline-block pb-3 border-red-500 mx-auto block w-max"><i class="fas fa-video mr-2"></i> Galeri Video Youtube</h2><div id="galeri-video-container" class="grid grid-cols-1 md:grid-cols-2 gap-10"><p class="col-span-full text-center"><i class="fas fa-spinner fa-spin"></i></p></div></section>
+
+        <section id="login" class="page-section py-24 px-4">
+            <div class="flex justify-center items-center min-h-[60vh]">
+                <div class="bg-white dark:bg-gray-800 p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-gray-100 dark:border-gray-700">
+                    <div class="text-center mb-8">
+                        <div class="flex justify-center mx-auto mb-6"><img id="login-logo" src="" class="h-28 w-auto object-contain hidden"></div>
+                        <h2 class="text-3xl font-black text-gray-800 dark:text-white">Portal Masuk</h2><p class="text-gray-500 text-sm mt-2">Untuk Admin, Guru, dan TU</p>
+                    </div>
+                    <input type="text" id="log-user" placeholder="Username / NIP Pegawai" class="w-full px-5 py-4 border rounded-xl mb-5 dark:bg-gray-700 font-bold focus:ring-2 outline-none">
+                    <div class="relative mb-8"><input type="password" id="log-pass" placeholder="Password" class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full"><button onclick="togglePasswordVisibility('log-pass', 'icon-log-pass')" class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center"><i class="fas fa-eye" id="icon-log-pass"></i></button></div>
+                    <button onclick="prosesLogin()" class="w-full bg-primary text-white py-4 rounded-xl hover:bg-blue-800 font-black text-lg transition shadow-lg">Login ke Sistem</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="admin-dashboard" class="page-section py-24 px-4 max-w-7xl mx-auto"><h2 class="text-3xl font-black mb-10 border-l-8 border-secondary pl-4">Dashboard Admin</h2><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-blue-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-berita')"><i class="fas fa-newspaper text-3xl text-blue-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Berita</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-green-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-guru')"><i class="fas fa-chalkboard-teacher text-3xl text-green-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Akun Guru</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-teal-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-tu')"><i class="fas fa-user-tie text-3xl text-teal-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Akun TU</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-orange-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-siswa')"><i class="fas fa-users text-3xl text-orange-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Siswa</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-purple-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-galeri')"><i class="fas fa-images text-3xl text-purple-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Galeri</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-pink-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-slider')"><i class="fas fa-sliders-h text-3xl text-pink-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Slider</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-cyan-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-eksternal')"><i class="fas fa-external-link-alt text-3xl text-cyan-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Link Aplikasi</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-yellow-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-settings')"><i class="fas fa-cogs text-3xl text-yellow-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Profil Web</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-indigo-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('admin-widget')"><i class="fas fa-puzzle-piece text-3xl text-indigo-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Widget</h3></div><div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-b-4 border-red-500 cursor-pointer hover:-translate-y-1 text-center flex flex-col items-center justify-center" onclick="navigate('ubah-password')"><i class="fas fa-key text-3xl text-red-500 mb-3"></i><h3 class="font-bold text-xs md:text-sm">Ubah Sandi</h3></div></div></section>
+        
+        <section id="admin-guru" class="page-section py-20 px-4 max-w-7xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-chalkboard-teacher text-green-500 mr-2"></i> Kelola Data Guru</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700"><div class="mb-8 border-b dark:border-gray-700 pb-6 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between"><div><h3 class="font-bold text-gray-800 dark:text-white text-lg">Import Data Massal (CSV)</h3><p class="text-xs text-gray-500 mt-1">Upload file CSV untuk memasukkan banyak data guru sekaligus.</p></div><div class="flex flex-wrap gap-2"><button onclick="downloadTemplateCSV('guru')" class="px-4 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg text-sm font-bold shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"><i class="fas fa-download mr-1"></i> Unduh Template</button><label class="px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow hover:bg-indigo-700 cursor-pointer transition"><i class="fas fa-upload mr-1"></i> Upload CSV <input type="file" accept=".csv" class="hidden" onchange="prosesImportCSV(event, 'guru')"></label></div></div><p class="text-sm text-gray-500 mb-6 border-b dark:border-gray-700 pb-4">Admin dapat membuat akun dan mengisi data guru secara manual di bawah ini. <span class="font-bold text-red-500">Kolom (*) wajib diisi.</span></p><div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-5"><div><label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIPPPK/NIK (Username) <span class="text-red-500">*</span></label><input type="text" id="g-nip" placeholder="Masukkan NIP/NIPPPK/NIK" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-blue-600 dark:text-blue-400"></div><div class="relative"><label class="block text-xs font-bold text-gray-500 mb-1">Password <span class="text-[10px] font-normal text-red-500">(Kosongkan jika Edit)</span></label><input type="password" id="g-pass" placeholder="Password akun" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none pr-10"><button onclick="togglePasswordVisibility('g-pass', 'icon-g-pass')" class="absolute bottom-3 right-3 text-gray-500 hover:text-primary focus:outline-none"><i class="fas fa-eye" id="icon-g-pass"></i></button></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Nama Lengkap & Gelar <span class="text-red-500">*</span></label><input type="text" id="g-nama" placeholder="Cth: Fatiha Latifunnisa, S.Pd.I" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Jenis Kelamin</label><select id="g-jk" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"><option value="">-- Pilih --</option><option value="Laki-Laki">Laki-Laki</option><option value="Perempuan">Perempuan</option></select></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Tempat Lahir</label><input type="text" id="g-tempat_lahir" placeholder="Kota lahir Sesuai Ijazah" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Tanggal Lahir</label><input type="date" id="g-tgl_lahir" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Pangkat / Golongan</label><input type="text" id="g-golongan" placeholder="Cth: Penata/III.c" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Status Kepegawaian</label><select id="g-status" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"><option value="">-- Pilih --</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="PPPK PW">PPPK PW</option><option value="GTT / PTT">GTT / PTT</option><option value="Pegawai Tetap Yayasan">Pegawai Tetap Yayasan</option></select></div><div><label class="block text-xs font-bold text-gray-500 mb-1">TMT Pegawai</label><input type="date" id="g-tmt" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Jabatan Utama</label><input type="text" id="g-jabatan" placeholder="Cth: Waka.../Ka.Pus/Ka.Lab/Guru Mapel" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Mata Pelajaran Diampu</label><input type="text" id="g-mapel" placeholder="Cth: Matematika" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">No HP / WA</label><input type="text" id="g-no_hp" placeholder="Cth: 08123456789" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Email</label><input type="email" id="g-email" placeholder="Cth: guru@sekolah.com" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div></div><div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Upload Pas Foto (Rasio 3:4)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 3/4, 'guru', 'prev-guru')" class="w-full text-sm"><img id="prev-guru" class="mt-4 hidden aspect-[3/4] w-28 object-cover rounded shadow border"></div><div class="flex flex-col md:flex-row gap-4"><button id="btn-guru" onclick="simpanAtauUpdate('guru')" class="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg hover:bg-green-700">Simpan Data Guru</button><button id="btn-batal-guru" onclick="batalEdit('guru')" class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg">Batal Edit</button></div></div><div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-x-auto text-sm border border-gray-100 dark:border-gray-700"><table class="w-full text-left min-w-max"><thead class="bg-gray-100 dark:bg-gray-700"><tr><th class="p-4">NIP/NIK (User)</th><th class="p-4">Nama Lengkap</th><th class="p-4 text-center">Data Pribadi</th><th class="p-4 text-center">Aksi (Admin)</th></tr></thead><tbody id="tbl-guru-admin" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody></table></div></section>
+
+        <section id="admin-tu" class="page-section py-20 px-4 max-w-7xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-user-tie text-teal-500 mr-2"></i> Kelola Data TU</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700"><div class="mb-8 border-b dark:border-gray-700 pb-6 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between"><div><h3 class="font-bold text-gray-800 dark:text-white text-lg">Import Data Massal (CSV)</h3><p class="text-xs text-gray-500 mt-1">Upload file CSV untuk memasukkan banyak data Tenaga TU sekaligus.</p></div><div class="flex flex-wrap gap-2"><button onclick="downloadTemplateCSV('tu')" class="px-4 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg text-sm font-bold shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition"><i class="fas fa-download mr-1"></i> Unduh Template</button><label class="px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow hover:bg-indigo-700 cursor-pointer transition"><i class="fas fa-upload mr-1"></i> Upload CSV <input type="file" accept=".csv" class="hidden" onchange="prosesImportCSV(event, 'tu')"></label></div></div><p class="text-sm text-gray-500 mb-6 border-b dark:border-gray-700 pb-4">Admin dapat membuat akun dan mengisi data Tata Usaha di bawah ini. <span class="font-bold text-red-500">Kolom (*) wajib diisi.</span></p><div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-5"><div><label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIPPPK/NIK (Username) <span class="text-red-500">*</span></label><input type="text" id="tu-nip" placeholder="Masukkan NIP/NIPPPK/NIK" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-blue-600 dark:text-blue-400"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Nama Lengkap dan Gelar <span class="text-red-500">*</span></label><input type="text" id="tu-nama" placeholder="Cth: Ahmad Fary, S.Sos, M.M" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none"></div><div class="relative"><label class="block text-xs font-bold text-gray-500 mb-1">Password <span class="text-[10px] font-normal text-red-500">(Kosongkan jika Edit)</span></label><input type="password" id="tu-pass" placeholder="Password akun" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none pr-10"><button onclick="togglePasswordVisibility('tu-pass', 'icon-tu-pass')" class="absolute bottom-3 right-3 text-gray-500 hover:text-primary focus:outline-none"><i class="fas fa-eye" id="icon-tu-pass"></i></button></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Jenis Kelamin</label><select id="tu-jk" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"><option value="">-- Pilih --</option><option value="Laki-Laki">Laki-Laki</option><option value="Perempuan">Perempuan</option></select></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Tempat Lahir</label><input type="text" id="tu-tempat_lahir" placeholder="Tempat lahir Sesuai Ijazah" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Tanggal Lahir</label><input type="date" id="tu-tgl_lahir" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Pangkat / Golongan</label><input type="text" id="tu-golongan" placeholder="Cth: Penata Muda/III.a" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Status Kepegawaian</label><select id="tu-status" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"><option value="">-- Pilih --</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="PPPK PW">PPPK PW</option><option value="PTT">PTT</option><option value="Pegawai Yayasan">Pegawai Yayasan</option></select></div><div><label class="block text-xs font-bold text-gray-500 mb-1">TMT Pegawai</label><input type="date" id="tu-tmt" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Jabatan</label><input type="text" id="tu-jabatan" placeholder="Cth: Pelaksana/Staf TU" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Bagian</label><input type="text" id="tu-bagian" placeholder="Cth: Administrasi Kepegawaian" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">No HP / WA</label><input type="text" id="tu-no_hp" placeholder="Cth: 08123456789" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Email</label><input type="email" id="tu-email" placeholder="Cth: staff@sekolah.com" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div></div><div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Upload Pas Foto (Rasio 3:4)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 3/4, 'tu', 'prev-tu')" class="w-full text-sm"><img id="prev-tu" class="mt-4 hidden aspect-[3/4] w-28 object-cover rounded shadow border"></div><div class="flex flex-col md:flex-row gap-4"><button id="btn-tu" onclick="simpanAtauUpdate('tu')" class="px-8 py-3 bg-teal-600 text-white rounded-xl font-bold shadow-lg hover:bg-teal-700">Simpan Data TU</button><button id="btn-batal-tu" onclick="batalEdit('tu')" class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg">Batal Edit</button></div></div><div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-x-auto text-sm border border-gray-100 dark:border-gray-700"><table class="w-full text-left min-w-max"><thead class="bg-gray-100 dark:bg-gray-700"><tr><th class="p-4">NIP/NIPPK/NIK (User)</th><th class="p-4">Nama Lengkap</th><th class="p-4 text-center">Data Pribadi</th><th class="p-4 text-center">Aksi (Admin)</th></tr></thead><tbody id="tbl-admin-tu" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody></table></div></section>
+
+        <section id="admin-berita" class="page-section py-20 px-4 max-w-7xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-newspaper text-primary mr-2"></i> Kelola Berita / Pengumuman</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700"><select id="b-kategori" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-primary dark:text-white"><option value="Berita">Kategori: BERITA / ARTIKEL</option><option value="Pengumuman">Kategori: PENGUMUMAN</option></select>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <div class="md:col-span-2">
+        <input type="text" id="b-judul" placeholder="Judul Berita / Pengumuman" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold">
+    </div>
+    <div>
+        <label class="block text-[10px] font-bold text-gray-500 ml-1">Tanggal Publish (Kosong = Otomatis Hari Ini)</label>
+        <input type="datetime-local" id="b-tanggal" title="Tanggal & Jam Publish Berita" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold text-gray-500">
+    </div>
+</div>
+        <div class="mb-4 rounded-xl overflow-hidden border dark:border-gray-600 bg-white text-gray-800"><div id="b-konten" style="height: 300px; font-size: 16px;"></div></div><div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Utama (Crop 5:3)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 5/3, 'berita', 'prev-berita')" class="w-full text-sm"><img id="prev-berita" class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border"></div><div class="flex flex-col md:flex-row gap-4"><button id="btn-berita" onclick="simpanAtauUpdate('berita')" class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700">Publikasikan</button><button id="btn-batal-berita" onclick="batalEdit('berita')" class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg hover:bg-gray-500">Batal Edit</button></div></div><div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-x-auto text-sm border border-gray-100 dark:border-gray-700"><table class="w-full text-left min-w-max"><thead class="bg-gray-100 dark:bg-gray-700"><tr><th class="p-4">Kategori</th><th class="p-4">Thumbnail</th><th class="p-4">Judul</th><th class="p-4 text-center">Aksi</th></tr></thead><tbody id="tbl-berita" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody></table></div></section>
+
+        <section id="admin-eksternal" class="page-section py-20 px-4 max-w-7xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-external-link-alt text-cyan-500 mr-2"></i> Kelola Tautan Aplikasi</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700"><p class="text-sm text-gray-500 mb-6">Tambahkan link ke aplikasi lain (E-Rapor, CBT, dll) maksimal 6 link.</p><input type="text" id="ex-nama" placeholder="Nama Aplikasi / Web (Cth: E-Rapor)" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold"><input type="text" id="ex-url" placeholder="Link / URL (Cth: https://rapor.sekolah.id)" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 text-blue-500"><div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900"><label class="block text-sm font-bold mb-2">Upload Ikon/Logo (Otomatis Crop 1:1 & Transparan)</label><input type="file" accept="image/*" id="file-ex" onchange="bukaCropper(event, 1/1, 'eksternal', 'prev-eksternal')" class="w-full text-sm"><img id="prev-eksternal" class="mt-4 hidden w-16 h-16 object-contain rounded shadow-sm border bg-white p-1"></div><div class="flex flex-col md:flex-row gap-4"><button id="btn-eksternal" onclick="simpanAtauUpdate('eksternal')" class="px-8 py-3 bg-cyan-600 text-white rounded-xl font-bold shadow-lg hover:bg-cyan-700">Simpan Tautan</button><button id="btn-batal-eksternal" onclick="batalEdit('eksternal')" class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg hover:bg-gray-500">Batal Edit</button></div></div><div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-x-auto text-sm border border-gray-100 dark:border-gray-700"><table class="w-full text-left min-w-max"><thead class="bg-gray-100 dark:bg-gray-700"><tr><th class="p-4 w-16">Ikon</th><th class="p-4">Nama Aplikasi</th><th class="p-4">Link URL</th><th class="p-4 text-center">Aksi</th></tr></thead><tbody id="tbl-eksternal" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody></table></div></section>
+
+        <section id="admin-siswa" class="page-section py-20 px-4 max-w-7xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-users text-orange-500 mr-2"></i> Kelola Statistik Siswa & Dokumen</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700"><div class="grid grid-cols-1 md:grid-cols-5 gap-5 mb-6"><select id="sw-kategori" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none md:col-span-2"><option value="Siswa Aktif">Siswa Aktif (Kelas)</option><option value="Alumni">Alumni (Kelulusan)</option></select><input type="text" id="sw-label" placeholder="Label (Cth: Kelas X / 2024)" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 md:col-span-3"><div class="md:col-span-5 grid grid-cols-3 gap-5 border-t dark:border-gray-700 pt-5 mt-2"><div><label class="block text-xs font-bold text-gray-500 mb-1">Laki-Laki (L)</label><input type="number" id="sw-l" placeholder="0" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold text-lg text-blue-500 outline-none" oninput="hitungTotalSiswa()"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Perempuan (P)</label><input type="number" id="sw-p" placeholder="0" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold text-lg text-pink-500 outline-none" oninput="hitungTotalSiswa()"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Total (Otomatis)</label><input type="number" id="sw-jumlah" placeholder="0" class="w-full px-5 py-3 border rounded-xl bg-gray-100 dark:bg-gray-900 font-black text-lg text-gray-800 dark:text-white outline-none cursor-not-allowed" readonly></div></div><div class="md:col-span-5 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600 p-4 mt-2 bg-gray-50 dark:bg-gray-800"><label class="block text-sm font-bold mb-2">Upload Dokumen Pendukung (PDF, Maks 300KB)</label><input type="file" accept="application/pdf" id="sw-pdf" onchange="prosesUploadPdf(event)" class="w-full text-sm"><p id="sw-pdf-name" class="text-xs text-green-600 mt-2 font-bold hidden">File siap diupload.</p><a id="sw-pdf-link" href="#" target="_blank" class="text-xs text-blue-500 underline mt-2 hidden block"><i class="fas fa-file-pdf"></i> Lihat Dokumen Saat Ini</a></div></div><div class="flex flex-col md:flex-row gap-4"><button id="btn-siswa" onclick="simpanAtauUpdate('siswa')" class="px-8 py-3 bg-orange-600 text-white rounded-xl font-bold shadow-lg hover:bg-orange-700">Simpan Data</button><button id="btn-batal-siswa" onclick="batalEdit('siswa')" class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg">Batal Edit</button></div></div><div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-x-auto text-sm border border-gray-100 dark:border-gray-700"><table class="w-full text-left min-w-max"><thead class="bg-gray-100 dark:bg-gray-700"><tr><th class="p-4">Kategori</th><th class="p-4">Label</th><th class="p-4 text-center text-blue-600">L</th><th class="p-4 text-center text-pink-600">P</th><th class="p-4 text-center">Total</th><th class="p-4 text-center">Aksi</th></tr></thead><tbody id="tbl-admin-siswa" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody></table></div></section>
+
+        <section id="admin-slider" class="page-section py-20 px-4 max-w-7xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-sliders-h text-pink-500 mr-2"></i> Banner Home</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700"><input type="text" id="sl-judul" placeholder="Teks Utama Besar" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold"><input type="text" id="sl-sub" placeholder="Teks Subjudul Kecil" class="w-full px-5 py-3 border rounded-xl mb-5 dark:bg-gray-700"><div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Background Slider (Crop 7:3)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 7/3, 'slider', 'prev-slider')" class="w-full text-sm"><img id="prev-slider" class="mt-4 hidden aspect-[7/3] w-full object-cover rounded shadow border"></div><div class="flex flex-col md:flex-row gap-4"><button id="btn-slider" onclick="simpanAtauUpdate('slider')" class="px-8 py-3 bg-pink-600 text-white rounded-xl font-bold shadow-lg hover:bg-pink-700">Simpan Slider</button><button id="btn-batal-slider" onclick="batalEdit('slider')" class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg">Batal Edit</button></div></div><div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-x-auto text-sm border border-gray-100 dark:border-gray-700"><table class="w-full text-left min-w-max"><thead class="bg-gray-100 dark:bg-gray-700"><tr><th class="p-4">Banner</th><th class="p-4">Teks Utama</th><th class="p-4 text-center">Aksi</th></tr></thead><tbody id="tbl-slider" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody></table></div></section>
+        
+        <section id="admin-galeri" class="page-section py-20 px-4 max-w-7xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-images text-purple-500 mr-2"></i> Kelola Galeri (Admin)</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700"><select id="gl-kategori" onchange="ubahTipeGaleri()" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-purple-600 dark:text-purple-400"><option value="Foto">Kategori: Galeri Foto</option><option value="Video">Kategori: Galeri Video (YouTube)</option></select><input type="text" id="gl-judul" placeholder="Judul Kegiatan" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold"><textarea id="gl-deskripsi" rows="2" placeholder="Deskripsi singkat kegiatan..." class="w-full px-5 py-3 border rounded-xl mb-5 dark:bg-gray-700 outline-none"></textarea><div id="wrap-gl-foto" class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Pilih Foto Kegiatan (Crop 5:3)</label><input type="file" accept="image/*" id="file-gl-foto" onchange="bukaCropper(event, 5/3, 'galeri', 'prev-galeri')" class="w-full text-sm"><img id="prev-galeri" class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border"></div><div id="wrap-gl-video" class="mb-6" style="display:none;"><label class="block text-sm font-bold mb-2 ml-1">Link Embed Video Youtube</label><input type="text" id="gl-video" placeholder="Contoh: https://www.youtube.com/embed/..." class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 outline-none text-red-500 font-mono"></div><div class="flex flex-col md:flex-row gap-4"><button id="btn-galeri" onclick="simpanAtauUpdate('galeri')" class="px-8 py-3 bg-purple-600 text-white rounded-xl font-bold shadow-lg hover:bg-purple-700">Simpan Galeri</button><button id="btn-batal-galeri" onclick="batalEdit('galeri')" class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg hover:bg-gray-500">Batal Edit</button></div></div><div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-x-auto text-sm border border-gray-100 dark:border-gray-700"><table class="w-full text-left min-w-max"><thead class="bg-gray-100 dark:bg-gray-700"><tr><th class="p-4 text-center">Media</th><th class="p-4">Kategori</th><th class="p-4">Judul</th><th class="p-4 text-center">Aksi</th></tr></thead><tbody id="tbl-galeri" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody></table></div></section>
+        
+        <section id="admin-settings" class="page-section py-20 px-4 max-w-4xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-cogs text-yellow-500 mr-2"></i> Pengaturan Profil Web</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700"><h3 class="font-bold text-xl mb-4 border-b pb-2">1. Identitas & Logo</h3><div class="mb-6 flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-600"><img id="prev-logo" src="https://via.placeholder.com/150" class="w-20 h-20 aspect-square object-contain rounded-full shadow border-4 bg-white"><div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Upload Logo (Rasio 1:1)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 1/1, 'logo', 'prev-logo')" class="w-full text-sm"></div></div><input type="text" id="set-nama" placeholder="Nama Sekolah" class="w-full px-5 py-4 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none"><input type="text" id="set-alamat" placeholder="Alamat Lengkap" class="w-full px-5 py-4 border rounded-xl mb-4 dark:bg-gray-700 outline-none"><textarea id="set-deskripsi" rows="3" placeholder="Slogan / Deskripsi Web" class="w-full px-5 py-4 border rounded-xl mb-10 dark:bg-gray-700 outline-none"></textarea><h3 class="font-bold text-xl mb-4 border-b pb-2">2. Profil Organisasi</h3><label class="block text-sm font-bold mb-2 ml-1">Sejarah Singkat</label><textarea id="set-sejarah" rows="5" placeholder="Tuliskan sejarah sekolah..." class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none"></textarea><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"><div><label class="block text-xs font-bold text-gray-500 mb-1">NPSN</label><input type="text" id="set-npsn" placeholder="Nomor NPSN (10 digit)" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">NSS</label><input type="text" id="set-nss" placeholder="Nomor Statistik Sekolah" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Status & Jenjang</label><input type="text" id="set-status" placeholder="Cth: Negeri - SMA" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Akreditasi</label><input type="text" id="set-akreditasi" placeholder="Cth: A (Unggul)" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold text-primary"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Akta Pendirian / Tahun Berdiri</label><input type="text" id="set-tahun" placeholder="Cth: SK....No. 12 Tahun 1990" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div></div><label class="block text-sm font-bold mb-2 ml-1">Visi & Misi</label><textarea id="set-visimisi" rows="5" placeholder="Visi: ... Misi: ..." class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none"></textarea><label class="block text-sm font-bold mb-2 ml-1">Sarpras</label><textarea id="set-sarpras" rows="5" placeholder="Sarana & Prasarana ...." class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none"></textarea><div class="mb-10 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900"><label class="block text-sm font-bold mb-2">Gambar Struktur Organisasi</label><input type="file" accept="image/*" onchange="bukaCropper(event, NaN, 'struktur', 'prev-struktur')" class="w-full text-sm"><img id="prev-struktur" class="mt-4 hidden w-full object-contain rounded shadow border max-h-64"></div><h3 class="font-bold text-xl mb-4 border-b pb-2 mt-10">3. Halaman Legalitas</h3><label class="block text-sm font-bold mb-2 ml-1">Kebijakan Privasi</label><textarea id="set-privasi" rows="5" placeholder="Tuliskan Kebijakan Privasi..." class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none"></textarea><label class="block text-sm font-bold mb-2 ml-1">Syarat & Ketentuan</label><textarea id="set-syarat" rows="5" placeholder="Tuliskan Syarat dan Ketentuan..." class="w-full px-5 py-4 border rounded-xl mb-10 dark:bg-gray-700 outline-none"></textarea><h3 class="font-bold text-xl mb-4 border-b pb-2">4. Domain Resmi (Opsional)</h3><p class="text-xs text-gray-500 mb-2">Jika menggunakan Custom Domain, masukkan domainnya di sini agar link Share Berita menggunakan domain ini.</p><input type="text" id="set-domain" placeholder="Cth: https://www.smasakti.sch.id" class="w-full px-5 py-4 border rounded-xl mb-10 dark:bg-gray-700 outline-none text-blue-500 font-mono"><h3 class="font-bold text-xl mb-4 border-b pb-2">5. Widget Maps & Data Pimpinan</h3><label class="block text-sm font-bold mb-2 ml-1">Teks Berjalan (Pengumuman Kilat)</label><input type="text" id="set-teks-berjalan" placeholder="Teks berjalan di bawah statistik..." class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none"><div class="mb-6 flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 bg-gray-50 dark:bg-gray-900 p-5 rounded-xl border border-dashed border-gray-300 dark:border-gray-600"><img id="prev-kepsek" src="https://via.placeholder.com/150x200" class="w-24 aspect-[3/4] object-cover rounded shadow border-2"><div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Upload Foto Pimpinan (Crop 3:4)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 3/4, 'kepsek', 'prev-kepsek')" class="w-full text-sm mb-4"><input type="text" id="set-kepsek-nama" placeholder="Nama Pimpinan (Bpk. Ahmad...)" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold"></div></div><label class="block text-sm font-bold mb-2 ml-1">Teks Sambutan Pimpinan</label><textarea id="set-kepsek-sambutan" rows="4" placeholder="Kata sambutan..." class="w-full px-5 py-4 border rounded-xl mb-8 dark:bg-gray-700 outline-none"></textarea><label class="block text-sm font-bold mb-2 ml-1">URL Google Maps (Embed src)</label><input type="text" id="set-maps" placeholder="https://www.google.com/maps/embed?..." class="w-full px-5 py-4 border rounded-xl mb-8 dark:bg-gray-700 outline-none font-mono text-sm text-blue-500"><button onclick="simpanPengaturanLengkap()" class="w-full py-4 bg-yellow-500 text-gray-900 rounded-xl font-black text-lg shadow-lg hover:bg-yellow-400 transition"><i class="fas fa-save mr-2"></i> Terapkan Pengaturan Web</button></div></section>
+        <section id="admin-widget" class="page-section py-20 px-4 max-w-4xl mx-auto"><div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-puzzle-piece text-indigo-500 mr-2"></i> Kelola Widget & Link</h2><button onclick="navigate('admin-dashboard')" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div><div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700"><h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fab fa-youtube text-red-500 mr-2"></i> Widget Video Youtube</h3><label class="block text-sm font-bold mb-2 ml-1">Link Embed Video Youtube</label><input type="text" id="wid-yt" placeholder="Contoh: https://www.youtube.com/embed/P6yM_E-l4E0" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none text-red-500 font-mono mb-8"><h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fab fa-facebook text-blue-600 mr-2"></i> Widget Fanspage Facebook</h3><label class="block text-sm font-bold mb-2 ml-1">Username / Link Facebook Page</label><input type="text" id="wid-fb-plugin" placeholder="Contoh: kemdikbud.ri" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none text-blue-500 font-mono mb-8"><h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fas fa-calendar-alt text-green-500 mr-2"></i> Widget Kalender Google</h3><label class="block text-sm font-bold mb-2 ml-1">Link Embed iframe src Kalender</label><input type="text" id="wid-cal" placeholder="Contoh: https://calendar.google.com/calendar/embed?..." class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none text-green-600 font-mono mb-10"><h3 class="font-bold text-xl mb-4 border-b pb-2">Kontak Publik & Tautan Cepat</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"><div><label class="block text-xs font-bold text-gray-500 mb-1">Nomor WhatsApp (Mulai dg 62)</label><input type="text" id="wid-wa" placeholder="628123456789" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Email Sekolah</label><input type="text" id="wid-email" placeholder="info@sekolah.sch.id" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Link Instagram Profil</label><input type="text" id="wid-ig" placeholder="https://instagram.com/..." class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Link Akun Facebook Utama</label><input type="text" id="wid-fb" placeholder="https://facebook.com/..." class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Link Pendaftaran (PPDB)</label><input type="text" id="wid-ppdb" placeholder="https://..." class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none border-indigo-500"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Link Dinas Pendidikan</label><input type="text" id="wid-dinas" placeholder="https://..." class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div><div><label class="block text-xs font-bold text-gray-500 mb-1">Link Info Dapodik</label><input type="text" id="wid-dapodik" placeholder="https://..." class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div></div><button onclick="simpanPengaturanWidget()" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-indigo-700 transition"><i class="fas fa-save mr-2"></i> Terapkan Pengaturan Widget</button></div></section>
+
+        <section id="ubah-password" class="page-section py-20 px-4 max-w-xl mx-auto">
+            <div class="flex justify-between items-center mb-8"><h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-key text-red-500 mr-2"></i> Ubah Password</h2><button onclick="kembaliKeDash()" class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black">Kembali</button></div>
+            <div class="bg-white dark:bg-gray-800 p-8 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+                <label class="block text-sm font-bold mb-2 text-gray-600 dark:text-gray-300">Password Saat Ini</label>
+                <div class="relative mb-6"><input type="password" id="pass-lama" placeholder="Ketik password lama..." class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full"><button onclick="togglePasswordVisibility('pass-lama', 'eye-lama')" class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center"><i class="fas fa-eye" id="eye-lama"></i></button></div>
+                <label class="block text-sm font-bold mb-2 text-gray-600 dark:text-gray-300">Password Baru</label>
+                <div class="relative mb-6"><input type="password" id="pass-baru" placeholder="Ketik password baru..." class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full border-red-300"><button onclick="togglePasswordVisibility('pass-baru', 'eye-baru')" class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center"><i class="fas fa-eye" id="eye-baru"></i></button></div>
+                <label class="block text-sm font-bold mb-2 text-gray-600 dark:text-gray-300">Ulangi Password Baru</label>
+                <div class="relative mb-10"><input type="password" id="pass-konfirm" placeholder="Ketik ulang password baru..." class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full border-red-300"><button onclick="togglePasswordVisibility('pass-konfirm', 'eye-konfirm')" class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center"><i class="fas fa-eye" id="eye-konfirm"></i></button></div>
+                <button onclick="prosesUbahPassword()" class="w-full py-4 bg-red-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-red-700 transition"><i class="fas fa-save mr-2"></i> Simpan Password Baru</button>
+            </div>
+        </section>
+
+        <section id="pegawai-dashboard" class="page-section py-20 px-4 max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-8"><h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">Biodata Diri</h2></div>
+            <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 mb-10">
+                <div class="mb-8 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8 bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl border border-dashed border-gray-300 dark:border-gray-600"><img id="prev-pegawai-foto" src="" loading="lazy" class="w-28 h-36 aspect-[3/4] object-cover rounded-xl shadow border-4 border-white dark:border-gray-700 bg-gray-200"><div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Pas Foto Resmi (Rasio 3:4)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 3/4, 'pegawai_foto', 'prev-pegawai-foto')" class="w-full text-sm p-2 border rounded bg-white dark:bg-gray-800"></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIPPPK/NIK (Tidak bisa diubah)</label><input type="text" id="pegawai-nip" readonly class="w-full px-4 py-3 border rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-500 cursor-not-allowed outline-none font-mono font-bold"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Nama Lengkap & Gelar</label><input type="text" id="pegawai-nama" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Tempat Lahir</label><input type="text" id="pegawai-tempat-lahir" placeholder="Tempat Lahir Sesuai Ijazah"class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Tanggal Lahir</label><input type="date" id="pegawai-tgl-lahir" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Jenis Kelamin</label><select id="pegawai-jk" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"><option value="">-- Pilih --</option><option value="Laki-Laki">Laki-Laki</option><option value="Perempuan">Perempuan</option></select></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Pangkat / Golongan</label><input type="text" id="pegawai-golongan" placeholder="Cth: Penata Muda Tk.I/ III.b" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Status Kepegawaian</label><select id="pegawai-status" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"><option value="">-- Pilih --</option><option value="PNS">PNS</option><option value="PPPK">PPPK</option><option value="PPPK PW">PPPK PW</option><option value="GTT / PTT">GTT / PTT</option><option value="Pegawai Tetap Yayasan">Pegawai Tetap Yayasan</option></select></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">TMT Pegawai (Mulai Tugas)</label><input type="date" id="pegawai-tmt" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Jabatan</label><input type="text" id="pegawai-jabatan" placeholder="Cth: Waka Kur/Guru Mapel / Pelaksana TU" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div>
+                    <div id="wrap-pegawai-mapel"><label class="block text-xs font-bold text-gray-500 mb-1" id="lbl-pegawai-tugas">Mapel (Guru)/Bagian(TU)</label><input type="text" id="pegawai-tugas" placeholder="Cth: Matematika / Administrasi Kesiswaan" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">No HP / WA</label><input type="text" id="pegawai-no_hp" placeholder="Cth: 08123456789" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold text-green-600"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1">Email Pribadi</label><input type="email" id="pegawai-email" placeholder="Cth: nama@email.com" class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none text-blue-500"></div>
+                </div>
+                <div class="mt-10 border-t dark:border-gray-700 pt-8"><button onclick="simpanDataDiriPegawai()" class="w-full py-4 bg-green-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-green-700 transition"><i class="fas fa-save mr-2"></i> Perbarui Data Diri</button></div>
+            </div>
+        </section>
+
+        <section id="pegawai-galeri" class="page-section py-20 px-4 max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-8"><h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">Upload Galeri</h2></div>
+            <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+                <p class="text-sm text-gray-500 mb-6 border-b dark:border-gray-700 pb-4">Postingan galeri akan otomatis mencantumkan nama Anda di halaman publik.</p>
+                <select id="pg-kategori" onchange="ubahTipeGaleriPegawai()" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-purple-600 dark:text-purple-400"><option value="Foto">Kategori: Galeri Foto</option><option value="Video">Kategori: Galeri Video (YouTube)</option></select>
+                <input type="text" id="pg-judul" placeholder="Judul Kegiatan" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold">
+                <textarea id="pg-deskripsi" rows="2" placeholder="Deskripsi singkat kegiatan..." class="w-full px-5 py-3 border rounded-xl mb-5 dark:bg-gray-700 outline-none"></textarea>
+                <div id="wrap-pg-foto" class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600">
+                    <label class="block text-sm font-bold mb-2">Pilih Foto Kegiatan (Crop 5:3)</label>
+                    <input type="file" accept="image/*" id="file-pg-foto" onchange="bukaCropper(event, 5/3, 'galeri', 'prev-pg-galeri')" class="w-full text-sm">
+                    <img id="prev-pg-galeri" class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border">
+                </div>
+                <div id="wrap-pg-video" class="mb-6" style="display:none;">
+                    <label class="block text-sm font-bold mb-2 ml-1">Link Embed Video Youtube</label>
+                    <input type="text" id="pg-video" placeholder="Contoh: https://www.youtube.com/embed/..." class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 outline-none text-red-500 font-mono">
+                </div>
+                <button onclick="simpanGaleriPegawai()" class="w-full py-4 bg-purple-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-purple-700 transition"><i class="fas fa-upload mr-2"></i> Upload ke Publik</button>
+            </div>
+        </section>
+
+        <section id="pegawai-berita" class="page-section py-20 px-4 max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-8"><h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">Tulis Berita</h2></div>
+            <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+                <select id="pg-b-kategori" class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-primary dark:text-white"><option value="Berita">Kategori: BERITA</option><option value="Pengumuman">Kategori: PENGUMUMAN</option></select>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="md:col-span-2"><input type="text" id="pg-b-judul" placeholder="Judul Berita" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold"></div>
+                    <div><label class="block text-[10px] font-bold text-gray-500 ml-1">Tgl Publish (Kosong=Hari ini)</label>
+                    <input type="datetime-local" id="pg-b-tanggal" class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold text-gray-500"></div>
+                </div>
+                <div class="mb-4 rounded-xl overflow-hidden border dark:border-gray-600 bg-white text-gray-800"><div id="pg-b-konten" style="height: 250px; font-size: 16px;"></div></div>
+                <div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Utama (Crop 5:3)</label><input type="file" accept="image/*" onchange="bukaCropper(event, 5/3, 'berita_guru', 'prev-pg-berita')" class="w-full text-sm"><img id="prev-pg-berita" class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border"></div>
+                <button onclick="simpanBeritaPegawai()" class="w-full py-4 bg-blue-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-blue-700 transition"><i class="fas fa-paper-plane mr-2"></i> Publikasikan Berita</button>
+            </div>
+        </section>
+
+    </main>
+
+     <div id="bottom-nav-publik" class="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-[90] px-2 pb-2 pt-1 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
+        <button onclick="navigate('halaman-berita')" class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white">
+            <i class="fas fa-newspaper text-xl mb-1"></i><span class="text-[10px] font-bold">Berita</span>
+        </button>
+        <button onclick="navigate('halaman-pengumuman')" class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white">
+            <i class="fas fa-bullhorn text-xl mb-1"></i><span class="text-[10px] font-bold">Pengumuman</span>
+        </button>
+        <div class="flex-1 flex justify-center -mt-6">
+            <button onclick="navigate('home')" class="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-gray-50 dark:border-gray-900 hover:bg-blue-800 transition transform hover:scale-105">
+                <i class="fas fa-home text-2xl"></i>
+            </button>
+        </div>
+        <button onclick="navigate('profil-identitas')" class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white">
+            <i class="fas fa-id-card text-xl mb-1"></i><span class="text-[10px] font-bold">Identitas</span>
+        </button>
+        <button onclick="navigate('kontak-kami')" class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white">
+            <i class="fas fa-envelope text-xl mb-1"></i><span class="text-[10px] font-bold">Kontak</span>
+        </button>
+    </div>
+
+    <div id="bottom-nav-pegawai" class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-[60] px-2 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
+        <button onclick="navigate('pegawai-dashboard')" class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400">
+            <i class="fas fa-user-circle text-xl mb-1"></i><span class="text-[10px] font-bold">Profil</span>
+        </button>
+        <button onclick="navigate('pegawai-berita')" class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" id="btn-bot-berita-pegawai">
+            <i class="fas fa-newspaper text-xl mb-1"></i><span class="text-[10px] font-bold">Berita</span>
+        </button>
+        <button onclick="navigate('home')" class="flex-1 flex flex-col items-center py-1 text-primary hover:text-blue-800 dark:text-blue-400">
+            <i class="fas fa-globe text-xl mb-1"></i><span class="text-[10px] font-bold">Web Publik</span>
+        </button>
+        <button onclick="navigate('pegawai-galeri')" class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400">
+            <i class="fas fa-camera-retro text-xl mb-1"></i><span class="text-[10px] font-bold">Galeri</span>
+        </button>
+        <button onclick="logout()" class="flex-1 flex flex-col items-center py-1 text-red-500 hover:text-red-700">
+            <i class="fas fa-sign-out-alt text-xl mb-1"></i><span class="text-[10px] font-bold">Logout</span>
+        </button>
+    </div>
+
+    <div id="bottom-nav-admin" class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-[60] px-4 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
+        <button onclick="navigate('admin-dashboard')" class="flex flex-col items-center py-1 text-gray-500 hover:text-secondary dark:text-gray-400">
+            <i class="fas fa-tachometer-alt text-2xl mb-1"></i><span class="text-xs font-bold">Beranda</span>
+        </button>
+        <button onclick="navigate('home')" class="flex flex-col items-center py-1 text-primary hover:text-blue-800 dark:text-blue-400">
+            <i class="fas fa-globe text-2xl mb-1"></i><span class="text-xs font-bold">Web Publik</span>
+        </button>
+        <button onclick="logout()" class="flex flex-col items-center py-1 text-red-500 hover:text-red-700">
+            <i class="fas fa-sign-out-alt text-2xl mb-1"></i><span class="text-xs font-bold">Logout</span>
+        </button>
+    </div>
+
+    <footer id="footer-publik" class="bg-gray-900 text-white py-12 md:py-16 border-t-8 border-secondary mt-12 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="flex flex-col items-start"><div class="flex items-center mb-6"><img id="foot-logo" src="" loading="lazy" class="h-14 w-14 md:h-16 md:w-16 object-contain hidden bg-white rounded-full p-1 border-2 border-gray-700 mr-4"><div><h4 class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">Website Resmi</h4><h3 class="text-2xl md:text-3xl font-black text-white tracking-wider" id="foot-nama">SMA EduPro</h3></div></div><p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6" id="foot-alamat">Jl. Pendidikan No 1.</p><div class="flex space-x-3 md:space-x-4"><a id="link-fb" href="#" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"><i class="fab fa-facebook-f"></i></a><a id="link-ig" href="#" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-600 hover:text-white transition"><i class="fab fa-instagram"></i></a><a id="link-wa" href="#" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-green-500 hover:text-white transition"><i class="fab fa-whatsapp"></i></a><a id="link-email" href="#" target="_blank" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 hover:text-white transition"><i class="fas fa-envelope"></i></a></div></div>
+            <div><h4 class="text-lg md:text-xl font-bold mb-6 border-b-2 border-secondary pb-2 inline-block">Tautan Terkait</h4><ul class="space-y-4 text-gray-400 font-medium text-sm md:text-base"><li><a id="link-ppdb" href="#" target="_blank" class="hover:text-secondary transition flex items-center"><i class="fas fa-chevron-right text-xs mr-3 text-secondary"></i> Pendaftaran Murid Baru (SPMB)</a></li><li><a id="link-dinas" href="#" target="_blank" class="hover:text-secondary transition flex items-center"><i class="fas fa-chevron-right text-xs mr-3 text-secondary"></i> Dinas Pendidikan Provinsi</a></li><li><a id="link-dapodik" href="#" target="_blank" class="hover:text-secondary transition flex items-center"><i class="fas fa-chevron-right text-xs mr-3 text-secondary"></i> Portal Dapodikdasmen</a></li></ul></div>
+            <div><h4 class="text-lg md:text-xl font-bold mb-6 border-b-2 border-primary pb-2 inline-block">Akses Cepat</h4><ul class="space-y-4 text-gray-400 font-medium text-sm md:text-base"><li><button onclick="navigate('profil-identitas')" class="hover:text-white transition flex items-center"><i class="fas fa-id-card text-xs mr-3 text-primary"></i> Identitas Sekolah</button></li><li><button onclick="navigate('guru')" class="hover:text-white transition flex items-center"><i class="fas fa-chalkboard-teacher text-xs mr-3 text-primary"></i> Direktori Pegawai</button></li><li><button onclick="navigate('halaman-berita')" class="hover:text-white transition flex items-center"><i class="fas fa-newspaper text-xs mr-3 text-primary"></i> Arsip Berita</button></li></ul></div>
+        </div>
+        <div class="max-w-7xl mx-auto text-center border-t border-gray-800 mt-12 pt-8 px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm text-gray-500 font-bold space-y-4 md:space-y-0">
+                <p>© 2026 Website Resmi <span id="foot-copy-nama">Sekolah</span>. Hak Cipta Dilindungi</p>
+                <div class="flex items-center space-x-3 md:space-x-6">
+                    <button onclick="navigate('halaman-privasi')" class="hover:text-secondary transition">Kebijakan Privasi</button>
+                    <button onclick="navigate('halaman-syarat')" class="hover:text-secondary transition">Syarat & Ketentuan</button>
+                    <span class="text-gray-700 hidden md:inline">|</span>
+                    <span class="text-gray-400">Created by : <a href='https://www.fary-edtech.my.id' target="_blank">Fary EdTech</a></span>
+                </div>
+            </div>
+        </div>
+    </footer>
+   
+
+
+    <script>
+    
+// 1. GANTI URL INI DENGAN URL DEPLOYMENT GOOGLE SCRIPT ANDA
+const GAS_URL = "https://script.google.com/a/macros/admin.sma.belajar.id/s/AKfycbx9AgjvGUoil0UxGlmHpXThsg5inSPP235GH4Af_5UWaJEZ9XttqMAuLzAuavtwUhAzMg/exec"; 
+
+var tFailsafe = setTimeout(function(){ var l=document.getElementById('loader-text'); if(l){ l.innerHTML="Menunggu respon server...<br><span class='text-xs font-normal'>Sistem sedang merakit data.</span>"; l.style.color="#f59e0b"; } }, 12000); 
+
+var isAdmin = false; 
+var curRole = sessionStorage.getItem('edupro_role') || ''; 
+var curUsername = sessionStorage.getItem('edupro_user') || ''; 
+var curUserId = sessionStorage.getItem('edupro_id') || ''; 
+var curNama = sessionStorage.getItem('edupro_nama') || ''; 
+var curToken = sessionStorage.getItem('edupro_token') || '';
+
+var dbGlobal = {}; var sliderInterval; var curShareId = ''; var curShareTitle = '';
+var cropData = { berita: null, guru: null, tu: null, galeri: null, slider: null, logo: null, struktur: null, kepsek: null, pegawai_foto: null, eksternal: null };
+var editDataId = { berita: null, guru: null, tu: null, siswa: null, galeri: null, slider: null, eksternal: null };
+var pdfBase64 = null;
+var quillEditor;
+
+function maskNip(nip) {
+  if (!nip || nip === '-') return '-';
+  var str = nip.toString().trim();
+  if (str.length <= 8) return '********';
+  var visible = str.length - 8;
+  return str.substring(0, visible) + '********';
+}
+
+var loadingInterval;
+
+  function startTimer() {
+  var t = 15; var el = document.getElementById('loader-timer'); if(el) el.innerText = t;
+  clearInterval(loadingInterval);
+  loadingInterval = setInterval(function(){
+      t--;
+      if(t > 0) { if(el) el.innerText = t; } 
+      else { clearInterval(loadingInterval); if(el) el.innerText = '0'; var lt = document.getElementById('loader-text'); if(lt) lt.innerHTML = "Sedikit lagi...<br><span class='text-xs font-normal mt-2'>Prosesor sedang merakit visual.</span>"; }
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(loadingInterval); }
+
+async function callAPI(action, payload = {}) {
+  if (!GAS_URL || GAS_URL === "ISI_URL_EXEC_ANDA_DISINI") { Swal.fire('Error', 'Anda belum memasukkan GAS_URL di script.js.', 'error'); throw new Error('URL Missing'); }
+  payload.action = action;
+  try { const res = await fetch(GAS_URL, { redirect: "follow", method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }); const text = await res.text(); try { return JSON.parse(text); } catch(e) { return text; } } catch(e) { throw e; }
+}
+
+window.addEventListener('scroll', function() { var fBtn = document.getElementById('float-btn'); if (window.scrollY > 300) { fBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10'); } else { fBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10'); } });
+
+function refreshHalamanLunak() { localStorage.removeItem('edupro_cache_v4'); document.getElementById('loader-text').innerHTML = "Menyegarkan Data...<br><span class='text-xs text-gray-500 font-normal mt-2'>Menarik info terbaru dari server</span>"; document.getElementById('loader').style.display = 'flex'; startTimer(); muatDataServer(); }
+
+function togglePasswordVisibility(inputId, iconId) { var inp = document.getElementById(inputId); var icon = document.getElementById(iconId); if (inp.type === "password") { inp.type = "text"; icon.classList.remove("fa-eye"); icon.classList.add("fa-eye-slash"); } else { inp.type = "password"; icon.classList.remove("fa-eye-slash"); icon.classList.add("fa-eye"); } }
+
+function prosesUploadPdf(event) {
+  var file = event.target.files[0]; if(!file) { pdfBase64 = null; return; }
+  if(file.type !== "application/pdf") { event.target.value = ''; return Swal.fire('Error', 'Hanya file PDF yang diizinkan!', 'error'); }
+  if(file.size > 300 * 1024) { event.target.value = ''; return Swal.fire('Error', 'Ukuran file terlalu besar! Maksimal 300KB.', 'error'); }
+  var reader = new FileReader(); reader.onload = function(e) { pdfBase64 = e.target.result; var n = document.getElementById('sw-pdf-name'); if(n) { n.innerText = file.name + " (Siap disave)"; n.classList.remove('hidden'); } }; reader.readAsDataURL(file);
+}
+
+function downloadTemplateCSV(modul) {
+ var header = modul === 'guru' ? "NIP,Nama Lengkap,Password,Tempat Lahir,Tanggal Lahir (YYYY-MM-DD),Jenis Kelamin,Pangkat Golongan,Status Pegawai,TMT,Jabatan Utama,Mata Pelajaran,No HP,Email\n" : "NIP,Nama Lengkap,Password,Tempat Lahir,Tanggal Lahir (YYYY-MM-DD),Jenis Kelamin,Pangkat Golongan,Status Pegawai,TMT,Jabatan Khusus,Bagian,No HP,Email\n";
+ var sample = modul === 'guru' ? "19800101,Budi Santoso,guru123,Jakarta,1980-01-01,Laki-Laki,III/b,PNS,2010-07-01,Wali Kelas,Matematika,08123456789,guru@email.com\n" : "19900202,Siti Aminah,tu123,Bandung,1990-02-02,Perempuan,II/c,Honorer Daerah,2015-01-01,Staf,Administrasi,08123456789,tu@email.com\n";
+ var csvContent = "data:text/csv;charset=utf-8," + header + sample; var encodedUri = encodeURI(csvContent); var link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", "template_" + modul + ".csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+function prosesImportCSV(event, modul) {
+  var file = event.target.files[0]; if(!file) return;
+  Swal.fire({ title: 'Upload Data ' + modul.toUpperCase() + '?', text: "Pastikan format file sesuai template CSV.", icon: 'info', showCancelButton: true, confirmButtonText: 'Ya, Import!' }).then((result) => {
+      if (result.isConfirmed) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+              document.getElementById('loader-text').innerHTML = "Mengimpor Data CSV...<br><span class='text-xs font-normal mt-2'>Ini mungkin memakan waktu beberapa detik.</span>"; 
+              document.getElementById('loader').style.display = 'flex'; startTimer();
+              callAPI('importCSV', { token: curToken, modul: modul, csvData: e.target.result }).then(function(res) {
+                  document.getElementById('loader').style.display = 'none'; stopTimer(); event.target.value = ''; 
+                  if(res.status === 'success') { Swal.fire('Import Berhasil', res.message, 'success'); refreshHalamanLunak(); } else { Swal.fire('Gagal Import', res.message, 'error'); }
+              }).catch(function(err) { document.getElementById('loader').style.display = 'none'; stopTimer(); event.target.value = ''; Swal.fire('Error', err.toString(), 'error'); });
+          }; reader.readAsText(file);
+      } else { event.target.value = ''; }
+  });
+}
+
+function hitungTotalSiswa() {
+  var l = parseInt(document.getElementById('sw-l').value) || 0;
+  var p = parseInt(document.getElementById('sw-p').value) || 0;
+  document.getElementById('sw-jumlah').value = l + p;
+}
+
+function amankanTeks(str) { if (!str) return ''; var map = { '&': '&', '<': '<', '>': '>', '"': '"', "'": "'" }; return str.toString().replace(/[&<>"']/g, function(m) { return map[m]; }); }
+
+function getValidImg(url, fallback) { if(!url) return fallback; var id = ""; if(url.indexOf('/file/d/') !== -1) { id = url.split('/file/d/')[1].split('/')[0]; } else if(url.indexOf('id=') !== -1) { id = url.split('id=')[1].split('&')[0]; } if(id) return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1000'; return amankanTeks(url); }
+
+function formatTanggal(tglStr) { if(!tglStr) return ''; if(tglStr.indexOf('-') !== -1 && tglStr.length === 10) return tglStr; if(tglStr.indexOf('/') !== -1) { var parts = tglStr.split('/'); if(parts.length === 3) return parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0'); } try { var d = new Date(tglStr); if(!isNaN(d.getTime())) { var y = d.getFullYear(); var m = ('0' + (d.getMonth() + 1)).slice(-2); var day = ('0' + d.getDate()).slice(-2); return y + '-' + m + '-' + day; } } catch(e){} return ''; }
+
+function toggleMobileMenu(menuId, iconId) { var menu = document.getElementById(menuId); var icon = document.getElementById(iconId); if(menu.classList.contains('hidden')) { menu.classList.remove('hidden'); menu.classList.add('flex'); icon.className = 'fas fa-times'; } else { menu.classList.add('hidden'); menu.classList.remove('flex'); icon.className = 'fas fa-bars'; var subs = ['mob-profil', 'mob-pegawai', 'mob-galeri', 'mob-info']; for(var i=0; i<subs.length; i++) { var el = document.getElementById(subs[i]); var ic = document.getElementById('icon-' + subs[i]); if(el) { el.classList.add('hidden'); el.classList.remove('flex'); } if(ic) { ic.style.transform = 'rotate(0deg)'; } } } }
+
+function toggleMobileSub(id) { var el = document.getElementById(id); var icon = document.getElementById('icon-' + id); if(el.classList.contains('hidden')) { el.classList.remove('hidden'); el.classList.add('flex'); icon.style.transform = 'rotate(180deg)'; } else { el.classList.add('hidden'); el.classList.remove('flex'); icon.style.transform = 'rotate(0deg)'; } }
+
+function jalankanSlider() { clearInterval(sliderInterval); var slides = document.querySelectorAll('.slide-item'); if(slides.length <= 1) return; var curSlide = 0; sliderInterval = setInterval(function() { slides[curSlide].classList.remove('active'); curSlide = (curSlide + 1) % slides.length; slides[curSlide].classList.add('active'); }, 4500); }
+
+function cekUrlParameter() { try { var urlParams = new URLSearchParams(window.location.search); if (urlParams.has('article') && dbGlobal.berita) { var idBerita = urlParams.get('article'); var sudahDibuka = sessionStorage.getItem('baca_link_' + idBerita); if (!sudahDibuka) { sessionStorage.setItem('baca_link_' + idBerita, 'true'); bukaBerita(idBerita); try { window.history.replaceState(null, null, window.location.pathname); } catch(e){} } } } catch(e) {} }
+
+function getVal(k, arrData) { if(!arrData) return ''; for(var i = arrData.length - 1; i >= 0; i--) { if(arrData[i].key && arrData[i].key.toString().toLowerCase().trim() === k.toLowerCase()) { return arrData[i].value; } } return ''; }
+function setTextAman(id, teks) { var el = document.getElementById(id); if(el) el.innerText = teks; }
+function setValAman(id, teks) { var el = document.getElementById(id); if(el) el.value = teks; }
+function setLinkAman(id, url) { var el = document.getElementById(id); if(el) { el.href = amankanTeks(url) || '#'; if(!url || url==='#') el.classList.add('hidden'); else el.classList.remove('hidden'); } }
+
+async function muatDataServer() {
+  var cachedData = localStorage.getItem('edupro_cache_v4');
+  var localTime = localStorage.getItem('edupro_time'); 
+
+  if (cachedData) {
+      clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none';
+      setTimeout(function() { dbGlobal = JSON.parse(cachedData); renderSemuaData(dbGlobal); cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch(e) {} }, 50);
+      callAPI('getServerTime').then(res => { if (res && res.time && res.time !== localTime) { localStorage.removeItem('edupro_cache_v4'); refreshHalamanLunak(); } }).catch(()=>{});
+  } else {
+      document.getElementById('loader').style.display = 'flex'; startTimer();
+      try {
+          var getUrl = GAS_URL + "?action=getAllData&nocache=" + new Date().getTime();
+          
+          var response = await fetch(getUrl); var resStr = await response.text(); clearTimeout(tFailsafe); 
+          var lt = document.getElementById('loader-text'); if(lt) lt.innerHTML = "Download Selesai!<br><span class='text-xs font-normal mt-2'>Merakit tampilan web...</span>";
+          setTimeout(function() {
+              dbGlobal = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
+              if (dbGlobal.status === 'error') { stopTimer(); document.getElementById('loader').style.display = 'none'; return Swal.fire('Error Database', dbGlobal.message, 'error'); }
+              localStorage.setItem('edupro_cache_v4', typeof resStr === 'string' ? resStr : JSON.stringify(dbGlobal));
+              callAPI('getServerTime').then(resT => { if(resT.status==='success') localStorage.setItem('edupro_time', resT.time); });
+              batalEditSemua(); renderSemuaData(dbGlobal); cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch(e) {}
+              document.getElementById('loader').style.display = 'none'; stopTimer();
+          }, 100);
+      } catch (e) { clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none'; Swal.fire('Koneksi Gagal', 'Gagal memuat data dari Google. Pastikan URL benar.', 'error'); }
+  }
+}
+
+function ubahTipeGaleri() { var val = document.getElementById('gl-kategori').value; if(val === 'Video') { document.getElementById('wrap-gl-foto').style.display = 'none'; document.getElementById('file-gl-foto').value = ''; document.getElementById('wrap-gl-video').style.display = 'block'; } else { document.getElementById('wrap-gl-foto').style.display = 'block'; document.getElementById('wrap-gl-video').style.display = 'none'; document.getElementById('gl-video').value = ''; } }
+function ubahTipeGaleriPegawai() { var val = document.getElementById('pg-kategori').value; if(val === 'Video') { document.getElementById('wrap-pg-foto').style.display = 'none'; document.getElementById('file-pg-foto').value = ''; document.getElementById('wrap-pg-video').style.display = 'block'; } else { document.getElementById('wrap-pg-foto').style.display = 'block'; document.getElementById('wrap-pg-video').style.display = 'none'; document.getElementById('pg-video').value = ''; } }
+
+function renderSemuaData(data) {
+try {
+    var setArr = data.settings || []; var widArr = data.widget || []; var nSekolah = getVal('nama_sekolah', setArr) || 'SMA EduPro';
+    setTextAman('nav-nama-sekolah', nSekolah); setTextAman('foot-nama', nSekolah); setTextAman('id-nama', nSekolah); setTextAman('id-npsn', getVal('npsn', setArr) || '-'); setTextAman('id-nss', getVal('nss', setArr) || '-'); setTextAman('id-akreditasi', getVal('akreditasi', setArr) || '-'); setTextAman('id-tahun', getVal('tahun_berdiri', setArr) || '-'); setTextAman('id-status', getVal('status_jenjang', setArr) || '-'); setTextAman('id-alamat', getVal('alamat', setArr)); setTextAman('id-desc', getVal('deskripsi', setArr)); setTextAman('foot-alamat', getVal('alamat', setArr)); setTextAman('home-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('home-kepsek-sambutan', '"' + (getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.') + '"'); setTextAman('detail-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('detail-kepsek-sambutan', getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.'); setTextAman('teks-sejarah', getVal('sejarah', setArr) || 'Sejarah belum ditulis.'); setTextAman('teks-visimisi', getVal('visi_misi', setArr) || 'Visi Misi belum ditulis.'); setTextAman('teks-sarpras', getVal('sarpras', setArr) || 'Sarana Prasarana belum diisi.'); setTextAman('teks-privasi', getVal('privasi', setArr) || 'Kebijakan privasi belum diatur.'); setTextAman('teks-syarat', getVal('syarat', setArr) || 'Syarat dan ketentuan belum diatur.'); setTextAman('foot-copy-nama', nSekolah); setTextAman('teks-berjalan', getVal('teks_berjalan', setArr) || 'Selamat datang di website resmi kami.');
+
+    setTextAman('kk-nama', nSekolah); setTextAman('kk-alamat', getVal('alamat', setArr) || '-'); setTextAman('kk-wa', getVal('wa', widArr) || '-'); setTextAman('kk-email', getVal('email', widArr) || '-'); setTextAman('kk-web', getVal('domain_resmi', setArr) || window.location.hostname); setTextAman('kk-fb', getVal('fb', widArr) || 'Facebook'); setTextAman('kk-ig', getVal('ig', widArr) || 'Instagram');
+    setLinkAman('kk-link-wa', getVal('wa', widArr) ? 'https://wa.me/' + amankanTeks(getVal('wa', widArr)) : '#'); setLinkAman('kk-link-email', getVal('email', widArr) ? 'mailto:' + amankanTeks(getVal('email', widArr)) : '#'); setLinkAman('kk-link-fb', getVal('fb', widArr)); setLinkAman('kk-link-ig', getVal('ig', widArr)); setLinkAman('kk-link-ppdb', getVal('link_ppdb', widArr)); setLinkAman('kk-link-dinas', getVal('link_dinas', widArr)); setLinkAman('kk-link-dapodik', getVal('link_dapodik', widArr));
+
+    var kepUrl = getValidImg(getVal('kepsek_foto', setArr), 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500'); var imgK1 = document.getElementById('home-kepsek-foto'); if(imgK1) imgK1.src = kepUrl; var imgK2 = document.getElementById('prev-kepsek'); if(imgK2) { imgK2.src = kepUrl; imgK2.classList.remove('hidden'); } var imgK3 = document.getElementById('detail-kepsek-foto'); if(imgK3) imgK3.src = kepUrl;
+    var mapContainer = document.getElementById('wrapper-maps'); var mapIframe = document.getElementById('iframe-maps'); var mapUrl = getVal('maps_url', setArr); if(mapContainer && mapIframe) { if(mapUrl) { mapIframe.src = amankanTeks(mapUrl); mapContainer.classList.remove('hidden'); } else { mapContainer.classList.add('hidden'); } }
+
+    setValAman('set-nama', nSekolah); setValAman('set-deskripsi', getVal('deskripsi', setArr)); setValAman('set-alamat', getVal('alamat', setArr)); setValAman('set-npsn', getVal('npsn', setArr)); setValAman('set-nss', getVal('nss', setArr)); setValAman('set-akreditasi', getVal('akreditasi', setArr)); setValAman('set-status', getVal('status_jenjang', setArr)); setValAman('set-tahun', getVal('tahun_berdiri', setArr)); setValAman('set-sejarah', getVal('sejarah', setArr)); setValAman('set-visimisi', getVal('visi_misi', setArr)); setValAman('set-sarpras', getVal('sarpras', setArr)); setValAman('set-privasi', getVal('privasi', setArr)); setValAman('set-syarat', getVal('syarat', setArr)); dbGlobal.domainResmi = getVal('domain_resmi', setArr); setValAman('set-domain', dbGlobal.domainResmi); setValAman('set-kepsek-nama', getVal('kepsek_nama', setArr)); setValAman('set-kepsek-sambutan', getVal('kepsek_sambutan', setArr)); setValAman('set-teks-berjalan', getVal('teks_berjalan', setArr)); setValAman('set-maps', mapUrl);
+    var logoUrl = getValidImg(getVal('logo_url', setArr), null); if(logoUrl) { var navL=document.getElementById('nav-logo'); if(navL){navL.src=logoUrl;navL.classList.remove('hidden');} var footL=document.getElementById('foot-logo'); if(footL){footL.src=logoUrl;footL.classList.remove('hidden');} var loginL=document.getElementById('login-logo'); if(loginL){loginL.src=logoUrl;loginL.classList.remove('hidden');} var prevL=document.getElementById('prev-logo'); if(prevL)prevL.src=logoUrl; }
+    var strUrl = getValidImg(getVal('struktur_url', setArr), null); if(strUrl) { var imgS=document.getElementById('img-struktur'); if(imgS)imgS.src=strUrl; var prevS=document.getElementById('prev-struktur'); if(prevS){prevS.src=strUrl;prevS.classList.remove('hidden');} }
+
+    setLinkAman('link-wa', getVal('wa', widArr) ? 'https://wa.me/' + amankanTeks(getVal('wa', widArr)) : ''); setLinkAman('link-ig', getVal('ig', widArr)); setLinkAman('link-fb', getVal('fb', widArr)); setLinkAman('link-email', getVal('email', widArr) ? 'mailto:' + amankanTeks(getVal('email', widArr)) : ''); setLinkAman('link-ppdb', getVal('link_ppdb', widArr)); setLinkAman('link-dinas', getVal('link_dinas', widArr)); setLinkAman('link-dapodik', getVal('link_dapodik', widArr));
+    
+    var ytVal = getVal('yt_url', widArr); var fbVal = getVal('fb_plugin', widArr); var calVal = getVal('cal_url', widArr);
+    if(ytVal) { document.getElementById('iframe-yt').src = amankanTeks(ytVal); document.getElementById('box-yt').style.display='block'; } else { document.getElementById('box-yt').style.display='none'; }
+    if(fbVal) { document.getElementById('iframe-fb').src = 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2F'+amankanTeks(fbVal)+'&tabs=timeline&width=340&height=250&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&appId'; document.getElementById('box-fb').style.display='block'; } else { document.getElementById('box-fb').style.display='none'; }
+    if(calVal) { document.getElementById('iframe-cal').src = amankanTeks(calVal); document.getElementById('box-cal').style.display='block'; } else { document.getElementById('box-cal').style.display='none'; }
+    setValAman('wid-wa', getVal('wa', widArr)); setValAman('wid-email', getVal('email', widArr)); setValAman('wid-ig', getVal('ig', widArr)); setValAman('wid-fb', getVal('fb', widArr)); setValAman('wid-ppdb', getVal('link_ppdb', widArr)); setValAman('wid-dinas', getVal('link_dinas', widArr)); setValAman('wid-dapodik', getVal('link_dapodik', widArr)); setValAman('wid-yt', ytVal); setValAman('wid-fb-plugin', fbVal); setValAman('wid-cal', calVal);
+    
+    document.getElementById('stat-guru').innerText = (data.guru ? data.guru.length : 0) + (data.tu ? data.tu.length : 0); document.getElementById('stat-p-guru').innerText = (data.guru ? data.guru.length : 0); document.getElementById('stat-p-tu').innerText = (data.tu ? data.tu.length : 0); document.getElementById('stat-berita').innerText = (data.berita ? data.berita.length : 0);
+
+    var sContainer = document.getElementById('slider-container'); var tSlid = '', tTblSl = '';
+    if ((data.slider||[]).length > 0) {
+        for(var s=0; s<data.slider.length; s++) { 
+            var isld = data.slider[s]; if(!isld.id) continue; var iUrl = getValidImg(isld.gambar_url, 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600'); 
+            tSlid += '<div class="slide-item '+(s===0?'active':'')+' bg-cover bg-center" style="background-image: url(\''+iUrl+'\');"><div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center px-4"><h1 class="text-2xl md:text-6xl font-extrabold text-white mb-2 md:mb-4 drop-shadow-2xl">' + amankanTeks(isld.judul||'') + '</h1><p class="text-sm md:text-2xl text-gray-200 mb-4 md:mb-8 max-w-3xl drop-shadow-md">' + amankanTeks(isld.subjudul||'') + '</p></div></div>';
+            tTblSl += '<tr class="border-b dark:border-gray-700"><td class="p-3"><img src="'+iUrl+'" loading="lazy" class="h-10 w-16 aspect-[7/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(isld.judul||'-') + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'slider\',\''+isld.id+'\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'slider\',\''+isld.id+'\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>'; 
+        } 
+        sContainer.innerHTML = tSlid; document.getElementById('tbl-slider').innerHTML = tTblSl; jalankanSlider();
+    } else {
+        sContainer.innerHTML = '<div class="slide-item active bg-cover bg-center" style="background-image: url(\'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600\');"><div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center px-4"><h1 class="text-3xl md:text-6xl font-extrabold text-white mb-4">Selamat Datang</h1><p class="text-lg md:text-2xl text-gray-200 mb-8">Tambahkan Slider di Admin.</p></div></div>'; document.getElementById('tbl-slider').innerHTML = '<tr><td colspan="3" class="p-4 text-center">Belum ada slider</td></tr>';
+    }
+
+    var htmlExt = '', tblExt = ''; var eData = data.eksternal || [];
+    for(var e=0; e<eData.length; e++) {
+        var ex = eData[e]; if(!ex.id) continue;
+        var eIco = ex.icon_url ? ex.icon_url : 'https://via.placeholder.com/150';
+        htmlExt += '<a href="'+amankanTeks(ex.url)+'" target="_blank" title="'+amankanTeks(ex.nama)+'" class="block hover:-translate-y-2 hover:scale-110 transition duration-300 p-2"><img src="'+eIco+'" class="w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-lg mx-auto"></a>';
+        tblExt += '<tr class="border-b dark:border-gray-700"><td class="p-3"><img src="'+eIco+'" class="h-10 w-10 object-contain rounded bg-white shadow"></td><td class="p-3 font-bold">' + amankanTeks(ex.nama||'-') + '</td><td class="p-3 text-blue-500 underline truncate max-w-xs">' + amankanTeks(ex.url||'-') + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'eksternal\',\''+ex.id+'\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'eksternal\',\''+ex.id+'\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+    }
+    if(htmlExt !== '') { document.getElementById('eksternal-container').innerHTML = htmlExt; document.getElementById('widget-eksternal').classList.remove('hidden'); } else { document.getElementById('widget-eksternal').classList.add('hidden'); }
+    document.getElementById('tbl-eksternal').innerHTML = tblExt || '<tr><td colspan="4" class="p-4 text-center">Belum ada tautan.</td></tr>';
+
+    var tSis='', tAlm='', tTSis='', cSiswa=0, cAlumni=0; var sL = 0, sP = 0, aL = 0, aP = 0; 
+    for(var x=0; x<(data.siswa||[]).length; x++) {
+        var s = data.siswa[x]; if(!s.kategori) continue;
+        var l = parseInt(s.jumlah_l) || 0; var p = parseInt(s.jumlah_p) || 0; var tot = parseInt(s.jumlah) || 0;
+        var pdfIco = s.dokumen_url ? ' <a href="'+amankanTeks(s.dokumen_url)+'" target="_blank" class="text-red-500 hover:text-red-700 ml-3 bg-red-100 px-2 py-1 rounded shadow-sm text-sm" title="Lihat Dokumen PDF"><i class="fas fa-file-pdf"></i></a>' : '';
+
+        tTSis += '<tr class="border-b dark:border-gray-700"><td class="p-3">'+amankanTeks(s.kategori||'-')+'</td><td class="p-3 font-bold">'+amankanTeks(s.label||'-')+pdfIco+'</td><td class="p-3 text-center text-blue-500 font-bold">'+l+'</td><td class="p-3 text-center text-pink-500 font-bold">'+p+'</td><td class="p-3 text-center font-black">'+tot+'</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'siswa\',\''+s.id+'\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-1"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'siswa\',\''+s.id+'\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+        if(s.kategori === 'Siswa Aktif') { cSiswa += tot; sL += l; sP += p; tSis += '<tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><td class="p-4 font-bold text-primary dark:text-white">'+amankanTeks(s.label)+pdfIco+'</td><td class="p-4 text-center text-blue-500 font-bold">'+l+'</td><td class="p-4 text-center text-pink-500 font-bold">'+p+'</td><td class="p-4 text-center font-black">'+tot+'</td></tr>'; } 
+        else if(s.kategori === 'Alumni') { cAlumni += tot; aL += l; aP += p; tAlm += '<tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><td class="p-4 font-bold text-secondary">'+amankanTeks(s.label)+pdfIco+'</td><td class="p-4 text-center text-blue-500 font-bold">'+l+'</td><td class="p-4 text-center text-pink-500 font-bold">'+p+'</td><td class="p-4 text-center font-black">'+tot+'</td></tr>'; }
+    }
+    document.getElementById('stat-siswa').innerText = cSiswa; document.getElementById('stat-alumni').innerText = cAlumni;
+    document.getElementById('tbl-siswa-aktif').innerHTML = tSis || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'; document.getElementById('foot-siswa-aktif').innerHTML = '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">'+sL+'</td><td class="p-4 text-center text-pink-600">'+sP+'</td><td class="p-4 text-center text-xl">'+cSiswa+'</td></tr>';
+    document.getElementById('tbl-alumni').innerHTML = tAlm || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'; document.getElementById('foot-alumni').innerHTML = '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">'+aL+'</td><td class="p-4 text-center text-pink-600">'+aP+'</td><td class="p-4 text-center text-xl">'+cAlumni+'</td></tr>';
+    document.getElementById('tbl-admin-siswa').innerHTML = tTSis;
+
+    function renderPerson(arr, cId, tblId, mdl) {
+    var th = '', tbl = '';
+    for(var p=0; p<(arr||[]).length; p++) { 
+        var ig = arr[p]; if(!ig.id) continue; 
+        var nmAm = amankanTeks(ig.nama||'-'); 
+        var fUrl = getValidImg(ig.foto_url, 'https://ui-avatars.com/api/?name=' + nmAm + '&background=random'); 
+        var subTeks = amankanTeks((mdl==='tu') ? ig.bagian : ig.mapel); 
+        
+        th += '<div onclick="bukaProfilPegawai(\''+mdl+'\', \''+ig.id+'\')" class="cursor-pointer bg-white dark:bg-gray-800 p-0 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:-translate-y-2 transition flex flex-col"><img src="' + fUrl + '" loading="lazy" class="w-full aspect-[3/4] object-cover"><div class="p-6 text-center flex-1 flex flex-col justify-center"><h3 class="font-black text-lg md:text-xl text-gray-800 dark:text-white mb-1 line-clamp-2">' + nmAm + '</h3><p class="font-bold text-xs md:text-sm text-secondary uppercase tracking-widest">' + (subTeks||'-') + '</p><p class="text-xs text-gray-500 mt-2 line-clamp-1">' + amankanTeks(ig.jabatan||'-') + '</p><p class="text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-400 rounded-full px-2 py-1 mt-3 mx-auto w-max">' + amankanTeks(ig.status_pegawai||'Pegawai') + '</p></div></div>'; 
+        
+        var stKlp = (ig.nama && ig.foto_url && ig.tempat_lahir) ? '<span class="text-green-500 font-bold"><i class="fas fa-check-circle"></i> Lengkap</span>' : '<span class="text-yellow-500 font-bold"><i class="fas fa-exclamation-triangle"></i> Belum</span>';
+        
+        var toggleAkses = ''; 
+        if (mdl === 'guru') { 
+            var isAktif = (ig.akses_berita === 'Y' || ig.akses_berita === 'Aktif'); 
+            var btnColor = isAktif ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600'; 
+            var btnText = isAktif ? '<i class="fas fa-check"></i> Akses Berita ON' : '<i class="fas fa-times"></i> Akses Berita OFF'; 
+            toggleAkses = '<button onclick="ubahAksesBerita(\''+ig.id+'\', \''+(isAktif?'N':'Y')+'\')" class="text-white '+btnColor+' px-3 py-1 rounded-full mr-2 text-xs shadow-sm transition">'+btnText+'</button>'; 
+        }
+
+        tbl += '<tr class="border-b dark:border-gray-700"><td class="p-3 font-mono text-blue-600 dark:text-blue-400 font-bold">' + amankanTeks(ig.nip||'-') + '</td><td class="p-3 font-bold">' + nmAm + '</td><td class="p-3 text-center text-xs">' + stKlp + '</td><td class="p-3 text-center whitespace-nowrap">' + toggleAkses + '<button onclick="siapkanEdit(\''+mdl+'\',\''+ig.id+'\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i> Edit</button><button onclick="hapusData(\''+mdl+'\',\''+ig.id+'\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i> Hapus</button></td></tr>'; 
+    }
+    var eC = document.getElementById(cId); if(eC) eC.innerHTML = th || '<p class="col-span-full text-center text-gray-500">Tidak ada data.</p>'; 
+    var eT = document.getElementById(tblId); if(eT) eT.innerHTML = tbl;
+    }
+    renderPerson(data.guru, 'guru-container', 'tbl-guru-admin', 'guru'); renderPerson(data.tu, 'tu-container', 'tbl-admin-tu', 'tu');
+
+    var htmlBerita = '', htmlPengumuman = '', tTblBerita='';
+    var gabungRev = (data.berita||[]).slice().reverse();
+    var nowWaktu = new Date().getTime(); // Ambil waktu sekarang
+
+    for(var v=0; v<gabungRev.length; v++) { 
+        var ib=gabungRev[v]; if(!ib.id) continue;
+        var isP = ((ib.kategori||'').toString().toLowerCase().indexOf('pengumuman')!==-1); 
+        
+        // --- CEK APAKAH WAKTU PUBLISH DI MASA DEPAN ---
+        var tglPost = new Date(ib.tanggal).getTime();
+        var belumWaktunya = (!isNaN(tglPost) && tglPost > nowWaktu);
+
+        var tglFormat = ib.tanggal;
+        if(!isNaN(tglPost)) {
+            var d = new Date(tglPost);
+            tglFormat = d.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+        }
+
+        var tmp = document.createElement("DIV"); tmp.innerHTML = ib.konten; var plainText = tmp.textContent || tmp.innerText || "";
+        var penulisInfo = ib.penulis ? '<span class="text-xs text-gray-500 ml-2 font-bold"><i class="fas fa-user-edit text-primary"></i> ' + amankanTeks(ib.penulis) + '</span>' : '';
+        var cardHTML = '<div onclick="bukaBerita(\''+ib.id+'\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1"><img src="'+getValidImg(ib.gambar_url, '')+'" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6 md:p-8">'+(isP?'<span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-[10px] md:text-xs font-bold mb-4">Pengumuman</span>':'<span class="inline-block px-3 py-1 bg-blue-100 text-primary rounded-full text-[10px] md:text-xs font-bold mb-4">Berita</span>')+'<span class="inline-block px-3 py-1 text-gray-500 text-xs font-bold mb-4 ml-2">' + tglFormat + '</span>'+penulisInfo+'<h3 class="text-xl md:text-2xl font-black mb-3 text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(ib.judul||'-') + '</h3><p class="text-sm text-gray-500 line-clamp-2 leading-relaxed">' + plainText + '</p></div></div>';
+
+        // Tampilkan semua di Tabel Admin, beri badge "Terjadwal" jika belum waktunya
+        var badgeJadwal = belumWaktunya ? '<br><span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-bold">Terjadwal</span>' : '';
+        tTblBerita += '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 '+(isP?'bg-yellow-100 text-yellow-800':'bg-blue-100 text-primary')+' rounded text-xs font-bold">'+(isP?'Pengumuman':'Berita')+'</span></td><td class="p-3"><img src="'+getValidImg(ib.gambar_url, '')+'" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul||'-') + badgeJadwal + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="bukaBerita(\''+ib.id+'\')" class="text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-eye"></i></button><button onclick="siapkanEdit(\'berita\',\''+ib.id+'\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\''+ib.id+'\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+        
+        // Jangan render ke publik jika waktunya belum tiba
+        if(!belumWaktunya) {
+            if(isP) htmlPengumuman += cardHTML; else htmlBerita += cardHTML;
+        }
+    } 
+    document.getElementById('tbl-berita').innerHTML = tTblBerita; 
+    document.getElementById('berita-utama-container').innerHTML = htmlBerita || '<p class="col-span-3 text-center">Belum ada berita.</p>'; 
+    document.getElementById('pengumuman-utama-container').innerHTML = htmlPengumuman || '<p class="col-span-3 text-center">Belum ada pengumuman.</p>';
+
+    // --- FILTER JUGA UNTUK HALAMAN BERANDA/HOME ---
+    var lBerita=[], lPengumuman=[];
+    for (var i=0; i<(data.berita||[]).length; i++) { 
+         var itm=data.berita[i]; 
+         var tglPost = new Date(itm.tanggal).getTime();
+         
+         // Jika waktu publish masih di masa depan, lewati!
+         if (!isNaN(tglPost) && tglPost > nowWaktu) continue; 
+         
+         var kateg = ((itm.kategori||'').toString().toLowerCase().indexOf('pengumuman')!==-1)?'Pengumuman':'Berita'; 
+         if(kateg==='Pengumuman') lPengumuman.push(itm); 
+         else lBerita.push(itm); 
+    }
+    
+    // Balik urutan agar yang paling baru tampil di atas
+    lBerita = lBerita.reverse(); 
+    lPengumuman = lPengumuman.reverse();
+
+    var tHomeB = '', tHomeP = '';
+    for(var w=0; w < Math.min(5, lBerita.length); w++) { 
+        var hb=lBerita[w]; var tmp = document.createElement("DIV"); tmp.innerHTML = hb.konten; var plainText = tmp.textContent || tmp.innerText || "";
+        tHomeB += '<div onclick="bukaBerita(\''+hb.id+'\')" class="flex flex-col md:flex-row bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><div class="md:w-1/3 h-48 md:h-auto relative"><img src="'+getValidImg(hb.gambar_url, '')+'" loading="lazy" class="w-full h-full object-cover absolute inset-0"></div><div class="md:w-2/3 p-6 flex flex-col justify-center"><span class="inline-block px-3 py-1 bg-blue-100 text-primary rounded-full text-[10px] md:text-xs font-bold w-max mb-3">' + amankanTeks(hb.tanggal||'-') + '</span><h3 class="text-lg md:text-xl font-black mb-2 text-gray-800 dark:text-white line-clamp-2">' + amankanTeks(hb.judul||'-') + '</h3><p class="text-sm text-gray-500 line-clamp-2 leading-relaxed">' + plainText + '</p></div></div>'; 
+    } 
+    document.getElementById('home-berita-list').innerHTML = tHomeB || '<p class="text-gray-500">Belum ada berita.</p>';
+    for(var p=0; p < Math.min(3, lPengumuman.length); p++) { 
+        var hp=lPengumuman[p]; tHomeP += '<div onclick="bukaBerita(\''+hp.id+'\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><img src="'+getValidImg(hp.gambar_url, '')+'" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6"><span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-[10px] md:text-xs font-bold mb-4">' + amankanTeks(hp.tanggal||'-') + '</span><h3 class="text-base md:text-lg font-black text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(hp.judul||'-') + '</h3></div></div>'; 
+    } 
+    document.getElementById('home-pengumuman-list').innerHTML = tHomeP || '<p class="col-span-3 text-center text-gray-500">Tidak ada pengumuman.</p>';
+
+    var tGaleriFoto = '', tGaleriVideo = '', tTblGaleri = ''; var gRev = (data.galeri||[]).slice().reverse();
+    for (var k = 0; k < gRev.length; k++) { 
+        var igl = gRev[k]; if(!igl.id) continue; var kateg = amankanTeks(igl.kategori) || 'Foto'; var jdlAman = amankanTeks(igl.judul); var descAman = amankanTeks(igl.deskripsi); var vidUrl = amankanTeks(igl.video_url); var iUrlGal = getValidImg(igl.gambar_url, '');
+        
+        var uploaderInfo = '<p class="text-xs text-yellow-400 mt-2 font-bold"><i class="fas fa-user mr-1"></i> ' + amankanTeks(igl.uploader||'Admin') + ' • ' + amankanTeks(igl.tanggal||'-') + '</p>';
+
+        if (kateg === 'Video') { tGaleriVideo += '<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-700 hover:-translate-y-1 transition"><div class="aspect-video w-full bg-black"><iframe src="'+vidUrl+'" loading="lazy" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div><div class="p-6"><h4 class="font-bold text-lg md:text-xl text-gray-800 dark:text-white mb-2 line-clamp-2">'+jdlAman+'</h4><p class="text-sm text-gray-500 line-clamp-2">'+descAman+'</p>'+uploaderInfo+'</div></div>'; } 
+        else { tGaleriFoto += '<div class="rounded-3xl overflow-hidden shadow-xl group relative border border-gray-100 dark:border-gray-800"><img src="'+iUrlGal+'" loading="lazy" class="w-full aspect-[5/3] object-cover group-hover:scale-110 transition duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-6"><h4 class="text-white font-bold text-lg md:text-xl drop-shadow-md line-clamp-1">'+jdlAman+'</h4><p class="text-gray-300 text-sm mt-1 line-clamp-2">'+descAman+'</p>'+uploaderInfo+'</div></div>'; }
+        
+        var mediaIcon = (kateg === 'Video') ? '<div class="w-16 h-10 flex items-center justify-center bg-gray-200 rounded shadow"><i class="fab fa-youtube text-red-600 text-xl"></i></div>' : '<img src="'+iUrlGal+'" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow">'; var badgeStyle = (kateg === 'Video') ? 'bg-red-100 text-red-600' : 'bg-purple-100 text-purple-600';
+        tTblGaleri += '<tr class="border-b dark:border-gray-700"><td class="p-3 flex justify-center">'+mediaIcon+'</td><td class="p-3"><span class="px-2 py-1 '+badgeStyle+' rounded text-xs font-bold">'+kateg+'</span></td><td class="p-3 font-bold">' + jdlAman + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'galeri\',\''+igl.id+'\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'galeri\',\''+igl.id+'\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+    } 
+    document.getElementById('galeri-foto-container').innerHTML = tGaleriFoto || '<p class="col-span-full text-center text-gray-500">Belum ada koleksi foto.</p>'; document.getElementById('galeri-video-container').innerHTML = tGaleriVideo || '<p class="col-span-full text-center text-gray-500">Belum ada video kegiatan.</p>'; document.getElementById('tbl-galeri').innerHTML = tTblGaleri || '<tr><td colspan="4" class="p-4 text-center">Data galeri kosong</td></tr>';
+
+    var gabungPegawai = (data.guru || []).concat(data.tu || []); var wPegawai = document.getElementById('widget-pegawai');
+    if (gabungPegawai.length > 0 && wPegawai) { 
+        var pIdx = 0; 
+        function jalankanSlidePegawai() { 
+            if(!gabungPegawai[pIdx]) { pIdx = 0; } var pg = gabungPegawai[pIdx]; var nmAm = amankanTeks(pg.nama); var img = getValidImg(pg.foto_url, 'https://ui-avatars.com/api/?name=' + nmAm + '&background=random'); var role = pg.mapel ? pg.mapel : (pg.bagian ? pg.bagian : pg.jabatan); 
+            wPegawai.innerHTML = '<div class="absolute inset-0 flex flex-col items-center justify-center p-4 animate-[fadeIn_0.5s_ease-in-out]"><img src="' + img + '" loading="lazy" class="w-20 h-24 object-cover rounded-xl shadow-md mb-3 border-2 border-white dark:border-gray-700"><h4 class="font-bold text-gray-800 dark:text-white text-sm line-clamp-1">' + nmAm + '</h4><p class="text-[10px] text-secondary font-black uppercase tracking-wider mt-1">' + amankanTeks(role) + '</p></div>'; 
+            pIdx = (pIdx + 1) % gabungPegawai.length; 
+        } 
+        jalankanSlidePegawai(); if(window.wPegawaiInt) clearInterval(window.wPegawaiInt); window.wPegawaiInt = setInterval(jalankanSlidePegawai, 3500);
+    } else if(wPegawai) { wPegawai.innerHTML = '<p class="text-sm text-gray-500">Belum ada pegawai.</p>'; }
+
+} catch(e) { console.error(e); }
+}
+
+var cropperInst = null; var curKey = ''; var curPrevId = '';
+function bukaCropper(event, rasio, key, prevId) {
+  if (typeof Cropper === 'undefined') { Swal.fire('Peringatan', 'Sistem Cropper belum dimuat sempurna. Coba refresh halaman.', 'warning'); return; }
+  var file = event.target.files[0]; if(!file) return; curKey = key; curPrevId = prevId; 
+  var reader = new FileReader();
+  reader.onload = function(e) { 
+      document.getElementById('crop-image').src = e.target.result; document.getElementById('crop-modal').style.display = 'flex'; 
+      if(cropperInst) cropperInst.destroy(); cropperInst = new Cropper(document.getElementById('crop-image'), { aspectRatio: (rasio===0?NaN:rasio), viewMode: 1, autoCropArea: 1 }); 
+  }; reader.readAsDataURL(file);
+}
+
+function batalCrop() { document.getElementById('crop-modal').style.display = 'none'; if(cropperInst) cropperInst.destroy(); var inps = document.querySelectorAll('input[type="file"]'); for(var i=0; i<inps.length; i++) inps[i].value=''; }
+
+function terapkanCrop() { 
+  if(!cropperInst) return; 
+  var isT = (curKey === 'logo' || curKey === 'struktur' || curKey === 'eksternal'); 
+  var base64 = cropperInst.getCroppedCanvas({ imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }).toDataURL(isT?'image/png':'image/jpeg', isT?undefined:0.7); 
+  cropData[curKey] = base64; 
+  var p = document.getElementById(curPrevId); p.src = base64; p.classList.remove('hidden'); 
+  batalCrop(); 
+}
+
+function kembaliKeDash() { if(curRole === 'admin') navigate('admin-dashboard'); else navigate('pegawai-dashboard'); }
+
+function navigate(pageId) {
+var mm1 = document.getElementById('mobile-menu'); if(mm1 && !mm1.classList.contains('hidden')) { toggleMobileMenu('mobile-menu', 'btn-mobile-icon'); }
+var mm2 = document.getElementById('mobile-admin'); if(mm2 && !mm2.classList.contains('hidden')) { toggleMobileMenu('mobile-admin', 'btn-admin-icon'); }
+var mm3 = document.getElementById('mobile-pegawai'); if(mm3 && !mm3.classList.contains('hidden')) { toggleMobileMenu('mobile-pegawai', 'btn-pegawai-icon'); }
+
+if (pageId.startsWith('admin-') && curRole !== 'admin') return navigate('login');
+if (pageId.startsWith('pegawai-') && curRole !== 'guru' && curRole !== 'tu') return navigate('login');
+if (pageId === 'ubah-password' && !curRole) return navigate('login');
+
+try { if(pageId !== 'detail-berita') { window.history.replaceState(null, null, window.location.pathname); } } catch(e){}
+
+var sec = document.querySelectorAll('.page-section'); for (var k = 0; k < sec.length; k++) sec[k].classList.remove('active');
+document.getElementById(pageId).classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' });
+try { if(typeof AOS !== 'undefined') AOS.refresh(); } catch(e){}
+}
+
+function bukaBerita(id) { 
+    var dt = null; 
+    for(var i=0; i<dbGlobal.berita.length; i++) { if(dbGlobal.berita[i].id == id) { dt = dbGlobal.berita[i]; break; } } 
+    if(dt) { 
+        curShareId = id; curShareTitle = dt.judul;
+        document.getElementById('detail-judul').innerText = dt.judul; 
+        
+        // --- TAMBAH NAMA PENULIS DI BAWAH ---
+        var nmPenulis = dt.penulis ? dt.penulis : 'Admin';
+        var infoPenulis = '<div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"><p class="font-bold text-gray-500 text-sm md:text-base"><i class="fas fa-pencil-alt text-primary mr-2"></i> Post by : <span class="text-gray-800 dark:text-white">' + amankanTeks(nmPenulis) + '</span></p></div>';
+        document.getElementById('detail-konten').innerHTML = dt.konten + infoPenulis; 
+        
+        // --- FORMAT TANGGAL & JAM ---
+        var tglTampil = dt.tanggal;
+        try {
+            var d = new Date(dt.tanggal);
+            if(!isNaN(d.getTime())) { tglTampil = d.toLocaleString('id-ID', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); }
+        } catch(e){}
+
+        document.getElementById('detail-tgl').innerText = tglTampil; 
+        document.getElementById('detail-cat').innerText = ((dt.kategori||'').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita'; 
+        document.getElementById('detail-img').src = getValidImg(dt.gambar_url, ''); 
+        try { window.history.replaceState(null, null, "?article=" + id); } catch(e){} 
+        navigate('detail-berita'); 
+    } 
+}
+
+function bukaProfilPegawai(modul, id) {
+  var dt = null; for(var i=0; i<dbGlobal[modul].length; i++) { if(dbGlobal[modul][i].id == id) { dt = dbGlobal[modul][i]; break; } }
+  if(dt) {
+      document.getElementById('dp-foto').src = getValidImg(dt.foto_url, 'https://ui-avatars.com/api/?name=' + amankanTeks(dt.nama) + '&background=random');
+      document.getElementById('dp-status').innerText = amankanTeks(dt.status_pegawai || 'Pegawai');
+      document.getElementById('dp-jabatan').innerText = amankanTeks(dt.jabatan || 'Staf');
+      document.getElementById('dp-nama').innerText = amankanTeks(dt.nama || '-');
+      document.getElementById('dp-nip').innerText = maskNip(amankanTeks(dt.nip || '-'));
+      document.getElementById('dp-jk').innerText = amankanTeks(dt.jk || '-');
+      document.getElementById('dp-gol').innerText = amankanTeks(dt.pangkat_gol || '-');
+      document.getElementById('dp-tmt').innerText = formatTanggal(dt.tmt_pgw) || '-';
+      if(modul === 'guru') { document.getElementById('dp-lbl-tugas').innerText = 'Mata Pelajaran Diampu'; document.getElementById('dp-tugas').innerText = amankanTeks(dt.mapel || '-'); } 
+      else { document.getElementById('dp-lbl-tugas').innerText = 'Bagian / Divisi'; document.getElementById('dp-tugas').innerText = amankanTeks(dt.bagian || '-'); }
+
+      var nohp = amankanTeks(dt.no_hp || '-'); document.getElementById('dp-nohp').innerText = nohp;
+      if(nohp !== '-') { document.getElementById('dp-nohp').href = 'https://wa.me/' + nohp.replace(/[^0-9]/g, ''); } 
+      else { document.getElementById('dp-nohp').removeAttribute('href'); }
+      document.getElementById('dp-email').innerText = amankanTeks(dt.email || '-');
+
+      var btnBack = document.getElementById('btn-back-pegawai'); if(btnBack) btnBack.setAttribute('onclick', "navigate('" + modul + "')");
+      navigate('detail-pegawai');
+  }
+}
+
+function bagikanBerita(platform) {
+  var baseShareUrl = dbGlobal.domainResmi ? dbGlobal.domainResmi.replace(/\/$/, "") : window.location.href.split('?')[0];
+  var shareUrl = baseShareUrl + "?article=" + curShareId; var teks = "Baca informasi selengkapnya: " + curShareTitle + "\n\n" + shareUrl;
+  if(platform === 'wa') { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(teks), '_blank'); } else if(platform === 'fb') { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank'); } else if(platform === 'x') { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(teks), '_blank'); } else if(platform === 'copy') { navigator.clipboard.writeText(shareUrl).then(function() { Swal.fire({ title: 'Berhasil!', text: 'Link berita telah disalin.', icon: 'success', timer: 2000, showConfirmButton: false }); }).catch(function() { Swal.fire('Gagal Menyalin', 'Silakan block dan copy URL ini manual:\n' + shareUrl, 'info'); }); }
+}
+
+function batalEditSemua() { var m = ['berita', 'guru', 'tu', 'siswa', 'galeri', 'slider', 'eksternal']; for(var i=0; i<m.length; i++) batalEdit(m[i]); }
+
+function batalEdit(modul) {
+  editDataId[modul] = null; var btnU = document.getElementById('btn-' + modul); var btnB = document.getElementById('btn-batal-' + modul);
+  if(btnU) { btnU.innerHTML = '<i class="fas fa-save mr-2"></i> Simpan Data'; btnU.className = "px-8 py-3 text-white rounded-xl font-bold shadow-lg w-full md:w-auto " + (modul==='guru'?'bg-green-600 hover:bg-green-700':modul==='tu'?'bg-teal-600 hover:bg-teal-700':modul==='siswa'?'bg-orange-600 hover:bg-orange-700':modul==='slider'?'bg-pink-600 hover:bg-pink-700':modul==='galeri'?'bg-purple-600 hover:bg-purple-700':modul==='eksternal'?'bg-cyan-600 hover:bg-cyan-700':'bg-blue-600 hover:bg-blue-700'); }
+  if(btnB) btnB.classList.add('hidden');
+  var inps = document.querySelectorAll('#admin-'+modul+' input, #admin-'+modul+' textarea, #admin-'+modul+' select'); 
+  for(var i=0; i<inps.length; i++) { if(inps[i].type !== 'file') inps[i].value=''; }
+  var imgP = document.getElementById('prev-' + modul); if(imgP) { imgP.classList.add('hidden'); imgP.src = ''; }
+  cropData[modul] = null; 
+  if(modul === 'galeri') { document.getElementById('gl-kategori').value = 'Foto'; ubahTipeGaleri(); }
+  if(modul === 'berita' && typeof quillEditor !== 'undefined' && quillEditor) { quillEditor.root.innerHTML = ''; }
+  if(modul === 'siswa') { pdfBase64 = null; var pdfl = document.getElementById('sw-pdf-link'); if(pdfl) pdfl.classList.add('hidden'); var pdfn = document.getElementById('sw-pdf-name'); if(pdfn) pdfn.classList.add('hidden'); var pdfi = document.getElementById('sw-pdf'); if(pdfi) pdfi.value = ''; }
+}
+
+function siapkanEdit(modul, id) {
+  batalEdit(modul); editDataId[modul] = id; var dt = null; for(var i=0; i<dbGlobal[modul].length; i++) { if(dbGlobal[modul][i].id == id) { dt = dbGlobal[modul][i]; break; } } if(!dt) return;
+  if(modul === 'berita') { document.getElementById('b-judul').value = dt.judul; quillEditor.root.innerHTML = dt.konten || ''; document.getElementById('b-kategori').value = (((dt.kategori||'').toString().toLowerCase()==='pengumuman')?'Pengumuman':'Berita'); }
+  if(modul === 'siswa') { document.getElementById('sw-kategori').value = dt.kategori; document.getElementById('sw-label').value = dt.label; document.getElementById('sw-l').value = dt.jumlah_l || 0; document.getElementById('sw-p').value = dt.jumlah_p || 0; document.getElementById('sw-jumlah').value = dt.jumlah; pdfBase64 = null; document.getElementById('sw-pdf').value = ''; var pdfl = document.getElementById('sw-pdf-link'); var pdfn = document.getElementById('sw-pdf-name'); if(pdfn) pdfn.classList.add('hidden'); if(dt.dokumen_url) { pdfl.href = dt.dokumen_url; pdfl.classList.remove('hidden'); } else { pdfl.classList.add('hidden'); } }
+  if(modul === 'slider') { document.getElementById('sl-judul').value = dt.judul; document.getElementById('sl-sub').value = dt.subjudul; }
+  if(modul === 'eksternal') { document.getElementById('ex-nama').value = dt.nama; document.getElementById('ex-url').value = dt.url; }
+  if(modul === 'galeri') { document.getElementById('gl-judul').value = dt.judul; document.getElementById('gl-deskripsi').value = dt.deskripsi || ''; var kateg = dt.kategori || 'Foto'; document.getElementById('gl-kategori').value = kateg; ubahTipeGaleri(); if(kateg === 'Video') document.getElementById('gl-video').value = dt.video_url || ''; }
+  if(modul === 'guru') { document.getElementById('g-nip').value = dt.nip || ''; document.getElementById('g-nama').value = dt.nama || ''; document.getElementById('g-pass').value = ''; document.getElementById('g-jk').value = dt.jk || ''; document.getElementById('g-tempat_lahir').value = dt.tempat_lahir || ''; document.getElementById('g-tgl_lahir').value = formatTanggal(dt.tanggal_lahir); document.getElementById('g-golongan').value = dt.pangkat_gol || ''; document.getElementById('g-status').value = dt.status_pegawai || ''; document.getElementById('g-tmt').value = formatTanggal(dt.tmt_pgw); document.getElementById('g-jabatan').value = dt.jabatan || ''; document.getElementById('g-mapel').value = dt.mapel || ''; document.getElementById('g-no_hp').value = dt.no_hp || ''; document.getElementById('g-email').value = dt.email || '';}
+  if(modul === 'tu') { document.getElementById('tu-nip').value = dt.nip || ''; document.getElementById('tu-nama').value = dt.nama || ''; document.getElementById('tu-pass').value = ''; document.getElementById('tu-jk').value = dt.jk || ''; document.getElementById('tu-tempat_lahir').value = dt.tempat_lahir || ''; document.getElementById('tu-tgl_lahir').value = formatTanggal(dt.tanggal_lahir); document.getElementById('tu-golongan').value = dt.pangkat_gol || ''; document.getElementById('tu-status').value = dt.status_pegawai || ''; document.getElementById('tu-tmt').value = formatTanggal(dt.tmt_pgw); document.getElementById('tu-jabatan').value = dt.jabatan || ''; document.getElementById('tu-bagian').value = dt.bagian || ''; document.getElementById('tu-no_hp').value = dt.no_hp || ''; document.getElementById('tu-email').value = dt.email || ''; }
+
+  var imgUrl = dt.gambar_url || dt.foto_url || dt.icon_url;
+  var img2 = document.getElementById('prev-' + modul); 
+  if(img2 && imgUrl) { img2.src = getValidImg(imgUrl, ''); img2.classList.remove('hidden'); }
+  
+  var btnU = document.getElementById('btn-' + modul); var btnB = document.getElementById('btn-batal-' + modul);
+  if(btnU) { btnU.innerHTML = '<i class="fas fa-sync mr-2"></i> Update Data'; btnU.className = "px-8 py-3 bg-yellow-500 text-gray-900 rounded-xl font-bold shadow-lg hover:bg-yellow-400 w-full md:w-auto"; }
+  if(btnB) btnB.classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function gagalSimpan(err) { document.getElementById('loader').style.display = 'none'; stopTimer(); Swal.fire('Sistem Sibuk', err.toString(), 'error'); }
+
+function simpanAtauUpdate(modul) {
+var d = {}; var base64 = cropData[modul]; var isEdit = editDataId[modul] !== null;
+if(modul === 'berita') { 
+    var inputTgl = document.getElementById('b-tanggal').value;
+    if(!inputTgl) {
+        var now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        inputTgl = now.toISOString().slice(0,16);
+    }
+    d.tanggal = inputTgl; 
+    
+    // PERBAIKAN: Hanya set nama penulis jika sedang membuat berita BARU
+    if(!isEdit) { d.penulis = curNama; } 
+    
+    d.judul = document.getElementById('b-judul').value; 
+    // ... baris lainnya tetap sama
+    d.konten = quillEditor.root.innerHTML; 
+    if(d.konten === '<p><br></p>') d.konten = ''; 
+    d.kategori = document.getElementById('b-kategori').value; 
+    if(!d.judul || !d.konten) return Swal.fire('Peringatan', 'Isi judul & konten berita!', 'warning'); 
+    if(!isEdit && !base64) return Swal.fire('Peringatan', 'Silakan Crop gambar utama!', 'warning'); 
+} 
+else if(modul === 'siswa') { d.kategori=document.getElementById('sw-kategori').value; d.label=document.getElementById('sw-label').value; d.jumlah_l=document.getElementById('sw-l').value || 0; d.jumlah_p=document.getElementById('sw-p').value || 0; d.jumlah=document.getElementById('sw-jumlah').value || 0; if(!d.label || !d.jumlah) return Swal.fire('Peringatan', 'Isi data label dan jumlah!', 'warning'); base64 = pdfBase64; }
+else if(modul === 'slider') { d.judul=document.getElementById('sl-judul').value; d.subjudul=document.getElementById('sl-sub').value; if(!isEdit && !base64) return Swal.fire('Peringatan', 'Crop banner terlebih dahulu!', 'warning'); }
+else if(modul === 'eksternal') { d.nama=document.getElementById('ex-nama').value; d.url=document.getElementById('ex-url').value; if(!d.nama || !d.url) return Swal.fire('Peringatan', 'Isi nama dan link URL!', 'warning'); if(!isEdit && !base64) return Swal.fire('Peringatan', 'Upload dan Crop Ikon/Logo!', 'warning'); }
+else if(modul === 'galeri') { d.kategori = document.getElementById('gl-kategori').value; d.judul = document.getElementById('gl-judul').value; d.deskripsi = document.getElementById('gl-deskripsi').value; d.video_url = document.getElementById('gl-video').value; if(!d.judul) return Swal.fire('Peringatan', 'Isi Judul!', 'warning'); if(d.kategori === 'Foto' && !isEdit && !base64) return Swal.fire('Peringatan', 'Silakan Crop foto!', 'warning'); if(d.kategori === 'Video' && !d.video_url) return Swal.fire('Peringatan', 'Isi link Youtube!', 'warning'); d.uploader = 'Admin'; }
+else if(modul === 'guru') { d.nip=document.getElementById('g-nip').value; d.nama=document.getElementById('g-nama').value; d.password=document.getElementById('g-pass').value; d.jk=document.getElementById('g-jk').value; d.tempat_lahir=document.getElementById('g-tempat_lahir').value; d.tanggal_lahir=document.getElementById('g-tgl_lahir').value; d.pangkat_gol=document.getElementById('g-golongan').value; d.status_pegawai=document.getElementById('g-status').value; d.tmt_pgw=document.getElementById('g-tmt').value; d.jabatan=document.getElementById('g-jabatan').value; d.mapel=document.getElementById('g-mapel').value; d.no_hp=document.getElementById('g-no_hp').value; d.email=document.getElementById('g-email').value; if(!d.nip || !d.nama) return Swal.fire('Peringatan', 'NIP dan Nama wajib diisi!', 'warning'); if(!isEdit && !d.password) return Swal.fire('Peringatan', 'Password wajib diisi!', 'warning'); }
+else if(modul === 'tu') { d.nip=document.getElementById('tu-nip').value; d.nama=document.getElementById('tu-nama').value; d.password=document.getElementById('tu-pass').value; d.jk=document.getElementById('tu-jk').value; d.tempat_lahir=document.getElementById('tu-tempat_lahir').value; d.tanggal_lahir=document.getElementById('tu-tgl_lahir').value; d.pangkat_gol=document.getElementById('tu-golongan').value; d.status_pegawai=document.getElementById('tu-status').value; d.tmt_pgw=document.getElementById('tu-tmt').value; d.jabatan=document.getElementById('tu-jabatan').value; d.bagian=document.getElementById('tu-bagian').value; d.no_hp=document.getElementById('tu-no_hp').value; d.email=document.getElementById('tu-email').value; if(!d.nip || !d.nama) return Swal.fire('Peringatan', 'NIP dan Nama wajib diisi!', 'warning'); if(!isEdit && !d.password) return Swal.fire('Peringatan', 'Password wajib diisi!', 'warning'); }
+
+document.getElementById('loader-text').innerText = isEdit ? 'Menyimpan Perubahan...' : 'Mengunggah & Menyimpan...'; document.getElementById('loader').style.display = 'flex'; startTimer();
+
+var payload = { token: curToken, modul: modul, dataBaru: d, base64Data: base64, filename: modul+(modul==='siswa'?'.pdf':'.jpg') };
+if(isEdit) { payload.id = editDataId[modul]; callAPI('updateData', payload).then(selesaiSimpan).catch(gagalSimpan); } 
+else { callAPI('simpanData', payload).then(selesaiSimpan).catch(gagalSimpan); }
+}
+
+function simpanGaleriPegawai() {
+    var d = {};
+    var base64 = cropData['galeri']; 
+    d.kategori = document.getElementById('pg-kategori').value; 
+    d.judul = document.getElementById('pg-judul').value; 
+    d.deskripsi = document.getElementById('pg-deskripsi').value; 
+    d.video_url = document.getElementById('pg-video').value; 
+    
+    if(!d.judul) return Swal.fire('Peringatan', 'Isi Judul kegiatan!', 'warning'); 
+    if(d.kategori === 'Foto' && !base64) return Swal.fire('Peringatan', 'Silakan Crop foto terlebih dahulu!', 'warning'); 
+    if(d.kategori === 'Video' && !d.video_url) return Swal.fire('Peringatan', 'Isi link Youtube!', 'warning'); 
+    
+    d.uploader = curNama;
+    var tgl = new Date();
+    d.tanggal = ('0'+tgl.getDate()).slice(-2) + '/' + ('0'+(tgl.getMonth()+1)).slice(-2) + '/' + tgl.getFullYear();
+
+    document.getElementById('loader-text').innerText = 'Mengunggah ke Galeri Publik...'; 
+    document.getElementById('loader').style.display = 'flex'; startTimer();
+    
+    var payload = { token: curToken, modul: 'galeri', dataBaru: d, base64Data: base64, filename: 'galeri_pegawai.jpg' };
+    callAPI('simpanData', payload).then(function(res) {
+        document.getElementById('loader').style.display = 'none'; stopTimer();
+        if(res.status === 'success') {
+            Swal.fire('Berhasil!', 'Postingan Anda telah tayang di Galeri Publik.', 'success');
+            document.getElementById('pg-judul').value = '';
+            document.getElementById('pg-deskripsi').value = '';
+            document.getElementById('pg-video').value = '';
+            var img = document.getElementById('prev-pg-galeri'); if(img) { img.src=''; img.classList.add('hidden'); }
+            cropData['galeri'] = null;
+            refreshHalamanLunak();
+        } else {
+            Swal.fire('Gagal Menyimpan', res.message, 'error');
+        }
+    }).catch(gagalSimpan);
+}
+
+function simpanDataDiriPegawai() {
+  var d = {}; d.nama = document.getElementById('pegawai-nama').value; d.tempat_lahir = document.getElementById('pegawai-tempat-lahir').value; d.tanggal_lahir = document.getElementById('pegawai-tgl-lahir').value; d.jk = document.getElementById('pegawai-jk').value; d.pangkat_gol = document.getElementById('pegawai-golongan').value; d.status_pegawai = document.getElementById('pegawai-status').value; d.tmt_pgw = document.getElementById('pegawai-tmt').value; d.jabatan = document.getElementById('pegawai-jabatan').value; d.no_hp = document.getElementById('pegawai-no_hp').value; d.email = document.getElementById('pegawai-email').value;
+  if(curRole === 'guru') d.mapel = document.getElementById('pegawai-tugas').value; else d.bagian = document.getElementById('pegawai-tugas').value;
+  if(!d.nama) return Swal.fire('Peringatan', 'Nama wajib diisi!', 'warning');
+  
+  var base64 = cropData['pegawai_foto'];
+  document.getElementById('loader-text').innerText = 'Menyimpan Biodata...'; document.getElementById('loader').style.display = 'flex'; startTimer();
+  callAPI('simpanProfilPegawai', { token: curToken, modul: curRole, id: curUserId, dataBaru: d, base64Data: base64, filename: 'foto_'+curUsername+'.jpg' }).then(selesaiSimpan).catch(gagalSimpan);
+}
+
+function hapusData(modul, id) { 
+  Swal.fire({ title: 'Yakin hapus data permanen?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: 'Ya, Hapus!' }).then((result) => {
+    if (result.isConfirmed) {
+        document.getElementById('loader-text').innerText = 'Menghapus...'; document.getElementById('loader').style.display = 'flex'; startTimer(); 
+        callAPI('hapusData', { token: curToken, modul: modul, id: id }).then(selesaiSimpan).catch(gagalSimpan);
+    }
+  });
+}
+
+function simpanPengaturanLengkap() { 
+  var getInp = function(id) { var el = document.getElementById(id); return el ? el.value : ''; }; 
+  try { 
+      var setObj = { 'nama_sekolah': getInp('set-nama'), 'alamat': getInp('set-alamat'), 'deskripsi': getInp('set-deskripsi'), 'npsn': getInp('set-npsn'), 'nss': getInp('set-nss'), 'status_jenjang': getInp('set-status'), 'akreditasi': getInp('set-akreditasi'), 'tahun_berdiri': getInp('set-tahun'), 'sejarah': getInp('set-sejarah'), 'visi_misi': getInp('set-visimisi'), 'sarpras': getInp('set-sarpras'), 'privasi': getInp('set-privasi'), 'syarat': getInp('set-syarat'), 'domain_resmi': getInp('set-domain'), 'kepsek_nama': getInp('set-kepsek-nama'), 'kepsek_sambutan': getInp('set-kepsek-sambutan'), 'teks_berjalan': getInp('set-teks-berjalan'), 'maps_url': getInp('set-maps') }; 
+      document.getElementById('loader-text').innerText = 'Menyimpan Profil Web...'; document.getElementById('loader').style.display = 'flex'; startTimer(); 
+      callAPI('simpanPengaturan', { token: curToken, setObj: setObj, base64Logo: cropData.logo, namaFileLogo: 'logo.png', base64Str: cropData.struktur, namaFileStr: 'struktur.png', base64Kepsek: cropData.kepsek, namaFileKepsek: 'kepsek.jpg' }).then(selesaiSimpan).catch(gagalSimpan);
+  } catch(e) { Swal.fire('Error System', e.message, 'error'); document.getElementById('loader').style.display = 'none'; stopTimer(); } 
+}
+
+function simpanPengaturanWidget() { 
+  var getInp = function(id) { var el = document.getElementById(id); return el ? el.value : ''; }; 
+  try { 
+      var widObj = { 'yt_url': getInp('wid-yt'), 'fb_plugin': getInp('wid-fb-plugin'), 'cal_url': getInp('wid-cal'), 'wa': getInp('wid-wa'), 'email': getInp('wid-email'), 'ig': getInp('wid-ig'), 'fb': getInp('wid-fb'), 'link_ppdb': getInp('wid-ppdb'), 'link_dinas': getInp('wid-dinas'), 'link_dapodik': getInp('wid-dapodik') }; 
+      document.getElementById('loader-text').innerText = 'Menyimpan Widget...'; document.getElementById('loader').style.display = 'flex'; startTimer(); 
+      callAPI('simpanWidget', { token: curToken, setObj: widObj }).then(selesaiSimpan).catch(gagalSimpan);
+  } catch(e) { Swal.fire('Error System', e.message, 'error'); document.getElementById('loader').style.display = 'none'; stopTimer(); } 
+}
+
+function selesaiSimpan(res) { 
+  document.getElementById('loader').style.display = 'none'; stopTimer(); 
+  if(res.status === 'success') { 
+      Swal.fire({ title: 'Berhasil!', text: res.message || 'Data telah tersimpan.', icon: 'success', timer: 2000, showConfirmButton: false });
+      refreshHalamanLunak(); 
+  } else { Swal.fire('Gagal Menyimpan', res.message, 'error'); } 
+}
+
+function prosesLogin() { 
+  var u = document.getElementById('log-user').value; var p = document.getElementById('log-pass').value; 
+  if(!u || !p) { Swal.fire('Peringatan', 'Username/NIP dan Password wajib diisi!', 'warning'); return; }
+  
+  document.getElementById('loader-text').innerText = 'Otentikasi...'; document.getElementById('loader').style.display = 'flex'; startTimer(); 
+  callAPI('authLogin', { username: u, password: p }).then(function(res) {
+      document.getElementById('loader').style.display = 'none'; stopTimer(); 
+      if(res.status === 'success') { 
+          isAdmin = (res.role === 'admin'); curRole = res.role; curUsername = u; curToken = res.token; curUserId = res.id || ''; curNama = res.nama || '';
+          sessionStorage.setItem('edupro_token', res.token);
+          sessionStorage.setItem('edupro_role', res.role);
+          sessionStorage.setItem('edupro_user', u);
+          sessionStorage.setItem('edupro_id', res.id || '');
+          sessionStorage.setItem('edupro_nama', res.nama || '');
+          sessionStorage.setItem('edupro_akses_berita', res.akses_berita || 'N');
+
+          document.getElementById('nav-publik').classList.add('hidden'); document.getElementById('log-pass').value = ''; 
+          
+          if(isAdmin) { 
+              document.getElementById('nav-admin').classList.remove('hidden'); 
+              document.getElementById('bottom-nav-publik').classList.add('hidden');
+              document.getElementById('bottom-nav-admin').classList.remove('hidden');
+              Swal.fire({ title: 'Selamat Datang Admin', icon: 'success', timer: 1500, showConfirmButton: false }); 
+              navigate('admin-dashboard'); 
+          } else { 
+              document.getElementById('nav-pegawai').classList.remove('hidden'); 
+              document.getElementById('bottom-nav-publik').classList.add('hidden');
+              document.getElementById('bottom-nav-pegawai').classList.remove('hidden');
+              Swal.fire({ title: 'Selamat Datang, ' + res.nama, icon: 'success', timer: 1500, showConfirmButton: false }); 
+              siapkanFormPegawai(); 
+              navigate('pegawai-dashboard'); 
+          }
+      } else { Swal.fire('Gagal Login', res.message, 'error'); } 
+  }).catch(gagalSimpan);
+}
+
+function prosesUbahPassword() {
+    if(!curUsername) return Swal.fire('Error', 'Sesi tidak ditemukan.', 'error');
+    var oldP = document.getElementById('pass-lama').value; 
+    var newP = document.getElementById('pass-baru').value; 
+    var confP = document.getElementById('pass-konfirm').value;
+    
+    if(!oldP || !newP || !confP) return Swal.fire('Peringatan', 'Semua kolom password wajib diisi!', 'warning');
+    if(newP !== confP) return Swal.fire('Peringatan', 'Password baru tidak sama!', 'warning');
+    if(newP.length < 6) return Swal.fire('Peringatan', 'Password baru minimal 6 karakter!', 'warning');
+    
+    // PERBAIKAN: Gunakan curUserId || curUsername untuk targetId
+    var targetAman = curUserId || curUsername;
+    
+    callAPI('ubahPasswordUser', { token: curToken, role: curRole, targetId: targetAman, oldPass: oldP, newPass: newP }).then(function(res) {
+        document.getElementById('loader').style.display = 'none'; stopTimer();
+        if(res.status === 'success') { 
+            Swal.fire('Berhasil!', 'Password diubah.', 'success'); 
+            document.getElementById('pass-lama').value = ''; 
+            document.getElementById('pass-baru').value = ''; 
+            document.getElementById('pass-konfirm').value = ''; 
+        } 
+        else { Swal.fire('Gagal', res.message, 'error'); }
+    }).catch(gagalSimpan);
+}
+
+function logout() { 
+  Swal.fire({ title: 'Akhiri sesi ini?', icon: 'question', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Ya' }).then((result) => {
+    if (result.isConfirmed) {
+        isAdmin=false; curRole=''; curUsername=''; curUserId=''; curToken=''; curNama='';
+        sessionStorage.removeItem('edupro_token');
+        sessionStorage.removeItem('edupro_role');
+        sessionStorage.removeItem('edupro_user');
+        sessionStorage.removeItem('edupro_id');
+        sessionStorage.removeItem('edupro_nama');
+        document.getElementById('nav-admin').classList.add('hidden'); document.getElementById('nav-pegawai').classList.add('hidden'); document.getElementById('nav-publik').classList.remove('hidden'); document.getElementById('bottom-nav-admin').classList.add('hidden');
+        document.getElementById('bottom-nav-pegawai').classList.add('hidden');
+        document.getElementById('bottom-nav-publik').classList.remove('hidden'); navigate('home');
+    }
+  });
+}
+
+document.getElementById('theme-toggle').addEventListener('click', function() { document.documentElement.classList.toggle('dark'); document.getElementById('theme-icon').className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon'; });
+document.getElementById('theme-toggle-mobile').addEventListener('click', function() { document.documentElement.classList.toggle('dark'); document.getElementById('theme-icon-mobile').className = document.documentElement.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon'; toggleMobileMenu('mobile-menu', 'btn-mobile-icon'); });
+
+// JALANKAN TIMMER & INIT SETELAH UI SIAP
+window.addEventListener('DOMContentLoaded', function() { 
+  setTimeout(function() {
+      if (typeof Quill !== 'undefined') {
+          quillEditor = new Quill('#b-konten', {
+              theme: 'snow',
+              placeholder: 'Ketik isi berita atau pengumuman di sini...',
+              modules: {
+                  toolbar: [
+                      [{ 'header': [1, 2, 3, false] }],
+                      ['bold', 'italic', 'underline'],
+                      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                      ['link', 'image', 'video'],
+                      ['clean']
+                  ]
+              }
+          });
+      }
+  }, 500);
+});
+
+// --- FITUR BARU: GURU PENULIS BERITA ---
+var quillPegawaiBerita; // Editor untuk Pegawai
+function siapkanFormPegawai() {
+    // Tampilkan panel berita JIKA hak akses guru diizinkan
+    var akses = sessionStorage.getItem('edupro_akses_berita');
+    var menuDesktop = document.getElementById('menu-berita-pegawai');
+    var menuMobile = document.getElementById('menu-berita-pegawai-mob');
+
+    if(curRole === 'guru' && (akses === 'Y' || akses === 'Aktif')) { 
+        if(menuDesktop) menuDesktop.classList.remove('hidden'); 
+        if(menuMobile) menuMobile.classList.remove('hidden');
+
+        var menuBotPegawai = document.getElementById('btn-bot-berita-pegawai');
+        if(menuBotPegawai) menuBotPegawai.classList.remove('hidden');
+        
+        if(!quillPegawaiBerita && typeof Quill !== 'undefined') {
+             quillPegawaiBerita = new Quill('#pg-b-konten', { theme: 'snow', placeholder: 'Ketik isi...', modules: { toolbar: [ [{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image', 'video'], ['clean'] ] } });
+        }
+    } else { 
+        if(menuDesktop) menuDesktop.classList.add('hidden'); 
+        if(menuMobile) menuMobile.classList.add('hidden'); 
+        if(menuBotPegawai) menuBotPegawai.classList.add('hidden');
+    }
+    
+    // (Kode lama pengisian form profil tetap berjalan di bawah ini)
+    var dt = null; var dbP = dbGlobal[curRole] || []; 
+    for(var i=0; i<dbP.length; i++) { if(dbP[i].id == curUserId) { dt = dbP[i]; break; } } 
+    if(!dt) return;
+    
+    document.getElementById('pegawai-nip').value = dt.nip || curUsername; 
+    document.getElementById('pegawai-nama').value = dt.nama || ''; 
+    document.getElementById('pegawai-tempat-lahir').value = dt.tempat_lahir || ''; 
+    document.getElementById('pegawai-tgl-lahir').value = formatTanggal(dt.tanggal_lahir); 
+    document.getElementById('pegawai-jk').value = dt.jk || ''; 
+    document.getElementById('pegawai-golongan').value = dt.pangkat_gol || ''; 
+    document.getElementById('pegawai-status').value = dt.status_pegawai || ''; 
+    document.getElementById('pegawai-tmt').value = formatTanggal(dt.tmt_pgw); 
+    document.getElementById('pegawai-jabatan').value = dt.jabatan || ''; 
+    document.getElementById('pegawai-no_hp').value = dt.no_hp || ''; 
+    document.getElementById('pegawai-email').value = dt.email || '';
+    
+    if(curRole === 'guru') { 
+        document.getElementById('lbl-pegawai-tugas').innerText = 'Mata Pelajaran'; 
+        document.getElementById('pegawai-tugas').value = dt.mapel || ''; 
+    } else { 
+        document.getElementById('lbl-pegawai-tugas').innerText = 'Bagian / Divisi'; 
+        document.getElementById('pegawai-tugas').value = dt.bagian || ''; 
+    }
+    
+    var img = document.getElementById('prev-pegawai-foto'); 
+    if(dt.foto_url) { 
+        img.src = getValidImg(dt.foto_url, ''); 
+        img.classList.remove('hidden'); 
+    }
+}
+
+function ubahAksesBerita(idGuru, statusBaru) {
+    Swal.fire({ title: 'Ubah Akses?', text: "Anda akan merubah hak akses pembuat berita untuk guru ini.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Ubah' }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('loader-text').innerText = 'Menyimpan Izin...'; document.getElementById('loader').style.display = 'flex'; startTimer();
+            callAPI('updateData', { token: curToken, modul: 'guru', id: idGuru, dataBaru: { akses_berita: statusBaru } }).then(selesaiSimpan).catch(gagalSimpan);
+        }
+    });
+}
+
+function simpanBeritaPegawai() {
+    var d = {};
+    d.judul = document.getElementById('pg-b-judul').value;
+    d.konten = quillPegawaiBerita.root.innerHTML; 
+    if(d.konten === '<p><br></p>') d.konten = '';
+    d.kategori = document.getElementById('pg-b-kategori').value;
+    
+    // Setting Waktu Otomatis
+    var inputTgl = document.getElementById('pg-b-tanggal').value;
+    if(!inputTgl) {
+        var now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        inputTgl = now.toISOString().slice(0,16);
+    }
+    d.tanggal = inputTgl;
+    
+    // INI KUNCI AGAR NAMA GURU TERKIRIM
+    d.penulis = curNama; 
+    
+    var base64 = cropData['berita_guru'];
+    
+    if(!d.judul || !d.konten) return Swal.fire('Peringatan', 'Isi judul & konten berita!', 'warning');
+    if(!base64) return Swal.fire('Peringatan', 'Silakan Crop gambar utama terlebih dahulu!', 'warning');
+    
+    document.getElementById('loader-text').innerText = 'Menyimpan Postingan...'; 
+    document.getElementById('loader').style.display = 'flex'; startTimer();
+    var payload = { token: curToken, modul: 'berita', dataBaru: d, base64Data: base64, filename: 'berita_guru.jpg' };
+    
+    callAPI('simpanData', payload).then(function(res) {
+        if(res.status === 'success') {
+            document.getElementById('pg-b-judul').value = ''; 
+            quillPegawaiBerita.root.innerHTML = '';
+            document.getElementById('pg-b-tanggal').value = ''; 
+            cropData['berita_guru'] = null;
+            document.getElementById('prev-pg-berita').classList.add('hidden');
+        }
+        selesaiSimpan(res);
+    }).catch(gagalSimpan);
+}
+
+startTimer();
+muatDataServer();
+
+</script>
+
+</body>
+</html>
