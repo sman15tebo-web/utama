@@ -27,7 +27,7 @@ function terapkanCrop() {
     batalCrop();
 }
 
-function kembaliKeDash() { if (curRole === 'admin') navigate('admin-dashboard'); else navigate('pegawai-dashboard'); }
+function kembaliKeDash() { if (curRole === 'admin') navigate('admin-dashboard'); else navigate('pegawai-dash'); }
 
 async function loadViewForPage(pageId) {
     let targetView = null;
