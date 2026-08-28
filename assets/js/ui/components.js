@@ -100,9 +100,10 @@ async function navigate(pageId) {
         else if(pageId === 'admin-siswa') switchAdminMenu('admin-siswa');
         else if(pageId === 'admin-slider') { switchAdminMenu('admin-galeri'); switchTab('galeri', 'tab-banner'); }
         else if(pageId === 'admin-galeri') { switchAdminMenu('admin-galeri'); switchTab('galeri', 'tab-foto'); }
-        else if(pageId === 'admin-settings') { switchAdminMenu('admin-pengaturan'); switchTab('pengaturan', 'tab-profil'); }
+        else if(pageId === 'admin-settings') { switchAdminMenu('admin-pengaturan'); switchTab('pengaturan', 'tab-sistem'); }
         else if(pageId === 'admin-widget') { switchAdminMenu('admin-pengaturan'); switchTab('pengaturan', 'tab-widget'); }
         else if(pageId === 'admin-eksternal') switchAdminMenu('admin-link');
+        else if(pageId === 'admin-profil') switchAdminMenu('admin-profil');
     } else {
         var targetEl = document.getElementById(pageId);
         if(targetEl) {
@@ -227,4 +228,4 @@ function bukaModalGaleri() {
     var act = document.querySelector('.tab-btn-galeri.bg-white'); // Find active
     if(act && act.id === 'btn-tab-banner') { bukaModal('modal-slider'); }
     else { bukaModal('modal-galeri'); } // Galeri Foto and Video use same modal-galeri, the category dropdown will handle it
-}
+}
