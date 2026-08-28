@@ -28,7 +28,7 @@ function prosesLogin() {
                 document.getElementById('bottom-nav-publik').classList.add('hidden');
                 document.getElementById('bottom-nav-pegawai').classList.remove('hidden');
                 
-                Promise.resolve(navigate('pegawai-dashboard')).then(function() {
+                Promise.resolve(navigate('pegawai-dash')).then(function() {
                     siapkanFormPegawai();
                     
                     // Cek apakah harus ganti password
@@ -49,21 +49,28 @@ function prosesLogin() {
 }
 
 function prosesGantiForcedPassword() {
+    if (window.isSavingPassword) return;
     var newP = document.getElementById('fp-baru').value;
     var confP = document.getElementById('fp-konfirm').value;
     var email = document.getElementById('fp-email').value;
     if (!newP || !confP) return Swal.fire('Peringatan', 'Password baru dan konfirmasi wajib diisi!', 'warning');
     if (newP !== confP) return Swal.fire('Peringatan', 'Password baru tidak sama!', 'warning');
     if (newP.length < 6) return Swal.fire('Peringatan', 'Password minimal 6 karakter!', 'warning');
+    
+    window.isSavingPassword = true;
     document.getElementById('loader-text').innerText = 'Menyimpan password baru...'; document.getElementById('loader').style.display = 'flex'; startTimer();
     callAPI('gantiForcedPassword', { token: curToken, role: curRole, id: curUserId, newPass: newP, email: email }).then(function(res) {
+        window.isSavingPassword = false;
         document.getElementById('loader').style.display = 'none'; stopTimer();
         if (res.status === 'success') {
             tutupModal('modal-forced-pass');
             Swal.fire({ title: '✅ Password Diperbarui!', text: 'Selamat datang, ' + curNama + '. Gunakan password baru Anda untuk login berikutnya.', icon: 'success', timer: 2500, showConfirmButton: false });
             sessionStorage.setItem('edupro_email', email);
         } else { Swal.fire('Gagal', res.message, 'error'); }
-    }).catch(gagalSimpan);
+    }).catch(function(err) {
+        window.isSavingPassword = false;
+        gagalSimpan(err);
+    });
 }
 
 function prosesUbahPassword() {
