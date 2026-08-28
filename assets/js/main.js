@@ -11,7 +11,7 @@ window.onload = async function () {
         document.getElementById('nav-pegawai').classList.remove('hidden');
         document.getElementById('bottom-nav-publik').classList.add('hidden');
         document.getElementById('bottom-nav-pegawai').classList.remove('hidden');
-        await navigate('pegawai-dashboard');
+        await navigate('pegawai-dash');
     } else {
         await navigate('home');
     }
