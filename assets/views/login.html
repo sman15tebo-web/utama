@@ -1,0 +1,33 @@
+<section class="page-section py-24 px-4" id="login">
+<div class="flex justify-center items-center min-h-[60vh]">
+<div class="bg-white dark:bg-gray-800 p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-gray-100 dark:border-gray-700">
+<div class="text-center mb-8">
+<div class="flex justify-center mx-auto mb-6"><img class="h-28 w-auto object-contain hidden" id="login-logo" src=""/></div>
+<h2 class="text-3xl font-black text-gray-800 dark:text-white">Portal Masuk</h2>
+<p class="text-gray-500 text-sm mt-2">Untuk Admin, Guru, dan TU</p>
+</div>
+<input class="w-full px-5 py-4 border rounded-xl mb-5 dark:bg-gray-700 font-bold focus:ring-2 outline-none" id="log-user" placeholder="Username / NIP Pegawai" type="text"/>
+<div class="relative mb-8"><input class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full" id="log-pass" placeholder="Password" type="password"/><button class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center" onclick="togglePasswordVisibility('log-pass', 'icon-log-pass')"><i class="fas fa-eye" id="icon-log-pass"></i></button></div>
+<button class="w-full bg-primary text-white py-4 rounded-xl hover:bg-blue-800 font-black text-lg transition shadow-lg" onclick="prosesLogin()">Login
+                        ke Sistem</button>
+</div>
+</div>
+</section>
+
+<section class="page-section py-20 px-4 max-w-xl mx-auto" id="ubah-password">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-xl md:text-2xl font-bold"><i class="fas fa-key text-red-500 mr-2"></i> Ubah Password
+                </h2><button class="bg-gray-200 px-4 py-2 rounded-full font-bold text-sm text-black" onclick="kembaliKeDash()">Kembali</button>
+</div>
+<div class="bg-white dark:bg-gray-800 p-8 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+<label class="block text-sm font-bold mb-2 text-gray-600 dark:text-gray-300">Password Saat Ini</label>
+<div class="relative mb-6"><input class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full" id="pass-lama" placeholder="Ketik password lama..." type="password"/><button class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center" onclick="togglePasswordVisibility('pass-lama', 'eye-lama')"><i class="fas fa-eye" id="eye-lama"></i></button></div>
+<label class="block text-sm font-bold mb-2 text-gray-600 dark:text-gray-300">Password Baru</label>
+<div class="relative mb-6"><input class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full border-red-300" id="pass-baru" placeholder="Ketik password baru..." type="password"/><button class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center" onclick="togglePasswordVisibility('pass-baru', 'eye-baru')"><i class="fas fa-eye" id="eye-baru"></i></button></div>
+<label class="block text-sm font-bold mb-2 text-gray-600 dark:text-gray-300">Ulangi Password
+                    Baru</label>
+<div class="relative mb-10"><input class="w-full px-5 py-4 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 outline-none pr-12 w-full border-red-300" id="pass-konfirm" placeholder="Ketik ulang password baru..." type="password"/><button class="absolute inset-y-0 right-0 px-4 text-gray-500 hover:text-primary focus:outline-none h-full flex items-center justify-center" onclick="togglePasswordVisibility('pass-konfirm', 'eye-konfirm')"><i class="fas fa-eye" id="eye-konfirm"></i></button></div>
+<button class="w-full py-4 bg-red-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-red-700 transition" onclick="prosesUbahPassword()"><i class="fas fa-save mr-2"></i> Simpan Password Baru</button>
+</div>
+</section>
+

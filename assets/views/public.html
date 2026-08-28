@@ -1,0 +1,451 @@
+<section class="page-section active" id="home">
+<div class="relative w-full aspect-[5/3] md:aspect-auto md:h-[80vh] bg-gray-900 overflow-hidden" id="slider-container"></div>
+<div class="bg-primary dark:bg-gray-950 py-8 md:py-12 border-b-4 border-secondary shadow-inner">
+<div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
+<div>
+<h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-guru">0</h3>
+<p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Pegawai</p>
+</div>
+<div>
+<h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-siswa">0</h3>
+<p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Siswa Aktif</p>
+</div>
+<div>
+<h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-berita">0</h3>
+<p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Informasi</p>
+</div>
+<div>
+<h3 class="text-4xl md:text-5xl font-black text-secondary mb-2" id="stat-alumni">0</h3>
+<p class="uppercase tracking-widest text-[10px] md:text-xs font-bold">Total Alumni</p>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-4 mt-8 md:mt-10">
+<div class="bg-blue-900/60 dark:bg-gray-900/60 text-blue-100 dark:text-gray-300 py-2.5 px-5 rounded-full text-xs md:text-sm font-bold flex items-center border border-blue-700/50 shadow-inner">
+<i class="fas fa-bullhorn mr-3 text-secondary animate-pulse"></i>
+<marquee id="teks-berjalan" scrollamount="6">Selamat Datang di Website Resmi Sekolah Kami.
+                        </marquee>
+</div>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-4 py-10 md:py-16">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<div class="lg:col-span-2 space-y-12 md:space-y-16">
+<div class="flex flex-col md:flex-row gap-8 bg-white dark:bg-gray-800 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<div class="w-full md:w-1/3"><img class="w-full aspect-[3/4] object-cover rounded-2xl shadow-lg border-4 border-gray-50 dark:border-gray-700" id="home-kepsek-foto" loading="lazy" src=""/>
+</div>
+<div class="w-full md:w-2/3 flex flex-col justify-center">
+<h4 class="text-secondary font-bold uppercase tracking-widest mb-2 text-xs md:text-sm">
+                                    Sambutan Kepala Sekolah</h4>
+<p class="text-gray-600 dark:text-gray-300 text-sm md:text-base leading-relaxed mb-3 italic line-clamp-4" id="home-kepsek-sambutan">"..."</p>
+<button class="text-left text-sm font-bold text-primary hover:text-secondary mb-6 transition" onclick="navigate('profil-kepsek')">Baca
+                                    Selengkapnya →</button>
+<h5 class="font-bold text-base md:text-lg text-gray-800 dark:text-white" id="home-kepsek-nama">-</h5>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-6 border-b-2 pb-2 dark:border-gray-700 border-primary">
+<h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white">Berita
+                                    <span class="text-primary dark:text-secondary">Terbaru</span></h2><button class="text-xs md:text-sm font-bold text-primary hover:underline dark:text-secondary" onclick="navigate('halaman-berita')">Lihat
+                                    Semua →</button>
+</div>
+<div class="space-y-6" id="home-berita-list">
+<div class="animate-pulse flex space-x-4">
+<div class="rounded-xl bg-gray-300 h-24 w-24"></div>
+<div class="flex-1 space-y-4 py-1">
+<div class="h-4 bg-gray-300 rounded w-3/4"></div>
+<div class="space-y-2">
+<div class="h-4 bg-gray-300 rounded"></div>
+<div class="h-4 bg-gray-300 rounded w-5/6"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-6 border-b-2 pb-2 dark:border-gray-700 border-secondary">
+<h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white">Papan
+                                    <span class="text-secondary">Pengumuman</span></h2><button class="text-xs md:text-sm font-bold text-secondary hover:underline" onclick="navigate('halaman-pengumuman')">Lihat Semua
+                                    →</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="home-pengumuman-list">
+</div>
+</div>
+<div class="hidden" id="wrapper-maps">
+<div class="flex justify-between items-end mb-6 border-b-2 pb-2 dark:border-gray-700 border-red-500">
+<h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white"><i class="fas fa-map-marker-alt text-red-500 mr-2"></i> Peta <span class="text-red-500">Lokasi</span></h2>
+</div>
+<div class="w-full rounded-3xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700 bg-gray-200">
+<iframe allowfullscreen="" height="300" id="iframe-maps" loading="lazy" src="" style="border:0;" width="100%"></iframe></div>
+</div>
+</div>
+<div class="space-y-8">
+<div class="bg-gradient-to-br from-primary to-blue-800 p-6 md:p-8 rounded-3xl shadow-xl text-white">
+<h3 class="text-lg md:text-xl font-bold mb-4 border-b border-blue-600 pb-3"><i class="fas fa-bullhorn text-secondary mr-2"></i> Info Cepat</h3>
+<p class="text-blue-100 text-xs md:text-sm leading-relaxed mb-6">Untuk Layanan Pengaduan dan
+                                Informasi Sekolah, Silakan hubungi bagian Tata Usaha untuk informasi lebih lanjut.</p>
+<button class="w-full bg-secondary text-gray-900 py-3 rounded-xl font-bold hover:bg-yellow-400 transition shadow-lg text-sm md:text-base" onclick="navigate('kontak-kami')">Hubungi
+                                Kami</button>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="widget-eksternal">
+<h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fas fa-link text-cyan-500 mr-2"></i> Tautan Aplikasi</h3>
+<div class="grid grid-cols-3 gap-4 justify-items-center" id="eksternal-container"></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fas fa-id-badge text-primary mr-2"></i> Profil Pegawai</h3>
+<div class="relative h-48 overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-center" id="widget-pegawai">
+<p class="text-sm text-gray-500 animate-pulse">Memuat profil...</p>
+</div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="box-yt">
+<h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fab fa-youtube text-red-500 mr-2"></i> Video Profil</h3>
+<div class="w-full aspect-video rounded-xl overflow-hidden shadow-inner bg-gray-200"><iframe allowfullscreen="" class="w-full h-full" frameborder="0" id="iframe-yt" loading="lazy" src="" title="YouTube video player"></iframe></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="box-fb">
+<h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fab fa-facebook text-blue-600 mr-2"></i> Temukan Kami</h3>
+<div class="w-full h-64 bg-gray-100 dark:bg-gray-900 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-gray-700">
+<iframe allowfullscreen="true" frameborder="0" height="100%" id="iframe-fb" loading="lazy" scrolling="no" src="" style="border:none;overflow:hidden" width="100%"></iframe></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 hidden" id="box-cal">
+<h3 class="text-lg font-bold mb-4 border-b pb-2 text-gray-800 dark:text-white"><i class="fas fa-calendar-alt text-green-500 mr-2"></i> Kalender Akademik</h3>
+<div class="w-full h-72 rounded-xl overflow-hidden shadow-inner bg-white border border-gray-200 dark:border-gray-700">
+<iframe frameborder="0" height="100%" id="iframe-cal" loading="lazy" scrolling="no" src="" style="border-width:0" width="100%"></iframe></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-6xl mx-auto" id="kontak-kami">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-12 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">
+                Kontak &amp; Hubungi Kami</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+<div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white border-b dark:border-gray-700 pb-2">
+<i class="fas fa-address-book text-primary mr-2"></i> Informasi Kontak</h3>
+<ul class="space-y-5 text-gray-600 dark:text-gray-300 text-sm md:text-base">
+<li class="flex items-start"><i class="fas fa-building text-primary mt-1 mr-4 w-5 text-xl"></i>
+<div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Nama Sekolah</strong><span id="kk-nama">-</span></div>
+</li>
+<li class="flex items-start"><i class="fas fa-map-marker-alt text-red-500 mt-1 mr-4 w-5 text-xl"></i>
+<div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Alamat
+                                    Lengkap</strong><span id="kk-alamat">-</span></div>
+</li>
+<li class="flex items-start"><i class="fab fa-whatsapp text-green-500 mt-1 mr-4 w-5 text-xl"></i>
+<div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Telepon /
+                                    WhatsApp</strong><a class="text-blue-500 hover:underline" href="#" id="kk-link-wa" target="_blank"><span id="kk-wa">-</span></a></div>
+</li>
+<li class="flex items-start"><i class="fas fa-envelope text-blue-500 mt-1 mr-4 w-5 text-xl"></i>
+<div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Email Utama</strong><a class="text-blue-500 hover:underline" href="#" id="kk-link-email"><span id="kk-email">-</span></a></div>
+</li>
+<li class="flex items-start"><i class="fas fa-globe text-purple-500 mt-1 mr-4 w-5 text-xl"></i>
+<div><strong class="block text-gray-800 dark:text-gray-100 mb-1">Website Resmi</strong><span id="kk-web">-</span></div>
+</li>
+</ul>
+</div>
+<div class="flex flex-col gap-8">
+<div class="bg-gradient-to-br from-primary to-blue-800 p-8 rounded-3xl shadow-xl text-white">
+<h3 class="text-xl font-bold mb-4 border-b border-blue-600 pb-2"><i class="fas fa-hashtag text-secondary mr-2"></i> Media Sosial</h3>
+<div class="flex flex-col space-y-4"><a class="flex items-center hover:text-secondary transition bg-white/10 p-3 rounded-xl" href="#" id="kk-link-fb" target="_blank"><i class="fab fa-facebook-f w-8 text-center mr-2 text-xl"></i> <span id="kk-fb">-</span></a><a class="flex items-center hover:text-secondary transition bg-white/10 p-3 rounded-xl" href="#" id="kk-link-ig" target="_blank"><i class="fab fa-instagram w-8 text-center mr-2 text-xl"></i> <span id="kk-ig">-</span></a></div>
+</div>
+<div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<h3 class="text-xl font-bold mb-4 border-b dark:border-gray-700 pb-2 text-gray-800 dark:text-white">
+<i class="fas fa-external-link-alt text-green-500 mr-2"></i> Tautan Terkait</h3>
+<ul class="space-y-4 text-gray-600 dark:text-gray-300 text-sm font-bold">
+<li><a class="hover:text-primary dark:hover:text-secondary transition flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-xl shadow-sm" href="#" id="kk-link-ppdb" target="_blank"><i class="fas fa-chevron-right mr-3 text-secondary"></i> Info Pendaftaran
+                                    (PPDB)</a></li>
+<li><a class="hover:text-primary dark:hover:text-secondary transition flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-xl shadow-sm" href="#" id="kk-link-dinas" target="_blank"><i class="fas fa-chevron-right mr-3 text-secondary"></i> Website Dinas
+                                    Pendidikan</a></li>
+<li><a class="hover:text-primary dark:hover:text-secondary transition flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-xl shadow-sm" href="#" id="kk-link-dapodik" target="_blank"><i class="fas fa-chevron-right mr-3 text-secondary"></i> Portal Data Dapodik</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-5xl mx-auto" id="profil-kepsek"><button class="mb-8 px-5 py-2 bg-gray-200 dark:bg-gray-800 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-700 transition" onclick="navigate('home')"><i class="fas fa-arrow-left mr-2"></i> Kembali ke Beranda</button>
+<div class="bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-10">
+<div class="w-full md:w-1/3 flex flex-col items-center text-center"><img class="w-full aspect-[3/4] object-cover rounded-2xl shadow-xl border-4 border-gray-50 dark:border-gray-700 mb-6 bg-gray-200" id="detail-kepsek-foto" loading="lazy" src=""/>
+<h5 class="font-bold text-2xl text-gray-800 dark:text-white mb-1" id="detail-kepsek-nama">-</h5>
+<p class="text-secondary font-black text-sm uppercase tracking-widest">Kepala Sekolah</p>
+</div>
+<div class="w-full md:w-2/3">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                        Sambutan Kepala Sekolah</h2>
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap" id="detail-kepsek-sambutan">
+</p>
+</div>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto" id="profil-sejarah">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Sejarah Singkat</h2>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap" id="teks-sejarah"></p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto" id="profil-identitas">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Identitas Organisasi</h2>
+<div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-x-auto">
+<table class="w-full text-left">
+<tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm md:text-lg">
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 w-1/3 font-bold">Nama Satuan Pendidikan
+                            </th>
+<td class="p-4 md:p-6 font-medium" id="id-nama">-</td>
+</tr>
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">NPSN</th>
+<td class="p-4 md:p-6 font-medium" id="id-npsn">-</td>
+</tr>
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">NSS</th>
+<td class="p-4 md:p-6 font-medium" id="id-nss">-</td>
+</tr>
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Status &amp; Jenjang</th>
+<td class="p-4 md:p-6 font-medium" id="id-status">-</td>
+</tr>
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Akreditasi/ No.Sert.</th>
+<td class="p-4 md:p-6 font-medium"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full font-black text-xs md:text-sm" id="id-akreditasi">-</span></td>
+</tr>
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Tahun Berdiri</th>
+<td class="p-4 md:p-6 font-medium" id="id-tahun">-</td>
+</tr>
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Alamat Lengkap</th>
+<td class="p-4 md:p-6 font-medium" id="id-alamat">-</td>
+</tr>
+<tr>
+<th class="p-4 md:p-6 bg-gray-50 dark:bg-gray-700 font-bold">Slogan Sekolah</th>
+<td class="p-4 md:p-6 font-medium text-gray-500 italic" id="id-desc">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto" id="profil-visimisi">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Visi &amp; Misi</h2>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap font-medium" id="teks-visimisi">
+</p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto" id="profil-sarpras">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Sarana &amp; Prasarana</h2>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap font-medium" id="teks-sarpras">
+</p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto" id="halaman-privasi">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Kebijakan Privasi</h2>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap" id="teks-privasi"></p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto" id="halaman-syarat">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Syarat &amp; Ketentuan</h2>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-loose whitespace-pre-wrap" id="teks-syarat"></p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto text-center" id="profil-pegawai-stat">
+<h2 class="text-3xl md:text-4xl font-black mb-12 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Statistik Pegawai</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-xl border-t-8 border-primary"><i class="fas fa-chalkboard-teacher text-5xl text-primary mb-4"></i>
+<h3 class="text-6xl font-black mb-2" id="stat-p-guru">0</h3>
+<p class="text-xl font-bold text-gray-500 uppercase">Tenaga Pendidik</p>
+</div>
+<div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-xl border-t-8 border-secondary"><i class="fas fa-user-tie text-5xl text-secondary mb-4"></i>
+<h3 class="text-6xl font-black mb-2" id="stat-p-tu">0</h3>
+<p class="text-xl font-bold text-gray-500 uppercase">Tenaga Kependidikan</p>
+</div>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-5xl mx-auto text-center" id="profil-struktur">
+<h2 class="text-3xl md:text-4xl font-black mb-8 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary">
+                Struktur Organisasi</h2>
+<div class="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700">
+<img class="w-full object-contain rounded-2xl" id="img-struktur" loading="lazy" src=""/></div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-7xl mx-auto" id="guru">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">
+                Tenaga Pendidik (Guru)</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10" id="guru-container">
+<p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i>
+                    Mengambil direktori guru...</p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-7xl mx-auto" id="tu">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">
+                Tenaga Kependidikan (TU)</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10" id="tu-container">
+<p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i>
+                    Mengambil data staff...</p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-5xl mx-auto" id="detail-pegawai">
+<button class="mb-8 px-5 py-2 bg-gray-200 dark:bg-gray-800 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-700 transition" id="btn-back-pegawai" onclick="navigate('guru')"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+<div class="bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-10">
+<div class="w-full md:w-1/3 flex flex-col items-center text-center">
+<img class="w-48 h-64 object-cover rounded-2xl shadow-xl border-4 border-white dark:border-gray-700 mb-6 bg-gray-200" id="dp-foto" loading="lazy" src=""/>
+<span class="px-5 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-black tracking-wide shadow-sm" id="dp-status"></span>
+</div>
+<div class="w-full md:w-2/3">
+<h4 class="text-secondary font-bold uppercase tracking-widest mb-2 text-sm" id="dp-jabatan">Jabatan
+                    </h4>
+<h2 class="text-3xl md:text-4xl font-extrabold text-primary dark:text-white mb-8" id="dp-nama">Nama
+                        Lengkap</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8 text-base">
+<div class="border-b dark:border-gray-700 pb-2">
+<p class="text-gray-500 text-xs font-bold uppercase mb-1">NIP/NIPPPK/NIK</p>
+<p class="font-bold text-gray-800 dark:text-gray-200 text-lg font-mono" id="dp-nip">-</p>
+</div>
+<div class="border-b dark:border-gray-700 pb-2">
+<p class="text-gray-500 text-xs font-bold uppercase mb-1">Jenis Kelamin</p>
+<p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-jk">-</p>
+</div>
+<div class="border-b dark:border-gray-700 pb-2">
+<p class="text-gray-500 text-xs font-bold uppercase mb-1">Pangkat/Golongan</p>
+<p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-gol">-</p>
+</div>
+<div class="border-b dark:border-gray-700 pb-2">
+<p class="text-gray-500 text-xs font-bold uppercase mb-1">Mulai Tugas (TMT)</p>
+<p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-tmt">-</p>
+</div>
+<div class="border-b dark:border-gray-700 pb-2 md:col-span-2">
+<p class="text-gray-500 text-xs font-bold uppercase mb-1" id="dp-lbl-tugas">Tugas/Bagian</p>
+<p class="font-semibold text-gray-800 dark:text-gray-200 text-lg" id="dp-tugas">-</p>
+</div>
+<div class="border-b dark:border-gray-700 pb-2">
+<p class="text-gray-500 text-xs font-bold uppercase mb-1">No. HP / WA</p>
+<p class="font-semibold text-gray-800 dark:text-gray-200"><a class="text-blue-500 hover:underline" href="#" id="dp-nohp" target="_blank">-</a></p>
+</div>
+<div class="border-b dark:border-gray-700 pb-2 md:col-span-2">
+<p class="text-gray-500 text-xs font-bold uppercase mb-1">Email Pribadi</p>
+<p class="font-semibold text-gray-800 dark:text-gray-200" id="dp-email">-</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-6xl mx-auto" id="siswa">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">
+                Data Siswa &amp; Alumni</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+<div class="bg-primary text-white p-6">
+<h3 class="text-xl md:text-2xl font-bold"><i class="fas fa-users mr-2"></i> Siswa Aktif</h3>
+</div>
+<table class="w-full text-left text-sm md:text-lg">
+<thead class="bg-gray-50 dark:bg-gray-700">
+<tr>
+<th class="p-4">Kelas / Info</th>
+<th class="p-4 text-center">L</th>
+<th class="p-4 text-center">P</th>
+<th class="p-4 text-center">Total</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="tbl-siswa-aktif">
+<tr>
+<td class="p-4 text-center" colspan="4"><i class="fas fa-spinner fa-spin"></i>
+                                    Loading...</td>
+</tr>
+</tbody>
+<tfoot class="bg-gray-100 dark:bg-gray-700 font-black border-t-4 border-primary" id="foot-siswa-aktif"></tfoot>
+</table>
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+<div class="bg-secondary text-gray-900 p-6">
+<h3 class="text-xl md:text-2xl font-bold"><i class="fas fa-user-graduate mr-2"></i> Data Alumni
+                        </h3>
+</div>
+<table class="w-full text-left text-sm md:text-lg">
+<thead class="bg-gray-50 dark:bg-gray-700">
+<tr>
+<th class="p-4">Tahun / Lulusan</th>
+<th class="p-4 text-center">L</th>
+<th class="p-4 text-center">P</th>
+<th class="p-4 text-center">Total</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="tbl-alumni">
+<tr>
+<td class="p-4 text-center" colspan="4"><i class="fas fa-spinner fa-spin"></i>
+                                    Loading...</td>
+</tr>
+</tbody>
+<tfoot class="bg-gray-100 dark:bg-gray-700 font-black border-t-4 border-secondary" id="foot-alumni"></tfoot>
+</table>
+</div>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-7xl mx-auto" id="halaman-berita">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">
+                Berita Sekolah Terkini</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10" id="berita-utama-container">
+<p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i>
+                    Menarik berita arsip...</p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-7xl mx-auto" id="halaman-pengumuman">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">
+                Papan Pengumuman Resmi</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10" id="pengumuman-utama-container">
+<p class="col-span-full text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin mr-2"></i>
+                    Menarik data pengumuman...</p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-4xl mx-auto" id="detail-berita">
+<button class="mb-8 px-5 py-2 bg-gray-200 dark:bg-gray-800 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-700 transition" onclick="navigate('halaman-berita')"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+<img class="w-full aspect-[5/3] object-cover rounded-3xl shadow-2xl mb-8 border-4 border-white dark:border-gray-800" id="detail-img" loading="lazy" src=""/>
+<span class="px-4 py-1.5 bg-blue-100 text-primary rounded-full text-xs md:text-sm font-bold tracking-wide mr-2" id="detail-tgl"></span>
+<span class="px-4 py-1.5 bg-yellow-100 text-yellow-800 rounded-full text-xs md:text-sm font-bold tracking-wide" id="detail-cat"></span>
+<h1 class="text-3xl md:text-5xl font-extrabold mt-6 mb-8 text-gray-800 dark:text-white leading-tight" id="detail-judul"></h1>
+<div class="ql-editor prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-loose mb-12" id="detail-konten" style="padding:0; overflow:visible;"></div>
+<div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+<h4 class="font-bold text-gray-800 dark:text-white mb-4">Bagikan Informasi Ini:</h4>
+<div class="flex flex-wrap gap-3"><button class="px-4 py-2 bg-[#25D366] text-white rounded-xl font-bold shadow hover:bg-[#1ebe57] transition text-sm" onclick="bagikanBerita('wa')"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</button><button class="px-4 py-2 bg-[#1877F2] text-white rounded-xl font-bold shadow hover:bg-[#1464cc] transition text-sm" onclick="bagikanBerita('fb')"><i class="fab fa-facebook-f mr-2"></i> Facebook</button><button class="px-4 py-2 bg-black text-white rounded-xl font-bold shadow hover:bg-gray-800 transition text-sm" onclick="bagikanBerita('x')"><i class="fab fa-x-twitter mr-2"></i> Post</button><button class="px-4 py-2 bg-gray-500 text-white rounded-xl font-bold shadow hover:bg-gray-600 transition text-sm" onclick="bagikanBerita('copy')"><i class="fas fa-link mr-2"></i> Salin Link</button></div>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-7xl mx-auto" id="galeri-foto">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-primary dark:text-secondary border-b-4 inline-block pb-3 border-secondary mx-auto block w-max">
+<i class="fas fa-camera-retro mr-2"></i> Galeri Foto Kegiatan</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8" id="galeri-foto-container">
+<p class="col-span-full text-center"><i class="fas fa-spinner fa-spin"></i></p>
+</div>
+</section>
+
+<section class="page-section py-24 px-4 max-w-7xl mx-auto" id="galeri-video">
+<h2 class="text-3xl md:text-4xl font-black text-center mb-16 text-red-600 dark:text-red-500 border-b-4 inline-block pb-3 border-red-500 mx-auto block w-max">
+<i class="fas fa-video mr-2"></i> Galeri Video Youtube</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10" id="galeri-video-container">
+<p class="col-span-full text-center"><i class="fas fa-spinner fa-spin"></i></p>
+</div>
+</section>
+

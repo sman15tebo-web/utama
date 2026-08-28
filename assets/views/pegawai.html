@@ -1,0 +1,97 @@
+<section class="page-section py-20 px-4 max-w-5xl mx-auto" id="pegawai-dashboard">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">
+                    Biodata Diri</h2>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 mb-10">
+<div class="mb-8 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8 bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl border border-dashed border-gray-300 dark:border-gray-600">
+<img class="w-28 h-36 aspect-[3/4] object-cover rounded-xl shadow border-4 border-white dark:border-gray-700 bg-gray-200" id="prev-pegawai-foto" loading="lazy" src=""/>
+<div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Pas Foto Resmi (Rasio
+                            3:4)</label><input accept="image/*" class="w-full text-sm p-2 border rounded bg-white dark:bg-gray-800" onchange="bukaCropper(event, 3/4, 'pegawai_foto', 'prev-pegawai-foto')" type="file"/></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div><label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIPPPK/NIK (Tidak bisa
+                            diubah)</label><input class="w-full px-4 py-3 border rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-500 cursor-not-allowed outline-none font-mono font-bold" id="pegawai-nip" readonly="" type="text"/>
+</div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Nama Lengkap &amp; Gelar</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold" id="pegawai-nama" type="text"/></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Tempat Lahir</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-tempat-lahir" placeholder="Tempat Lahir Sesuai Ijazah" type="text"/></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Tanggal Lahir</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-tgl-lahir" type="date"/></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Jenis Kelamin</label><select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-jk">
+<option value="">-- Pilih --</option>
+<option value="Laki-Laki">Laki-Laki</option>
+<option value="Perempuan">Perempuan</option>
+</select></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Pangkat / Golongan</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-golongan" placeholder="Cth: Penata Muda Tk.I/ III.b" type="text"/></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Status Kepegawaian</label><select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-status">
+<option value="">-- Pilih --</option>
+<option value="PNS">PNS</option>
+<option value="PPPK">PPPK</option>
+<option value="PPPK PW">PPPK PW</option>
+<option value="GTT / PTT">GTT / PTT</option>
+<option value="Pegawai Tetap Yayasan">Pegawai Tetap Yayasan</option>
+</select></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">TMT Pegawai (Mulai
+                            Tugas)</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-tmt" type="date"/></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Jabatan</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-jabatan" placeholder="Cth: Waka Kur/Guru Mapel / Pelaksana TU" type="text"/></div>
+<div id="wrap-pegawai-mapel"><label class="block text-xs font-bold text-gray-500 mb-1" id="lbl-pegawai-tugas">Mapel (Guru)/Bagian(TU)</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pegawai-tugas" placeholder="Cth: Matematika / Administrasi Kesiswaan" type="text"/></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">No HP / WA</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold text-green-600" id="pegawai-no_hp" placeholder="Cth: 08123456789" type="text"/>
+</div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1">Email Pribadi</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none text-blue-500" id="pegawai-email" placeholder="Cth: nama@email.com" type="email"/>
+</div>
+</div>
+<div class="mt-10 border-t dark:border-gray-700 pt-8"><button class="w-full py-4 bg-green-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-green-700 transition" onclick="simpanDataDiriPegawai()"><i class="fas fa-save mr-2"></i> Perbarui Data Diri</button></div>
+</div>
+</section>
+
+<section class="page-section py-20 px-4 max-w-5xl mx-auto" id="pegawai-galeri">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">
+                    Upload Galeri</h2>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+<p class="text-sm text-gray-500 mb-6 border-b dark:border-gray-700 pb-4">Postingan galeri akan otomatis
+                    mencantumkan nama Anda di halaman publik.</p>
+<select class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-purple-600 dark:text-purple-400" id="pg-kategori" onchange="ubahTipeGaleriPegawai()">
+<option value="Foto">Kategori: Galeri Foto</option>
+<option value="Video">Kategori: Galeri Video (YouTube)</option>
+</select>
+<input class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold" id="pg-judul" placeholder="Judul Kegiatan" type="text"/>
+<textarea class="w-full px-5 py-3 border rounded-xl mb-5 dark:bg-gray-700 outline-none" id="pg-deskripsi" placeholder="Deskripsi singkat kegiatan..." rows="2"></textarea>
+<div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600" id="wrap-pg-foto">
+<label class="block text-sm font-bold mb-2">Pilih Foto Kegiatan (Crop 5:3)</label>
+<input accept="image/*" class="w-full text-sm" id="file-pg-foto" onchange="bukaCropper(event, 5/3, 'galeri', 'prev-pg-galeri')" type="file"/>
+<img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-pg-galeri"/>
+</div>
+<div class="mb-6" id="wrap-pg-video" style="display:none;">
+<label class="block text-sm font-bold mb-2 ml-1">Link Embed Video Youtube</label>
+<input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 outline-none text-red-500 font-mono" id="pg-video" placeholder="Contoh: https://www.youtube.com/embed/..." type="text"/>
+</div>
+<button class="w-full py-4 bg-purple-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-purple-700 transition" onclick="simpanGaleriPegawai()"><i class="fas fa-upload mr-2"></i> Upload ke Publik</button>
+</div>
+</section>
+
+<section class="page-section py-20 px-4 max-w-5xl mx-auto" id="pegawai-berita">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">
+                    Tulis Berita</h2>
+</div>
+<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+<select class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-primary dark:text-white" id="pg-b-kategori">
+<option value="Berita">Kategori: BERITA</option>
+<option value="Pengumuman">Kategori: PENGUMUMAN</option>
+</select>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+<div class="md:col-span-2"><input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="pg-b-judul" placeholder="Judul Berita" type="text"/></div>
+<div><label class="block text-[10px] font-bold text-gray-500 ml-1">Tgl Publish (Kosong=Hari
+                            ini)</label>
+<input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold text-gray-500" id="pg-b-tanggal" type="datetime-local"/>
+</div>
+</div>
+<div class="mb-4 rounded-xl overflow-hidden border dark:border-gray-600 bg-white text-gray-800">
+<div id="pg-b-konten" style="height: 250px; font-size: 16px;"></div>
+</div>
+<div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Utama (Crop 5:3)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 5/3, 'berita_guru', 'prev-pg-berita')" type="file"/><img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-pg-berita"/></div>
+<button class="w-full py-4 bg-blue-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-blue-700 transition" onclick="simpanBeritaPegawai()"><i class="fas fa-paper-plane mr-2"></i> Publikasikan Berita</button>
+</div>
+</section>
+
