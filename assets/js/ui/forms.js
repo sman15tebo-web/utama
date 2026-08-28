@@ -72,6 +72,30 @@ function siapkanEdit(modul, id) {
 
 function gagalSimpan(err) { document.getElementById('loader').style.display = 'none'; stopTimer(); Swal.fire('Sistem Sibuk', err.toString(), 'error'); }
 
+function resetPasswordPegawai(modul, id) {
+    Swal.fire({
+        title: 'Reset Password?',
+        html: 'Password <b>' + (modul === 'guru' ? 'Guru' : 'TU') + '</b> ini akan direset ke <b>123456</b>.<br>Pegawai <b>wajib mengganti</b> password baru saat login berikutnya.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f59e0b',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '<i class="fas fa-key mr-1"></i> Ya, Reset!',
+        cancelButtonText: 'Batal'
+    }).then(function(result) {
+        if (result.isConfirmed) {
+            document.getElementById('loader-text').innerText = 'Mereset password...'; document.getElementById('loader').style.display = 'flex'; startTimer();
+            callAPI('resetPasswordPegawai', { token: curToken, modul: modul, id: id }).then(function(res) {
+                document.getElementById('loader').style.display = 'none'; stopTimer();
+                if (res.status === 'success') {
+                    Swal.fire({ title: '\u2705 Password Direset!', text: 'Password pegawai telah diset ke 123456. Pegawai wajib ganti saat login.', icon: 'success', timer: 2500, showConfirmButton: false });
+                } else { Swal.fire('Gagal', res.message, 'error'); }
+            }).catch(gagalSimpan);
+        }
+    });
+}
+
+
 async function simpanAtauUpdate(modul) {
     var d = {}; var base64 = cropData[modul]; var isEdit = editDataId[modul] !== null;
     if (modul === 'berita') {
