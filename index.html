@@ -340,28 +340,24 @@
      </i>
     </button>
     <div class="hidden md:flex space-x-6 items-center text-sm font-bold">
+     <button class="hover:text-secondary transition" onclick="navigate('pegawai-dash')">
+      <i class="fas fa-chart-line mr-1"></i> Dashboard
+     </button>
      <button class="hover:text-secondary transition" onclick="navigate('pegawai-dashboard')">
-      <i class="fas fa-id-card mr-1">
-      </i>
-      Profil Saya
+      <i class="fas fa-id-card mr-1"></i> Profil Saya
+     </button>
+     <button class="hover:text-secondary transition" onclick="navigate('ubah-password')">
+      <i class="fas fa-key mr-1"></i> Akun
      </button>
      <button class="hover:text-secondary transition" onclick="navigate('pegawai-galeri')">
-      <i class="fas fa-camera-retro mr-1">
-      </i>
-      Galeri
+      <i class="fas fa-camera-retro mr-1"></i> Galeri
      </button>
      <button class="hover:text-secondary transition hidden" id="menu-berita-pegawai" onclick="navigate('pegawai-berita')">
-      <i class="fas fa-newspaper mr-1">
-      </i>
-      Tulis
-                    Berita
+      <i class="fas fa-newspaper mr-1"></i> Berita
      </button>
-     <span class="border-l border-green-600 h-6 mx-2">
-     </span>
+     <span class="border-l border-green-600 h-6 mx-2"></span>
      <button class="hover:text-secondary transition" onclick="navigate('home')">
-      <i class="fas fa-globe mr-1">
-      </i>
-      Web Publik
+      <i class="fas fa-globe mr-1"></i> Web Publik
      </button>
      <button class="px-4 py-1.5 bg-red-600 rounded shadow hover:bg-red-700 transition" onclick="logout()">
       Logout
@@ -369,31 +365,26 @@
     </div>
    </div>
    <div class="hidden md:hidden absolute top-16 left-0 w-full bg-green-700 border-b-4 border-secondary flex-col font-bold text-sm z-40" id="mobile-pegawai">
+    <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-dash')">
+     <i class="fas fa-chart-line mr-2"></i> Dashboard
+    </button>
     <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-dashboard')">
-     <i class="fas fa-id-card mr-2">
-     </i>
-     Profil Saya
+     <i class="fas fa-id-card mr-2"></i> Profil Saya
+    </button>
+    <button class="p-4 text-left border-b border-green-600" onclick="navigate('ubah-password')">
+     <i class="fas fa-key mr-2"></i> Ubah Password
     </button>
     <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-galeri')">
-     <i class="fas fa-camera-retro mr-2">
-     </i>
-     Upload Galeri
+     <i class="fas fa-camera-retro mr-2"></i> Upload Galeri
     </button>
     <button class="p-4 text-left border-b border-green-600 hidden" id="menu-berita-pegawai-mob" onclick="navigate('pegawai-berita')">
-     <i class="fas fa-newspaper mr-2">
-     </i>
-     Tulis
-                Berita
+     <i class="fas fa-newspaper mr-2"></i> Tulis Berita
     </button>
     <button class="p-4 text-left border-b border-green-600" onclick="navigate('home')">
-     <i class="fas fa-globe mr-2">
-     </i>
-     Lihat Web Publik
+     <i class="fas fa-globe mr-2"></i> Lihat Web Publik
     </button>
     <button class="p-4 text-left text-red-200" onclick="logout()">
-     <i class="fas fa-sign-out-alt mr-2">
-     </i>
-     Logout
+     <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
    </div>
   </nav>
@@ -436,40 +427,25 @@
    </button>
   </div>
   <div class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-[60] px-2 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]" id="bottom-nav-pegawai">
+   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" onclick="navigate('pegawai-dash')">
+    <i class="fas fa-chart-line text-xl mb-1"></i>
+    <span class="text-[10px] font-bold">Dashboard</span>
+   </button>
    <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" onclick="navigate('pegawai-dashboard')">
-    <i class="fas fa-user-circle text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Profil
-    </span>
+    <i class="fas fa-id-card text-xl mb-1"></i>
+    <span class="text-[10px] font-bold">Profil</span>
+   </button>
+   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" onclick="navigate('ubah-password')">
+    <i class="fas fa-key text-xl mb-1"></i>
+    <span class="text-[10px] font-bold">Akun</span>
    </button>
    <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" id="btn-bot-berita-pegawai" onclick="navigate('pegawai-berita')">
-    <i class="fas fa-newspaper text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Berita
-    </span>
+    <i class="fas fa-newspaper text-xl mb-1"></i>
+    <span class="text-[10px] font-bold">Berita</span>
    </button>
    <button class="flex-1 flex flex-col items-center py-1 text-primary hover:text-blue-800 dark:text-blue-400" onclick="navigate('home')">
-    <i class="fas fa-globe text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Web Publik
-    </span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" onclick="navigate('pegawai-galeri')">
-    <i class="fas fa-camera-retro text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Galeri
-    </span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-red-500 hover:text-red-700" onclick="logout()">
-    <i class="fas fa-sign-out-alt text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Logout
-    </span>
+    <i class="fas fa-globe text-xl mb-1"></i>
+    <span class="text-[10px] font-bold">Publik</span>
    </button>
   </div>
   <div class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-[60] px-4 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]" id="bottom-nav-admin">
