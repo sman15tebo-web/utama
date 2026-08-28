@@ -27,20 +27,22 @@ function prosesLogin() {
                 document.getElementById('nav-pegawai').classList.remove('hidden');
                 document.getElementById('bottom-nav-publik').classList.add('hidden');
                 document.getElementById('bottom-nav-pegawai').classList.remove('hidden');
-                siapkanFormPegawai();
-                navigate('pegawai-dashboard');
-
-                // Cek apakah harus ganti password
-                if (res.must_change_password) {
-                    setTimeout(function() {
-                        var emailPre = res.email || '';
-                        var fp = document.getElementById('fp-email');
-                        if (fp && emailPre) fp.value = emailPre;
-                        bukaModal('modal-forced-pass');
-                    }, 1700);
-                } else {
-                    Swal.fire({ title: 'Selamat Datang, ' + res.nama, icon: 'success', timer: 1500, showConfirmButton: false });
-                }
+                
+                Promise.resolve(navigate('pegawai-dashboard')).then(function() {
+                    siapkanFormPegawai();
+                    
+                    // Cek apakah harus ganti password
+                    if (res.must_change_password) {
+                        setTimeout(function() {
+                            var emailPre = res.email || '';
+                            var fp = document.getElementById('fp-email');
+                            if (fp && emailPre) fp.value = emailPre;
+                            bukaModal('modal-forced-pass');
+                        }, 500);
+                    } else {
+                        Swal.fire({ title: 'Selamat Datang, ' + res.nama, icon: 'success', timer: 1500, showConfirmButton: false });
+                    }
+                });
             }
         } else { Swal.fire('Gagal Login', res.message, 'error'); }
     }).catch(gagalSimpan);
