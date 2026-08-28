@@ -31,9 +31,9 @@ function renderSemuaData(data) {
                 tSlid += '<div class="slide-item ' + (s === 0 ? 'active' : '') + ' bg-cover bg-center" style="background-image: url(\'' + iUrl + '\');"><div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center px-4"><h1 class="text-2xl md:text-6xl font-extrabold text-white mb-2 md:mb-4 drop-shadow-2xl">' + amankanTeks(isld.judul || '') + '</h1><p class="text-sm md:text-2xl text-gray-200 mb-4 md:mb-8 max-w-3xl drop-shadow-md">' + amankanTeks(isld.subjudul || '') + '</p></div></div>';
                 tTblSl += '<tr class="border-b dark:border-gray-700"><td class="p-3"><img src="' + iUrl + '" loading="lazy" class="h-10 w-16 aspect-[7/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(isld.judul || '-') + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'slider\',\'' + isld.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'slider\',\'' + isld.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
             }
-            sContainer.innerHTML = tSlid; document.getElementById('tbl-slider').innerHTML = tTblSl; jalankanSlider();
+            setHTMLAman('slider-container', tSlid); setHTMLAman('tbl-slider', tTblSl); jalankanSlider();
         } else {
-            sContainer.innerHTML = '<div class="slide-item active bg-cover bg-center" style="background-image: url(\'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600\');"><div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center px-4"><h1 class="text-3xl md:text-6xl font-extrabold text-white mb-4">Selamat Datang</h1><p class="text-lg md:text-2xl text-gray-200 mb-8">Tambahkan Slider di Admin.</p></div></div>'; document.getElementById('tbl-slider').innerHTML = '<tr><td colspan="3" class="p-4 text-center">Belum ada slider</td></tr>';
+            setHTMLAman('slider-container', '<div class="slide-item active bg-cover bg-center" style="background-image: url(\'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600\');"><div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center px-4"><h1 class="text-3xl md:text-6xl font-extrabold text-white mb-4">Selamat Datang</h1><p class="text-lg md:text-2xl text-gray-200 mb-8">Tambahkan Slider di Admin.</p></div></div>'); setHTMLAman('tbl-slider', '<tr><td colspan="3" class="p-4 text-center">Belum ada slider</td></tr>');
         }
 
         var htmlExt = '', tblExt = ''; var eData = data.eksternal || [];
@@ -43,8 +43,8 @@ function renderSemuaData(data) {
             htmlExt += '<a href="' + amankanTeks(ex.url) + '" target="_blank" title="' + amankanTeks(ex.nama) + '" class="block hover:-translate-y-2 hover:scale-110 transition duration-300 p-2"><img src="' + eIco + '" class="w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-lg mx-auto"></a>';
             tblExt += '<tr class="border-b dark:border-gray-700"><td class="p-3"><img src="' + eIco + '" class="h-10 w-10 object-contain rounded bg-white shadow"></td><td class="p-3 font-bold">' + amankanTeks(ex.nama || '-') + '</td><td class="p-3 text-blue-500 underline truncate max-w-xs">' + amankanTeks(ex.url || '-') + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'eksternal\',\'' + ex.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'eksternal\',\'' + ex.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
         }
-        if (htmlExt !== '') { document.getElementById('eksternal-container').innerHTML = htmlExt; document.getElementById('widget-eksternal').classList.remove('hidden'); } else { document.getElementById('widget-eksternal').classList.add('hidden'); }
-        document.getElementById('tbl-eksternal').innerHTML = tblExt || '<tr><td colspan="4" class="p-4 text-center">Belum ada tautan.</td></tr>';
+        if (htmlExt !== '') { setHTMLAman('eksternal-container', htmlExt); var wE = document.getElementById('widget-eksternal'); if(wE) wE.classList.remove('hidden'); } else { var wE = document.getElementById('widget-eksternal'); if(wE) wE.classList.add('hidden'); }
+        setHTMLAman('tbl-eksternal', tblExt || '<tr><td colspan="4" class="p-4 text-center">Belum ada tautan.</td></tr>');
 
         var tSis = '', tAlm = '', tTSis = '', cSiswa = 0, cAlumni = 0; var sL = 0, sP = 0, aL = 0, aP = 0;
         for (var x = 0; x < (data.siswa || []).length; x++) {
@@ -57,9 +57,9 @@ function renderSemuaData(data) {
             else if (s.kategori === 'Alumni') { cAlumni += tot; aL += l; aP += p; tAlm += '<tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><td class="p-4 font-bold text-secondary">' + amankanTeks(s.label) + pdfIco + '</td><td class="p-4 text-center text-blue-500 font-bold">' + l + '</td><td class="p-4 text-center text-pink-500 font-bold">' + p + '</td><td class="p-4 text-center font-black">' + tot + '</td></tr>'; }
         }
         setTextAman('stat-siswa', cSiswa); setTextAman('stat-alumni', cAlumni); setTextAman('stat-siswa-dash', cSiswa);
-        document.getElementById('tbl-siswa-aktif').innerHTML = tSis || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'; document.getElementById('foot-siswa-aktif').innerHTML = '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + sL + '</td><td class="p-4 text-center text-pink-600">' + sP + '</td><td class="p-4 text-center text-xl">' + cSiswa + '</td></tr>';
-        document.getElementById('tbl-alumni').innerHTML = tAlm || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'; document.getElementById('foot-alumni').innerHTML = '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + aL + '</td><td class="p-4 text-center text-pink-600">' + aP + '</td><td class="p-4 text-center text-xl">' + cAlumni + '</td></tr>';
-        document.getElementById('tbl-admin-siswa').innerHTML = tTSis;
+        setHTMLAman('tbl-siswa-aktif', tSis || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-siswa-aktif', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + sL + '</td><td class="p-4 text-center text-pink-600">' + sP + '</td><td class="p-4 text-center text-xl">' + cSiswa + '</td></tr>');
+        setHTMLAman('tbl-alumni', tAlm || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-alumni', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + aL + '</td><td class="p-4 text-center text-pink-600">' + aP + '</td><td class="p-4 text-center text-xl">' + cAlumni + '</td></tr>');
+        setHTMLAman('tbl-admin-siswa', tTSis);
 
         function renderPerson(arr, cId, tblId, mdl) {
             var th = '', tbl = '';
@@ -112,16 +112,31 @@ function renderSemuaData(data) {
 
             // Tampilkan semua di Tabel Admin, beri badge "Terjadwal" jika belum waktunya
             var badgeJadwal = belumWaktunya ? '<br><span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-bold">Terjadwal</span>' : '';
-            tTblBerita += '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 ' + (isP ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-primary') + ' rounded text-xs font-bold">' + (isP ? 'Pengumuman' : 'Berita') + '</span></td><td class="p-3"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul || '-') + badgeJadwal + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="bukaBerita(\'' + ib.id + '\')" class="text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-eye"></i></button><button onclick="siapkanEdit(\'berita\',\'' + ib.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\'' + ib.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
-
+        var tTblPengumuman = '';
+        for (var v = 0; v < gabungRev.length; v++) {
+            var ib = gabungRev[v]; if (!ib.id) continue;
+            var isP = ((ib.kategori || '').toString().toLowerCase().indexOf('pengumuman') !== -1);
+            var badgeJadwal = '';
+            var nowWaktu = new Date().getTime();
+            var tglPost = new Date(ib.tanggal).getTime();
+            var belumWaktunya = (!isNaN(tglPost) && tglPost > nowWaktu);
+            
+            var btnAksi = '<td class="p-3 text-center whitespace-nowrap"><button onclick="bukaBerita(\'' + ib.id + '\')" class="text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-eye"></i></button><button onclick="siapkanEdit(\'berita\',\'' + ib.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\'' + ib.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+            var trData = '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 ' + (isP ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-primary') + ' rounded text-xs font-bold">' + (isP ? 'Pengumuman' : 'Berita') + '</span></td><td class="p-3"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul || '-') + badgeJadwal + '</td>' + btnAksi;
+            
+            if (isP) tTblPengumuman += trData;
+            else tTblBerita += trData;
+            
             // Jangan render ke publik jika waktunya belum tiba
+            var cardHTML = '<div onclick="bukaBerita(\'' + ib.id + '\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6"><span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-[10px] md:text-xs font-bold mb-4">' + amankanTeks(ib.tanggal || '-') + '</span><h3 class="text-base md:text-lg font-black text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(ib.judul || '-') + '</h3></div></div>';
             if (!belumWaktunya) {
                 if (isP) htmlPengumuman += cardHTML; else htmlBerita += cardHTML;
             }
         }
-        document.getElementById('tbl-berita').innerHTML = tTblBerita;
-        document.getElementById('berita-utama-container').innerHTML = htmlBerita || '<p class="col-span-3 text-center">Belum ada berita.</p>';
-        document.getElementById('pengumuman-utama-container').innerHTML = htmlPengumuman || '<p class="col-span-3 text-center">Belum ada pengumuman.</p>';
+        setHTMLAman('tbl-berita', tTblBerita);
+        setHTMLAman('tbl-pengumuman', tTblPengumuman);
+        setHTMLAman('berita-utama-container', htmlBerita || '<p class="col-span-3 text-center">Belum ada berita.</p>');
+        setHTMLAman('pengumuman-utama-container', htmlPengumuman || '<p class="col-span-3 text-center">Belum ada pengumuman.</p>');
 
         // --- FILTER JUGA UNTUK HALAMAN BERANDA/HOME ---
         var lBerita = [], lPengumuman = [];
@@ -150,21 +165,30 @@ function renderSemuaData(data) {
         for (var p = 0; p < Math.min(3, lPengumuman.length); p++) {
             var hp = lPengumuman[p]; tHomeP += '<div onclick="bukaBerita(\'' + hp.id + '\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><img src="' + getValidImg(hp.gambar_url, '') + '" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6"><span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-[10px] md:text-xs font-bold mb-4">' + amankanTeks(hp.tanggal || '-') + '</span><h3 class="text-base md:text-lg font-black text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(hp.judul || '-') + '</h3></div></div>';
         }
-        document.getElementById('home-pengumuman-list').innerHTML = tHomeP || '<p class="col-span-3 text-center text-gray-500">Tidak ada pengumuman.</p>';
+        setHTMLAman('home-pengumuman-list', tHomeP || '<p class="col-span-3 text-center text-gray-500">Tidak ada pengumuman.</p>');
 
-        var tGaleriFoto = '', tGaleriVideo = '', tTblGaleri = ''; var gRev = (data.galeri || []).slice().reverse();
+        var tGaleriFoto = '', tGaleriVideo = '', tTblGaleri = '', tTblVideo = ''; var gRev = (data.galeri || []).slice().reverse();
         for (var k = 0; k < gRev.length; k++) {
             var igl = gRev[k]; if (!igl.id) continue; var kateg = amankanTeks(igl.kategori) || 'Foto'; var jdlAman = amankanTeks(igl.judul); var descAman = amankanTeks(igl.deskripsi); var vidUrl = amankanTeks(igl.video_url); var iUrlGal = getValidImg(igl.gambar_url, '');
 
-            var uploaderInfo = '<p class="text-xs text-yellow-400 mt-2 font-bold"><i class="fas fa-user mr-1"></i> ' + amankanTeks(igl.uploader || 'Admin') + ' � ' + amankanTeks(igl.tanggal || '-') + '</p>';
+            var uploaderInfo = '<p class="text-xs text-yellow-400 mt-2 font-bold"><i class="fas fa-user mr-1"></i> ' + amankanTeks(igl.uploader || 'Admin') + '  ' + amankanTeks(igl.tanggal || '-') + '</p>';
 
-            if (kateg === 'Video') { tGaleriVideo += '<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-700 hover:-translate-y-1 transition"><div class="aspect-video w-full bg-black"><iframe src="' + vidUrl + '" loading="lazy" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div><div class="p-6"><h4 class="font-bold text-lg md:text-xl text-gray-800 dark:text-white mb-2 line-clamp-2">' + jdlAman + '</h4><p class="text-sm text-gray-500 line-clamp-2">' + descAman + '</p>' + uploaderInfo + '</div></div>'; }
-            else { tGaleriFoto += '<div class="rounded-3xl overflow-hidden shadow-xl group relative border border-gray-100 dark:border-gray-800"><img src="' + iUrlGal + '" loading="lazy" class="w-full aspect-[5/3] object-cover group-hover:scale-110 transition duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-6"><h4 class="text-white font-bold text-lg md:text-xl drop-shadow-md line-clamp-1">' + jdlAman + '</h4><p class="text-gray-300 text-sm mt-1 line-clamp-2">' + descAman + '</p>' + uploaderInfo + '</div></div>'; }
+            if (kateg === 'Video') { 
+                tGaleriVideo += '<div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-700 hover:-translate-y-1 transition"><div class="aspect-video w-full bg-black"><iframe src="' + vidUrl + '" loading="lazy" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div><div class="p-6"><h4 class="font-bold text-lg md:text-xl text-gray-800 dark:text-white mb-2 line-clamp-2">' + jdlAman + '</h4><p class="text-sm text-gray-500 line-clamp-2">' + descAman + '</p>' + uploaderInfo + '</div></div>'; 
+            } else { 
+                tGaleriFoto += '<div class="rounded-3xl overflow-hidden shadow-xl group relative border border-gray-100 dark:border-gray-800"><img src="' + iUrlGal + '" loading="lazy" class="w-full aspect-[5/3] object-cover group-hover:scale-110 transition duration-700"><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-6"><h4 class="text-white font-bold text-lg md:text-xl drop-shadow-md line-clamp-1">' + jdlAman + '</h4><p class="text-gray-300 text-sm mt-1 line-clamp-2">' + descAman + '</p>' + uploaderInfo + '</div></div>'; 
+            }
 
             var mediaIcon = (kateg === 'Video') ? '<div class="w-16 h-10 flex items-center justify-center bg-gray-200 rounded shadow"><i class="fab fa-youtube text-red-600 text-xl"></i></div>' : '<img src="' + iUrlGal + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow">'; var badgeStyle = (kateg === 'Video') ? 'bg-red-100 text-red-600' : 'bg-purple-100 text-purple-600';
-            tTblGaleri += '<tr class="border-b dark:border-gray-700"><td class="p-3 flex justify-center">' + mediaIcon + '</td><td class="p-3"><span class="px-2 py-1 ' + badgeStyle + ' rounded text-xs font-bold">' + kateg + '</span></td><td class="p-3 font-bold">' + jdlAman + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'galeri\',\'' + igl.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'galeri\',\'' + igl.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+            var trGal = '<tr class="border-b dark:border-gray-700"><td class="p-3 flex justify-center">' + mediaIcon + '</td><td class="p-3"><span class="px-2 py-1 ' + badgeStyle + ' rounded text-xs font-bold">' + kateg + '</span></td><td class="p-3 font-bold">' + jdlAman + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'galeri\',\'' + igl.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'galeri\',\'' + igl.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+            
+            if (kateg === 'Video') tTblVideo += trGal;
+            else tTblGaleri += trGal;
         }
-        document.getElementById('galeri-foto-container').innerHTML = tGaleriFoto || '<p class="col-span-full text-center text-gray-500">Belum ada koleksi foto.</p>'; document.getElementById('galeri-video-container').innerHTML = tGaleriVideo || '<p class="col-span-full text-center text-gray-500">Belum ada video kegiatan.</p>'; document.getElementById('tbl-galeri').innerHTML = tTblGaleri || '<tr><td colspan="4" class="p-4 text-center">Data galeri kosong</td></tr>';
+        setHTMLAman('galeri-foto-container', tGaleriFoto || '<p class="col-span-full text-center text-gray-500">Belum ada koleksi foto.</p>'); setHTMLAman('galeri-video-container', tGaleriVideo || '<p class="col-span-full text-center text-gray-500">Belum ada video kegiatan.</p>'); 
+        setHTMLAman('tbl-galeri', tTblGaleri || '<tr><td colspan="4" class="p-4 text-center">Data galeri foto kosong</td></tr>');
+        setHTMLAman('tbl-video', tTblVideo || '<tr><td colspan="4" class="p-4 text-center">Data galeri video kosong</td></tr>');
+
 
         var gabungPegawai = (data.guru || []).concat(data.tu || []); var wPegawai = document.getElementById('widget-pegawai');
         if (gabungPegawai.length > 0 && wPegawai) {
