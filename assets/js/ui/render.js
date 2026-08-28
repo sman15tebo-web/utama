@@ -16,9 +16,16 @@ function renderSemuaData(data) {
         setLinkAman('link-wa', getVal('wa', widArr) ? 'https://wa.me/' + amankanTeks(getVal('wa', widArr)) : ''); setLinkAman('link-ig', getVal('ig', widArr)); setLinkAman('link-fb', getVal('fb', widArr)); setLinkAman('link-email', getVal('email', widArr) ? 'mailto:' + amankanTeks(getVal('email', widArr)) : ''); setLinkAman('link-ppdb', getVal('link_ppdb', widArr)); setLinkAman('link-dinas', getVal('link_dinas', widArr)); setLinkAman('link-dapodik', getVal('link_dapodik', widArr));
 
         var ytVal = getVal('yt_url', widArr); var fbVal = getVal('fb_plugin', widArr); var calVal = getVal('cal_url', widArr);
-        if (ytVal) { document.getElementById('iframe-yt').src = amankanTeks(ytVal); document.getElementById('box-yt').style.display = 'block'; } else { document.getElementById('box-yt').style.display = 'none'; }
-        if (fbVal) { document.getElementById('iframe-fb').src = 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2F' + amankanTeks(fbVal) + '&tabs=timeline&width=340&height=250&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&appId'; document.getElementById('box-fb').style.display = 'block'; } else { document.getElementById('box-fb').style.display = 'none'; }
-        if (calVal) { document.getElementById('iframe-cal').src = amankanTeks(calVal); document.getElementById('box-cal').style.display = 'block'; } else { document.getElementById('box-cal').style.display = 'none'; }
+        
+        var eYt = document.getElementById('iframe-yt'); var bYt = document.getElementById('box-yt');
+        if (ytVal) { if (eYt) eYt.src = amankanTeks(ytVal); if (bYt) bYt.style.display = 'block'; } else { if (bYt) bYt.style.display = 'none'; }
+        
+        var eFb = document.getElementById('iframe-fb'); var bFb = document.getElementById('box-fb');
+        if (fbVal) { if (eFb) eFb.src = 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2F' + amankanTeks(fbVal) + '&tabs=timeline&width=340&height=250&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&appId'; if (bFb) bFb.style.display = 'block'; } else { if (bFb) bFb.style.display = 'none'; }
+        
+        var eCal = document.getElementById('iframe-cal'); var bCal = document.getElementById('box-cal');
+        if (calVal) { if (eCal) eCal.src = amankanTeks(calVal); if (bCal) bCal.style.display = 'block'; } else { if (bCal) bCal.style.display = 'none'; }
+        
         setValAman('wid-wa', getVal('wa', widArr)); setValAman('wid-email', getVal('email', widArr)); setValAman('wid-ig', getVal('ig', widArr)); setValAman('wid-fb', getVal('fb', widArr)); setValAman('wid-ppdb', getVal('link_ppdb', widArr)); setValAman('wid-dinas', getVal('link_dinas', widArr)); setValAman('wid-dapodik', getVal('link_dapodik', widArr)); setValAman('wid-yt', ytVal); setValAman('wid-fb-plugin', fbVal); setValAman('wid-cal', calVal);
 
         setTextAman('stat-guru', (data.guru ? data.guru.length : 0) + (data.tu ? data.tu.length : 0)); setTextAman('stat-p-guru', (data.guru ? data.guru.length : 0)); setTextAman('stat-p-tu', (data.tu ? data.tu.length : 0)); setTextAman('stat-berita', (data.berita ? data.berita.length : 0));
