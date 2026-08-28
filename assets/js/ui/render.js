@@ -88,15 +88,15 @@ function renderSemuaData(data) {
         }
         renderPerson(data.guru, 'guru-container', 'tbl-guru-admin', 'guru'); renderPerson(data.tu, 'tu-container', 'tbl-admin-tu', 'tu');
 
-        var htmlBerita = '', htmlPengumuman = '', tTblBerita = '';
+        var htmlBerita = '', htmlPengumuman = '', tTblBerita = '', tTblPengumuman = '';
         var gabungRev = (data.berita || []).slice().reverse();
         var nowWaktu = new Date().getTime(); // Ambil waktu sekarang
 
         for (var v = 0; v < gabungRev.length; v++) {
             var ib = gabungRev[v]; if (!ib.id) continue;
             var isP = ((ib.kategori || '').toString().toLowerCase().indexOf('pengumuman') !== -1);
-
-            // --- CEK APAKAH WAKTU PUBLISH DI MASA DEPAN ---
+            var badgeJadwal = '';
+            
             var tglPost = new Date(ib.tanggal).getTime();
             var belumWaktunya = (!isNaN(tglPost) && tglPost > nowWaktu);
 
@@ -108,18 +108,9 @@ function renderSemuaData(data) {
 
             var tmp = document.createElement("DIV"); tmp.innerHTML = ib.konten; var plainText = tmp.textContent || tmp.innerText || "";
             var penulisInfo = ib.penulis ? '<span class="text-xs text-gray-500 ml-2 font-bold"><i class="fas fa-user-edit text-primary"></i> ' + amankanTeks(ib.penulis) + '</span>' : '';
-            var cardHTML = '<div onclick="bukaBerita(\'' + ib.id + '\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6 md:p-8">' + (isP ? '<span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-[10px] md:text-xs font-bold mb-4">Pengumuman</span>' : '<span class="inline-block px-3 py-1 bg-blue-100 text-primary rounded-full text-[10px] md:text-xs font-bold mb-4">Berita</span>') + '<span class="inline-block px-3 py-1 text-gray-500 text-xs font-bold mb-4 ml-2">' + tglFormat + '</span>' + penulisInfo + '<h3 class="text-xl md:text-2xl font-black mb-3 text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(ib.judul || '-') + '</h3><p class="text-sm text-gray-500 line-clamp-2 leading-relaxed">' + plainText + '</p></div></div>';
-
+            
             // Tampilkan semua di Tabel Admin, beri badge "Terjadwal" jika belum waktunya
             var badgeJadwal = belumWaktunya ? '<br><span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-bold">Terjadwal</span>' : '';
-        var tTblPengumuman = '';
-        for (var v = 0; v < gabungRev.length; v++) {
-            var ib = gabungRev[v]; if (!ib.id) continue;
-            var isP = ((ib.kategori || '').toString().toLowerCase().indexOf('pengumuman') !== -1);
-            var badgeJadwal = '';
-            var nowWaktu = new Date().getTime();
-            var tglPost = new Date(ib.tanggal).getTime();
-            var belumWaktunya = (!isNaN(tglPost) && tglPost > nowWaktu);
             
             var btnAksi = '<td class="p-3 text-center whitespace-nowrap"><button onclick="bukaBerita(\'' + ib.id + '\')" class="text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-eye"></i></button><button onclick="siapkanEdit(\'berita\',\'' + ib.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\'' + ib.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
             var trData = '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 ' + (isP ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-primary') + ' rounded text-xs font-bold">' + (isP ? 'Pengumuman' : 'Berita') + '</span></td><td class="p-3"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul || '-') + badgeJadwal + '</td>' + btnAksi;
@@ -127,8 +118,9 @@ function renderSemuaData(data) {
             if (isP) tTblPengumuman += trData;
             else tTblBerita += trData;
             
+            var cardHTML = '<div onclick="bukaBerita(\'' + ib.id + '\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6 md:p-8">' + (isP ? '<span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-[10px] md:text-xs font-bold mb-4">Pengumuman</span>' : '<span class="inline-block px-3 py-1 bg-blue-100 text-primary rounded-full text-[10px] md:text-xs font-bold mb-4">Berita</span>') + '<span class="inline-block px-3 py-1 text-gray-500 text-xs font-bold mb-4 ml-2">' + tglFormat + '</span>' + penulisInfo + '<h3 class="text-xl md:text-2xl font-black mb-3 text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(ib.judul || '-') + '</h3><p class="text-sm text-gray-500 line-clamp-2 leading-relaxed">' + plainText + '</p></div></div>';
+            
             // Jangan render ke publik jika waktunya belum tiba
-            var cardHTML = '<div onclick="bukaBerita(\'' + ib.id + '\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6"><span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-[10px] md:text-xs font-bold mb-4">' + amankanTeks(ib.tanggal || '-') + '</span><h3 class="text-base md:text-lg font-black text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(ib.judul || '-') + '</h3></div></div>';
             if (!belumWaktunya) {
                 if (isP) htmlPengumuman += cardHTML; else htmlBerita += cardHTML;
             }
