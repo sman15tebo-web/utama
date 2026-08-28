@@ -200,7 +200,7 @@ function renderSemuaData(data) {
             jalankanSlidePegawai(); if (window.wPegawaiInt) clearInterval(window.wPegawaiInt); window.wPegawaiInt = setInterval(jalankanSlidePegawai, 3500);
         } else if (wPegawai) { wPegawai.innerHTML = '<p class="text-sm text-gray-500">Belum ada pegawai.</p>'; }
         
-        if ((curRole === 'guru' || curRole === 'tu') && typeof siapkanFormPegawai === 'function') {
+        if ((curRole === 'guru' || curRole === 'tu') && typeof siapkanFormPegawai === 'function' && document.getElementById('pegawai-nip')) {
             siapkanFormPegawai();
         }
 
