@@ -8,36 +8,36 @@
         </div>
         <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto font-medium">
             <p class="px-4 text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Main Menu</p>
-            <a href="#" onclick="switchAdminMenu('admin-dash')" id="menu-admin-dash" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 transition-all"><i class="fas fa-home w-5 text-center"></i> Dashboard</a>
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-dash')" id="menu-admin-dash" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 transition-all"><i class="fas fa-home w-5 text-center"></i> Dashboard</a>
             
-            <a href="#" onclick="switchAdminMenu('admin-posting')" id="menu-admin-posting" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-newspaper w-5 text-center"></i> Posting</a>
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-posting')" id="menu-admin-posting" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-newspaper w-5 text-center"></i> Posting</a>
             
-            <a href="#" onclick="switchAdminMenu('admin-pegawai')" id="menu-admin-pegawai" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-chalkboard-teacher w-5 text-center"></i> Pegawai</a>
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-pegawai')" id="menu-admin-pegawai" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-chalkboard-teacher w-5 text-center"></i> Pegawai</a>
             
-            <a href="#" onclick="switchAdminMenu('admin-siswa')" id="menu-admin-siswa" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-user-graduate w-5 text-center"></i> Siswa & Alumni</a>
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-siswa')" id="menu-admin-siswa" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-user-graduate w-5 text-center"></i> Siswa & Alumni</a>
             
-            <a href="#" onclick="switchAdminMenu('admin-galeri')" id="menu-admin-galeri" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-images w-5 text-center"></i> Media Galeri</a>
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-galeri')" id="menu-admin-galeri" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-images w-5 text-center"></i> Media Galeri</a>
             
             <p class="px-4 text-xs font-bold text-slate-500 mb-2 mt-6 uppercase tracking-wider">Sistem</p>
             
-            <a href="#" onclick="switchAdminMenu('admin-pengaturan')" id="menu-admin-pengaturan" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-cogs w-5 text-center"></i> Pengaturan Web</a>
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-pengaturan')" id="menu-admin-pengaturan" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-cogs w-5 text-center"></i> Pengaturan Web</a>
             
-            <a href="#" onclick="switchAdminMenu('admin-link')" id="menu-admin-link" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-link w-5 text-center"></i> Tautan Aplikasi</a>
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-link')" id="menu-admin-link" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-link w-5 text-center"></i> Tautan Aplikasi</a>
         </nav>
-        <div class="p-4 border-t border-gray-100">
-            <a href="#" onclick="navigate('home')" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 font-bold hover:text-white hover:bg-slate-800 transition"><i class="fas fa-globe w-5"></i> Web Publik</a>
-            <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-3 mt-1 rounded-xl text-red-400 font-bold hover:text-white hover:bg-red-500/20 transition"><i class="fas fa-sign-out-alt w-5"></i> Keluar</a>
+        <div class="p-4 border-t border-gray-100 text-center text-xs text-gray-400 font-bold">
+            AdminPro 1.0
         </div>
     </aside>
 
     <!-- Main Content Area -->
     <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50 dark:bg-gray-900">
-        <!-- Topbar Mobile -->
-        <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 px-6 py-4 flex items-center justify-between md:hidden z-10">
-            <h2 class="text-xl font-black tracking-wider text-gray-800 dark:text-white">ADMIN<span class="text-blue-500">PRO</span></h2>
+        <!-- Topbar -->
+        <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
+            <h2 class="text-xl font-black tracking-wider text-gray-800 dark:text-white md:hidden">ADMIN<span class="text-blue-500">PRO</span></h2>
+            <h2 class="text-xl font-bold tracking-wider text-gray-800 dark:text-gray-200 hidden md:block">Panel Kontrol</h2>
             <div class="flex gap-4">
-                <button onclick="navigate('home')" class="text-gray-500 hover:text-blue-500"><i class="fas fa-globe text-xl"></i></button>
-                <button onclick="logout()" class="text-gray-500 hover:text-red-500"><i class="fas fa-sign-out-alt text-xl"></i></button>
+                <button onclick="navigate('home')" class="flex items-center gap-2 text-gray-500 hover:text-blue-600 font-bold transition-colors"><i class="fas fa-globe text-xl md:text-base"></i> <span class="hidden md:inline">Web Publik</span></button>
+                <button onclick="logout()" class="flex items-center gap-2 text-gray-500 hover:text-red-600 font-bold transition-colors"><i class="fas fa-sign-out-alt text-xl md:text-base"></i> <span class="hidden md:inline">Keluar</span></button>
             </div>
         </header>
 
