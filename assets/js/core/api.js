@@ -1,5 +1,5 @@
 function startTimer() {
-    var t = 15; var el = document.getElementById('loader-timer'); if (el) el.innerText = t;
+    var t = 3; var el = document.getElementById('loader-timer'); if (el) el.innerText = t;
     clearInterval(loadingInterval);
     loadingInterval = setInterval(function () {
         t--;
