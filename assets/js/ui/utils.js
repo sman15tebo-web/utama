@@ -18,6 +18,8 @@ function getVal(k, arrData) { if (!arrData) return ''; for (var i = arrData.leng
 
 function setTextAman(id, teks) { var el = document.getElementById(id); if (el) el.innerText = teks; }
 
+function setHTMLAman(id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; }
+
 function setValAman(id, teks) { var el = document.getElementById(id); if (el) el.value = teks; }
 
 function setLinkAman(id, url) { var el = document.getElementById(id); if (el) { el.href = amankanTeks(url) || '#'; if (!url || url === '#') el.classList.add('hidden'); else el.classList.remove('hidden'); } }
