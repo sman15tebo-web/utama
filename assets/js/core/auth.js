@@ -22,13 +22,22 @@ function prosesLogin() {
                 document.getElementById('bottom-nav-publik').classList.add('hidden');
                 document.getElementById('bottom-nav-admin').classList.remove('hidden');
                 Swal.fire({ title: 'Selamat Datang Admin', icon: 'success', timer: 1500, showConfirmButton: false });
-                navigate('admin-dashboard');
+                Promise.resolve(navigate('admin-dashboard')).then(function() {
+                    if (dbGlobal && Object.keys(dbGlobal).length > 0) {
+                        renderSemuaData(dbGlobal);
+                    } else {
+                        muatDataServer();
+                    }
+                });
             } else {
                 document.getElementById('nav-pegawai').classList.remove('hidden');
                 document.getElementById('bottom-nav-publik').classList.add('hidden');
                 document.getElementById('bottom-nav-pegawai').classList.remove('hidden');
                 
                 Promise.resolve(navigate('pegawai-dash')).then(function() {
+                    if (dbGlobal && Object.keys(dbGlobal).length > 0) {
+                        renderSemuaData(dbGlobal);
+                    }
                     siapkanFormPegawai();
                     
                     // Cek apakah harus ganti password
@@ -109,7 +118,14 @@ function logout() {
             sessionStorage.removeItem('edupro_nama');
             document.getElementById('nav-admin').classList.add('hidden'); document.getElementById('nav-pegawai').classList.add('hidden'); document.getElementById('nav-publik').classList.remove('hidden'); document.getElementById('bottom-nav-admin').classList.add('hidden');
             document.getElementById('bottom-nav-pegawai').classList.add('hidden');
-            document.getElementById('bottom-nav-publik').classList.remove('hidden'); navigate('home');
+            document.getElementById('bottom-nav-publik').classList.remove('hidden');
+            Promise.resolve(navigate('home')).then(function() {
+                if (dbGlobal && Object.keys(dbGlobal).length > 0) {
+                    renderSemuaData(dbGlobal);
+                } else {
+                    muatDataServer();
+                }
+            });
         }
     });
 }
