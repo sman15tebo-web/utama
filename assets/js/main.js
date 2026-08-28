@@ -4,8 +4,14 @@ window.onload = function () {
     setInterval(jalankanSlider, 5000);
     var Quill = window.Quill;
     if (Quill) {
-        quillEditor = new Quill('#editor-container', { theme: 'snow' });
-        quillPegawaiBerita = new Quill('#pg-editor-container', { theme: 'snow' });
+        var adminEditor = document.getElementById('editor-container');
+        if (adminEditor) {
+            quillEditor = new Quill(adminEditor, { theme: 'snow' });
+        }
+        var pgEditor = document.getElementById('pg-editor-container');
+        if (pgEditor) {
+            quillPegawaiBerita = new Quill(pgEditor, { theme: 'snow' });
+        }
     }
 };
 
