@@ -10,6 +10,12 @@
         .page-section.active {
             display: block !important;
         }
+        
+        /* Admin & Pegawai layout menggunakan flex, bukan block */
+        #admin-layout.page-section.active,
+        #pegawai-layout.page-section.active {
+            display: flex !important;
+        }
 
         @keyframes fadeIn {
             from {
