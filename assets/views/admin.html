@@ -18,7 +18,9 @@
             
             <a href="javascript:void(0)" onclick="switchAdminMenu('admin-galeri')" id="menu-admin-galeri" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-images w-5 text-center"></i> Media Galeri</a>
             
-            <p class="px-4 text-xs font-bold text-slate-500 mb-2 mt-6 uppercase tracking-wider">Sistem</p>
+            <p class="px-4 text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Sistem</p>
+            
+            <a href="javascript:void(0)" onclick="switchAdminMenu('admin-profil')" id="menu-admin-profil" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-school w-5 text-center"></i> Profil Sekolah</a>
             
             <a href="javascript:void(0)" onclick="switchAdminMenu('admin-pengaturan')" id="menu-admin-pengaturan" class="admin-menu-link flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition-all"><i class="fas fa-cogs w-5 text-center"></i> Pengaturan Web</a>
             
@@ -269,49 +271,108 @@
             </div>
 
             <!-- VIEW: PENGATURAN -->
+            <!-- VIEW: PROFIL SEKOLAH -->
+            <div id="admin-profil" class="admin-view-content hidden animate-fade-in">
+                <div class="mb-6 border-b dark:border-gray-700 pb-4">
+                    <h2 class="text-2xl font-black text-gray-800 dark:text-white">Profil Sekolah</h2>
+                    <p class="text-sm text-gray-500 mt-1">Kelola identitas, sejarah, visi misi, sarana prasarana, dan struktur organisasi sekolah.</p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 space-y-8">
+                    
+                    <!-- Identitas -->
+                    <div>
+                        <h3 class="font-black text-lg mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2"><span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-id-card"></i></span> Identitas Sekolah</h3>
+                        <div class="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
+                            <img class="w-20 h-20 aspect-square object-contain rounded-full shadow border-4 bg-white" id="prev-logo" src="https://via.placeholder.com/150"/>
+                            <div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Upload Logo Sekolah (Rasio 1:1)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 1/1, 'logo', 'prev-logo')" type="file"/></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Nama Sekolah</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none" id="set-nama" placeholder="Nama Sekolah Lengkap" type="text"/></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Alamat Lengkap</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-alamat" placeholder="Jl. ..." type="text"/></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Slogan / Deskripsi Web</label><textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-deskripsi" placeholder="Slogan atau deskripsi singkat sekolah" rows="2"></textarea></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1">NPSN</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-npsn" placeholder="Nomor NPSN (10 digit)" type="text"/></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1">NSS</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-nss" placeholder="Nomor Statistik Sekolah" type="text"/></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1">Status &amp; Jenjang</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-status" placeholder="Cth: Negeri - SMA" type="text"/></div>
+                            <div><label class="block text-xs font-bold text-gray-500 mb-1">Akreditasi</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold text-primary" id="set-akreditasi" placeholder="Cth: A (Unggul)" type="text"/></div>
+                            <div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Akta Pendirian / Tahun Berdiri</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-tahun" placeholder="Cth: SK....No. 12 Tahun 1990" type="text"/></div>
+                        </div>
+                    </div>
+
+                    <!-- Sejarah -->
+                    <div>
+                        <h3 class="font-black text-lg mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2"><span class="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-landmark"></i></span> Sejarah Singkat</h3>
+                        <textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-sejarah" placeholder="Tuliskan sejarah berdirinya sekolah..." rows="6"></textarea>
+                    </div>
+
+                    <!-- Visi Misi -->
+                    <div>
+                        <h3 class="font-black text-lg mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2"><span class="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-bullseye"></i></span> Visi &amp; Misi</h3>
+                        <textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-visimisi" placeholder="Visi: ...&#10;Misi:&#10;1. ...&#10;2. ..." rows="7"></textarea>
+                    </div>
+
+                    <!-- Sarpras -->
+                    <div>
+                        <h3 class="font-black text-lg mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2"><span class="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-building"></i></span> Sarana &amp; Prasarana</h3>
+                        <textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-sarpras" placeholder="Deskripsikan fasilitas dan sarana prasarana sekolah..." rows="6"></textarea>
+                    </div>
+
+                    <!-- Struktur Organisasi -->
+                    <div>
+                        <h3 class="font-black text-lg mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2"><span class="w-8 h-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-sm"><i class="fas fa-sitemap"></i></span> Struktur Organisasi</h3>
+                        <div class="p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900">
+                            <label class="block text-sm font-bold mb-2">Upload Gambar Struktur Organisasi (Bebas Rasio)</label>
+                            <input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, NaN, 'struktur', 'prev-struktur')" type="file"/>
+                            <img class="mt-4 hidden w-full object-contain rounded shadow border max-h-80" id="prev-struktur"/>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-4 bg-blue-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-blue-700 transition" onclick="simpanPengaturanLengkap()"><i class="fas fa-save mr-2"></i> Simpan Profil Sekolah</button>
+                </div>
+            </div>
+
+            <!-- VIEW: PENGATURAN -->
             <div id="admin-pengaturan" class="admin-view-content hidden animate-fade-in">
                 <div class="flex mb-6 border-b dark:border-gray-700 pb-4 gap-4 overflow-x-auto">
-                    <button onclick="switchTab('pengaturan', 'tab-profil')" id="btn-tab-profil" class="tab-btn-pengaturan shrink-0 px-5 py-2.5 font-bold text-sm rounded-xl bg-yellow-500 text-gray-900 shadow-sm transition-all"><i class="fas fa-building mr-1"></i> Profil Web</button>
-                    <button onclick="switchTab('pengaturan', 'tab-widget')" id="btn-tab-widget" class="tab-btn-pengaturan shrink-0 px-5 py-2.5 font-bold text-sm rounded-xl text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"><i class="fas fa-puzzle-piece mr-1"></i> Widget & Kontak</button>
+                    <button onclick="switchTab('pengaturan', 'tab-sistem')" id="btn-tab-sistem" class="tab-btn-pengaturan shrink-0 px-5 py-2.5 font-bold text-sm rounded-xl bg-yellow-500 text-gray-900 shadow-sm transition-all"><i class="fas fa-cog mr-1"></i> Sistem</button>
+                    <button onclick="switchTab('pengaturan', 'tab-widget')" id="btn-tab-widget" class="tab-btn-pengaturan shrink-0 px-5 py-2.5 font-bold text-sm rounded-xl text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"><i class="fas fa-puzzle-piece mr-1"></i> Widget &amp; Kontak</button>
                 </div>
                 
-                <div id="tab-profil" class="tab-content-pengaturan block">
-                    
-
-<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
-<h3 class="font-bold text-xl mb-4 border-b pb-2">1. Identitas &amp; Logo</h3>
-<div class="mb-6 flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
-<img class="w-20 h-20 aspect-square object-contain rounded-full shadow border-4 bg-white" id="prev-logo" src="https://via.placeholder.com/150"/>
-<div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Upload Logo (Rasio
-                            1:1)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 1/1, 'logo', 'prev-logo')" type="file"/></div>
-</div><input class="w-full px-5 py-4 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none" id="set-nama" placeholder="Nama Sekolah" type="text"/><input class="w-full px-5 py-4 border rounded-xl mb-4 dark:bg-gray-700 outline-none" id="set-alamat" placeholder="Alamat Lengkap" type="text"/><textarea class="w-full px-5 py-4 border rounded-xl mb-10 dark:bg-gray-700 outline-none" id="set-deskripsi" placeholder="Slogan / Deskripsi Web" rows="3"></textarea>
-<h3 class="font-bold text-xl mb-4 border-b pb-2">2. Profil Organisasi</h3><label class="block text-sm font-bold mb-2 ml-1">Sejarah Singkat</label><textarea class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none" id="set-sejarah" placeholder="Tuliskan sejarah sekolah..." rows="5"></textarea>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-<div><label class="block text-xs font-bold text-gray-500 mb-1">NPSN</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-npsn" placeholder="Nomor NPSN (10 digit)" type="text"/></div>
-<div><label class="block text-xs font-bold text-gray-500 mb-1">NSS</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-nss" placeholder="Nomor Statistik Sekolah" type="text"/></div>
-<div><label class="block text-xs font-bold text-gray-500 mb-1">Status &amp; Jenjang</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-status" placeholder="Cth: Negeri - SMA" type="text"/></div>
-<div><label class="block text-xs font-bold text-gray-500 mb-1">Akreditasi</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold text-primary" id="set-akreditasi" placeholder="Cth: A (Unggul)" type="text"/>
-</div>
-<div class="md:col-span-2"><label class="block text-xs font-bold text-gray-500 mb-1">Akta Pendirian
-                            / Tahun Berdiri</label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-tahun" placeholder="Cth: SK....No. 12 Tahun 1990" type="text"/></div>
-</div><label class="block text-sm font-bold mb-2 ml-1">Visi &amp; Misi</label><textarea class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none" id="set-visimisi" placeholder="Visi: ... Misi: ..." rows="5"></textarea><label class="block text-sm font-bold mb-2 ml-1">Sarpras</label><textarea class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none" id="set-sarpras" placeholder="Sarana &amp; Prasarana ...." rows="5"></textarea>
-<div class="mb-10 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900">
-<label class="block text-sm font-bold mb-2">Gambar Struktur Organisasi</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, NaN, 'struktur', 'prev-struktur')" type="file"/><img class="mt-4 hidden w-full object-contain rounded shadow border max-h-64" id="prev-struktur"/></div>
-<h3 class="font-bold text-xl mb-4 border-b pb-2 mt-10">3. Halaman Legalitas</h3><label class="block text-sm font-bold mb-2 ml-1">Kebijakan Privasi</label><textarea class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none" id="set-privasi" placeholder="Tuliskan Kebijakan Privasi..." rows="5"></textarea><label class="block text-sm font-bold mb-2 ml-1">Syarat &amp; Ketentuan</label><textarea class="w-full px-5 py-4 border rounded-xl mb-10 dark:bg-gray-700 outline-none" id="set-syarat" placeholder="Tuliskan Syarat dan Ketentuan..." rows="5"></textarea>
-<h3 class="font-bold text-xl mb-4 border-b pb-2">4. Domain Resmi (Opsional)</h3>
-<p class="text-xs text-gray-500 mb-2">Jika menggunakan Custom Domain, masukkan domainnya di sini agar
-                    link Share Berita menggunakan domain ini.</p><input class="w-full px-5 py-4 border rounded-xl mb-10 dark:bg-gray-700 outline-none text-blue-500 font-mono" id="set-domain" placeholder="Cth: https://www.smasakti.sch.id" type="text"/>
-<h3 class="font-bold text-xl mb-4 border-b pb-2">5. Widget Maps &amp; Data Pimpinan</h3><label class="block text-sm font-bold mb-2 ml-1">Teks Berjalan (Pengumuman Kilat)</label><input class="w-full px-5 py-4 border rounded-xl mb-6 dark:bg-gray-700 outline-none" id="set-teks-berjalan" placeholder="Teks berjalan di bawah statistik..." type="text"/>
-<div class="mb-6 flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 bg-gray-50 dark:bg-gray-900 p-5 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
-<img class="w-24 aspect-[3/4] object-cover rounded shadow border-2" id="prev-kepsek" src="https://via.placeholder.com/150x200"/>
-<div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Upload Foto Pimpinan (Crop
-                            3:4)</label><input accept="image/*" class="w-full text-sm mb-4" onchange="bukaCropper(event, 3/4, 'kepsek', 'prev-kepsek')" type="file"/><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold" id="set-kepsek-nama" placeholder="Nama Pimpinan (Bpk. Ahmad...)" type="text"/></div>
-</div><label class="block text-sm font-bold mb-2 ml-1">Teks Sambutan Pimpinan</label><textarea class="w-full px-5 py-4 border rounded-xl mb-8 dark:bg-gray-700 outline-none" id="set-kepsek-sambutan" placeholder="Kata sambutan..." rows="4"></textarea><label class="block text-sm font-bold mb-2 ml-1">URL Google Maps (Embed src)</label><input class="w-full px-5 py-4 border rounded-xl mb-8 dark:bg-gray-700 outline-none font-mono text-sm text-blue-500" id="set-maps" placeholder="https://www.google.com/maps/embed?..." type="text"/><button class="w-full py-4 bg-yellow-500 text-gray-900 rounded-xl font-black text-lg shadow-lg hover:bg-yellow-400 transition" onclick="simpanPengaturanLengkap()"><i class="fas fa-save mr-2"></i> Terapkan Pengaturan Web</button>
-</div>
-
+                <div id="tab-sistem" class="tab-content-pengaturan block">
+                    <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 space-y-6">
+                        <div>
+                            <h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fas fa-user-tie text-gray-500 mr-2"></i> Data Pimpinan</h3>
+                            <div class="mb-5 flex flex-col md:flex-row items-start gap-5 bg-gray-50 dark:bg-gray-900 p-5 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
+                                <img class="w-24 aspect-[3/4] object-cover rounded shadow border-2" id="prev-kepsek" src="https://via.placeholder.com/150x200"/>
+                                <div class="flex-1 w-full"><label class="block text-sm font-bold mb-2">Upload Foto Pimpinan (Crop 3:4)</label><input accept="image/*" class="w-full text-sm mb-4" onchange="bukaCropper(event, 3/4, 'kepsek', 'prev-kepsek')" type="file"/><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-bold" id="set-kepsek-nama" placeholder="Nama Pimpinan (Bpk. Ahmad...)" type="text"/></div>
+                            </div>
+                            <label class="block text-sm font-bold mb-2">Teks Sambutan Pimpinan</label>
+                            <textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-kepsek-sambutan" placeholder="Kata sambutan pimpinan..." rows="4"></textarea>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fas fa-map-marker-alt text-red-500 mr-2"></i> Google Maps</h3>
+                            <label class="block text-sm font-bold mb-2">URL Google Maps (Embed src)</label>
+                            <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none font-mono text-sm text-blue-500" id="set-maps" placeholder="https://www.google.com/maps/embed?..." type="text"/>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fas fa-scroll text-orange-500 mr-2"></i> Teks Berjalan &amp; Domain</h3>
+                            <label class="block text-sm font-bold mb-2">Teks Berjalan (Pengumuman Kilat)</label>
+                            <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none mb-4" id="set-teks-berjalan" placeholder="Teks berjalan di bawah statistik..." type="text"/>
+                            <label class="block text-sm font-bold mb-2">Domain Resmi (Opsional)</label>
+                            <p class="text-xs text-gray-500 mb-2">Jika menggunakan Custom Domain, masukkan di sini agar link Share Berita menggunakan domain ini.</p>
+                            <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none text-blue-500 font-mono" id="set-domain" placeholder="Cth: https://www.smasakti.sch.id" type="text"/>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fas fa-shield-alt text-gray-500 mr-2"></i> Halaman Legalitas</h3>
+                            <label class="block text-sm font-bold mb-2">Kebijakan Privasi</label>
+                            <textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none mb-4" id="set-privasi" placeholder="Tuliskan Kebijakan Privasi..." rows="4"></textarea>
+                            <label class="block text-sm font-bold mb-2">Syarat &amp; Ketentuan</label>
+                            <textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="set-syarat" placeholder="Tuliskan Syarat dan Ketentuan..." rows="4"></textarea>
+                        </div>
+                        <button class="w-full py-4 bg-yellow-500 text-gray-900 rounded-xl font-black text-lg shadow-lg hover:bg-yellow-400 transition" onclick="simpanPengaturanLengkap()"><i class="fas fa-save mr-2"></i> Terapkan Pengaturan Sistem</button>
+                    </div>
                 </div>
+                
                 <div id="tab-widget" class="tab-content-pengaturan hidden">
-                    
 
 <div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
 <h3 class="font-bold text-xl mb-4 border-b pb-2"><i class="fab fa-youtube text-red-500 mr-2"></i> Widget
