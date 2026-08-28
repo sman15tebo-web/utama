@@ -199,6 +199,10 @@ function renderSemuaData(data) {
             }
             jalankanSlidePegawai(); if (window.wPegawaiInt) clearInterval(window.wPegawaiInt); window.wPegawaiInt = setInterval(jalankanSlidePegawai, 3500);
         } else if (wPegawai) { wPegawai.innerHTML = '<p class="text-sm text-gray-500">Belum ada pegawai.</p>'; }
+        
+        if ((curRole === 'guru' || curRole === 'tu') && typeof siapkanFormPegawai === 'function') {
+            siapkanFormPegawai();
+        }
 
     } catch (e) { console.error(e); setTimeout(function() { var l = document.getElementById('loader'); if(l) l.style.display = 'none'; var lt = document.getElementById('loader-text'); if(lt) lt.innerText = 'Terjadi Kesalahan di Render. Cek Console.'; if(typeof stopTimer !== 'undefined') stopTimer(); }, 500); }
 }
