@@ -1,0 +1,112 @@
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .page-section {
+            display: none !important;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .page-section.active {
+            display: block !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dark #loader {
+            background: rgba(17, 24, 39, 0.95);
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3a8a;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .slide-item {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+        }
+
+        .slide-item.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .group:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dark .swal2-popup {
+            background: #1f2937;
+            color: #f3f4f6;
+            border: 1px solid #374151;
+        }
+
+        .dark .swal2-title,
+        .dark .swal2-html-container {
+            color: #f3f4f6;
+        }
+
+        .ql-container {
+            font-family: inherit !important;
+            font-size: 1rem !important;
+        }
+
+        .dark .ql-toolbar,
+        .dark .ql-container {
+            background-color: #f9fafb;
+            color: #111827;
+            border-color: #d1d5db !important;
+        }
+
+        .ql-editor img {
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
