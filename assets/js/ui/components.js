@@ -44,7 +44,7 @@ async function loadViewForPage(pageId) {
         document.getElementById('loader-text').innerText = 'Memuat Antarmuka...';
         
         try {
-            const res = await fetch('./assets/views/' + targetView);
+            const res = await fetch('./assets/views/' + targetView + '?v=' + new Date().getTime());
             const html = await res.text();
             
             const wrapper = document.createElement('div');
@@ -77,6 +77,16 @@ async function navigate(pageId) {
 
     var sec = document.querySelectorAll('.page-section'); for (var k = 0; k < sec.length; k++) sec[k].classList.remove('active');
     
+    // Hide or show footer
+    var fp = document.getElementById('footer-publik');
+    if (fp) {
+        if (pageId.startsWith('admin-') || pageId.startsWith('pegawai-') || pageId === 'login') {
+            fp.classList.add('hidden');
+        } else {
+            fp.classList.remove('hidden');
+        }
+    }
+
     // Khusus Admin Dashboard
     if (pageId.startsWith('admin-') && pageId !== 'admin-layout') {
         var targetEl = document.getElementById('admin-layout');
