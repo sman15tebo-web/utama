@@ -227,4 +227,4 @@ function bukaModalGaleri() {
     var act = document.querySelector('.tab-btn-galeri.bg-white'); // Find active
     if(act && act.id === 'btn-tab-banner') { bukaModal('modal-slider'); }
     else { bukaModal('modal-galeri'); } // Galeri Foto and Video use same modal-galeri, the category dropdown will handle it
-}
+}
