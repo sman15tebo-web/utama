@@ -1,5 +1,5 @@
 // core/globals.js
-const GAS_URL = "https://script.google.com/a/macros/admin.sma.belajar.id/s/AKfycbx9AgjvGUoil0UxGlmHpXThsg5inSPP235GH4Af_5UWaJEZ9XttqMAuLzAuavtwUhAzMg/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxANc3kQP1fXDmNSYR5U6p9el6XN0vtxfpYTePVC55GdsR1GOikiifrrNN89qBrA2N40Q/exec";
 const IMGBB_API_KEY = "01ff241ffe5915782eecafa87273ebfb";
 
 var tFailsafe = setTimeout(function () { var l = document.getElementById('loader-text'); if (l) { l.innerHTML = "Menunggu respon server...<br><span class='text-xs font-normal'>Sistem sedang merakit data.</span>"; l.style.color = "#f59e0b"; } }, 12000);
