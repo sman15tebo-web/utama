@@ -43,7 +43,7 @@ async function muatDataServer() {
 
     if (cachedData) {
         clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none';
-        setTimeout(function () { dbGlobal = JSON.parse(cachedData); renderSemuaData(dbGlobal); cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { } }, 50);
+        setTimeout(function () { dbGlobal = JSON.parse(cachedData); try { renderSemuaData(dbGlobal); } catch(e) { console.error('renderSemuaData error (cache)', e); document.getElementById('loader').style.display='none'; } cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { } }, 50);
         callAPI('getServerTime').then(res => { if (res && res.time && res.time !== localTime) { localStorage.removeItem('edupro_cache_v4'); refreshHalamanLunak(); } }).catch(() => { });
     } else {
         document.getElementById('loader').style.display = 'flex'; startTimer();
