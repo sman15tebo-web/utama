@@ -1,6 +1,5 @@
 // core/globals.js
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxANc3kQP1fXDmNSYR5U6p9el6XN0vtxfpYTePVC55GdsR1GOikiifrrNN89qBrA2N40Q/exec";
-const IMGBB_API_KEY = "01ff241ffe5915782eecafa87273ebfb";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx7Jga_GkctZFoXWmMPsPD2vnhZDE56z_jb31JKm5qKbFKA6Zmo4n-ykEA0hClrI9IXDw/exec";
 
 var loadingInterval = null; var quillPegawaiBerita = null; var tFailsafe = setTimeout(function () { var l = document.getElementById('loader-text'); if (l) { l.innerHTML = "Menunggu respon server...<br><span class='text-xs font-normal'>Sistem sedang merakit data.</span>"; l.style.color = "#f59e0b"; } }, 12000);
 
