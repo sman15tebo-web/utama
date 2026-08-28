@@ -20,6 +20,6 @@ const viewCache = {};
 const viewMap = {
     'login.html': ['login', 'ubah-password'],
     'admin.html': ['admin-layout', 'admin-dashboard', 'admin-guru', 'admin-tu', 'admin-berita', 'admin-eksternal', 'admin-siswa', 'admin-slider', 'admin-galeri', 'admin-settings', 'admin-widget', 'admin-profil'],
-    'pegawai.html': ['pegawai-dashboard', 'pegawai-galeri', 'pegawai-berita'],
+    'pegawai.html': ['pegawai-dash', 'pegawai-dashboard', 'pegawai-galeri', 'pegawai-berita'],
     'public.html': ['home', 'kontak-kami', 'profil-kepsek', 'profil-sejarah', 'profil-identitas', 'profil-visimisi', 'profil-sarpras', 'halaman-privasi', 'halaman-syarat', 'profil-pegawai-stat', 'profil-struktur', 'guru', 'tu', 'detail-pegawai', 'siswa', 'halaman-berita', 'halaman-pengumuman', 'detail-berita', 'galeri-foto', 'galeri-video']
 };
