@@ -624,6 +624,45 @@
     </div>
    </div>
   </footer>
+
+  <!-- Modal: Ganti Password Paksa (saat pertama login setelah reset) -->
+  <div id="modal-forced-pass" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
+      <div class="px-8 py-5 bg-gradient-to-r from-red-600 to-orange-500 text-white flex items-center gap-3">
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-lock"></i></div>
+        <div>
+          <h3 class="text-lg font-black">Ganti Password Sekarang!</h3>
+          <p class="text-xs text-red-100 mt-0.5">Password Anda telah direset oleh Admin. Wajib membuat password baru.</p>
+        </div>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Password Baru <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input class="w-full px-4 py-3 border-2 border-red-300 rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-red-500 outline-none pr-12" id="fp-baru" placeholder="Minimal 6 karakter" type="password"/>
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('fp-baru','fp-eye-baru')"><i class="fas fa-eye" id="fp-eye-baru"></i></button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Ulangi Password Baru <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input class="w-full px-4 py-3 border-2 border-red-300 rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-red-500 outline-none pr-12" id="fp-konfirm" placeholder="Ketik ulang password baru" type="password"/>
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('fp-konfirm','fp-eye-konfirm')"><i class="fas fa-eye" id="fp-eye-konfirm"></i></button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Email Pemulihan <span class="text-gray-400 font-normal">(opsional, untuk verifikasi)</span></label>
+          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="fp-email" placeholder="nama@email.com" type="email"/>
+        </div>
+      </div>
+      <div class="px-6 pb-6">
+        <button class="w-full py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition" onclick="prosesGantiForcedPassword()">
+          <i class="fas fa-save mr-2"></i> Simpan Password Baru
+        </button>
+      </div>
+    </div>
+  </div>
+
     <!-- Modular Scripts -->
     <script src="./assets/js/core/globals.js?v=1787931681"></script>
     <script src="./assets/js/ui/utils.js?v=1787931681"></script>
