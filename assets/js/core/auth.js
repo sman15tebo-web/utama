@@ -13,6 +13,7 @@ function prosesLogin() {
             sessionStorage.setItem('edupro_id', res.id || '');
             sessionStorage.setItem('edupro_nama', res.nama || '');
             sessionStorage.setItem('edupro_akses_berita', res.akses_berita || 'N');
+            sessionStorage.setItem('edupro_email', res.email || '');
 
             document.getElementById('nav-publik').classList.add('hidden'); document.getElementById('log-pass').value = '';
 
@@ -26,11 +27,40 @@ function prosesLogin() {
                 document.getElementById('nav-pegawai').classList.remove('hidden');
                 document.getElementById('bottom-nav-publik').classList.add('hidden');
                 document.getElementById('bottom-nav-pegawai').classList.remove('hidden');
-                Swal.fire({ title: 'Selamat Datang, ' + res.nama, icon: 'success', timer: 1500, showConfirmButton: false });
                 siapkanFormPegawai();
                 navigate('pegawai-dashboard');
+
+                // Cek apakah harus ganti password
+                if (res.must_change_password) {
+                    setTimeout(function() {
+                        var emailPre = res.email || '';
+                        var fp = document.getElementById('fp-email');
+                        if (fp && emailPre) fp.value = emailPre;
+                        bukaModal('modal-forced-pass');
+                    }, 1700);
+                } else {
+                    Swal.fire({ title: 'Selamat Datang, ' + res.nama, icon: 'success', timer: 1500, showConfirmButton: false });
+                }
             }
         } else { Swal.fire('Gagal Login', res.message, 'error'); }
+    }).catch(gagalSimpan);
+}
+
+function prosesGantiForcedPassword() {
+    var newP = document.getElementById('fp-baru').value;
+    var confP = document.getElementById('fp-konfirm').value;
+    var email = document.getElementById('fp-email').value;
+    if (!newP || !confP) return Swal.fire('Peringatan', 'Password baru dan konfirmasi wajib diisi!', 'warning');
+    if (newP !== confP) return Swal.fire('Peringatan', 'Password baru tidak sama!', 'warning');
+    if (newP.length < 6) return Swal.fire('Peringatan', 'Password minimal 6 karakter!', 'warning');
+    document.getElementById('loader-text').innerText = 'Menyimpan password baru...'; document.getElementById('loader').style.display = 'flex'; startTimer();
+    callAPI('gantiForcedPassword', { token: curToken, role: curRole, id: curUserId, newPass: newP, email: email }).then(function(res) {
+        document.getElementById('loader').style.display = 'none'; stopTimer();
+        if (res.status === 'success') {
+            tutupModal('modal-forced-pass');
+            Swal.fire({ title: '✅ Password Diperbarui!', text: 'Selamat datang, ' + curNama + '. Gunakan password baru Anda untuk login berikutnya.', icon: 'success', timer: 2500, showConfirmButton: false });
+            sessionStorage.setItem('edupro_email', email);
+        } else { Swal.fire('Gagal', res.message, 'error'); }
     }).catch(gagalSimpan);
 }
 
