@@ -17,21 +17,16 @@ async function callAPI(action, payload = {}) {
 }
 
 async function uploadKeImgBB(base64Data) {
-    if (!IMGBB_API_KEY) throw new Error("API Key ImgBB belum diisi di app.js. Silakan daftar di imgbb.com dan masukkan API Key-nya.");
     var pureBase64 = base64Data;
     if (base64Data.indexOf(',') !== -1) {
         pureBase64 = base64Data.split(',')[1];
     }
-    var formData = new FormData();
-    formData.append("key", IMGBB_API_KEY);
-    formData.append("image", pureBase64);
     try {
-        const res = await fetch("https://api.imgbb.com/1/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        if (data.success) return data.data.url;
-        else throw new Error(data.error ? data.error.message : "Gagal upload gambar ke ImgBB");
+        const res = await callAPI('proxyImgBB', { base64Data: pureBase64 });
+        if (res.status === 'success') return res.url;
+        else throw new Error(res.message || "Gagal upload gambar ke ImgBB via Proxy");
     } catch (e) {
-        throw new Error("Gagal upload gambar ke ImgBB: " + e.message);
+        throw new Error("Gagal upload gambar: " + e.message);
     }
 }
 
@@ -43,23 +38,58 @@ async function muatDataServer() {
 
     if (cachedData) {
         clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none';
-        setTimeout(function () { dbGlobal = JSON.parse(cachedData); try { renderSemuaData(dbGlobal); } catch(e) { console.error('renderSemuaData error (cache)', e); document.getElementById('loader').style.display='none'; } cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { } }, 50);
+        setTimeout(function () { try { dbGlobal = JSON.parse(cachedData); renderSemuaData(dbGlobal); cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { } } catch(e) { console.error(e); localStorage.removeItem('edupro_cache_v4'); refreshHalamanLunak(); } }, 50);
         callAPI('getServerTime').then(res => { if (res && res.time && res.time !== localTime) { localStorage.removeItem('edupro_cache_v4'); refreshHalamanLunak(); } }).catch(() => { });
     } else {
         document.getElementById('loader').style.display = 'flex'; startTimer();
         try {
-            var getUrl = GAS_URL + "?action=getAllData&nocache=" + new Date().getTime();
-
-            var response = await fetch(getUrl); var resStr = await response.text(); clearTimeout(tFailsafe);
+            var resStr;
+            if (curToken && (curRole === 'admin' || curRole === 'guru' || curRole === 'tu')) {
+                var resAdmin = await callAPI('getAdminData', { token: curToken });
+                if (resAdmin && resAdmin.status === 'success') {
+                    resStr = JSON.stringify(resAdmin);
+                } else {
+                    var getUrl = GAS_URL + "?action=getAllData&nocache=" + new Date().getTime();
+                    var response = await fetch(getUrl); resStr = await response.text();
+                }
+            } else {
+                var getUrl = GAS_URL + "?action=getAllData&nocache=" + new Date().getTime();
+                var response = await fetch(getUrl); resStr = await response.text(); 
+            }
+            clearTimeout(tFailsafe);
             var lt = document.getElementById('loader-text'); if (lt) lt.innerHTML = "Download Selesai!<br><span class='text-xs font-normal mt-2'>Merakit tampilan web...</span>";
+            
             setTimeout(function () {
-                dbGlobal = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
-                if (dbGlobal.status === 'error') { stopTimer(); document.getElementById('loader').style.display = 'none'; return Swal.fire('Error Database', dbGlobal.message, 'error'); }
-                localStorage.setItem('edupro_cache_v4', typeof resStr === 'string' ? resStr : JSON.stringify(dbGlobal));
-                callAPI('getServerTime').then(resT => { if (resT.status === 'success') localStorage.setItem('edupro_time', resT.time); });
-                try { batalEditSemua(); } catch(e){ console.error('batalEditSemua error', e); } try { renderSemuaData(dbGlobal); } catch(e){ console.error('renderSemuaData error', e); document.getElementById('loader').style.display='none'; } cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { }
-                document.getElementById('loader').style.display = 'none'; stopTimer();
+                try {
+                    var parsedData;
+                    try {
+                        parsedData = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
+                    } catch (errParse) {
+                        throw new Error("Data dari server tidak valid (Bukan JSON). Server mungkin mengembalikan halaman error HTML. Respons: " + resStr.substring(0, 50));
+                    }
+                    
+                    dbGlobal = parsedData;
+                    if (dbGlobal.status === 'error') { 
+                        stopTimer(); document.getElementById('loader').style.display = 'none'; 
+                        Swal.fire('Error Database', dbGlobal.message, 'error');
+                        return;
+                    }
+                    
+                    localStorage.setItem('edupro_cache_v4', typeof resStr === 'string' ? resStr : JSON.stringify(dbGlobal));
+                    callAPI('getServerTime').then(resT => { if (resT && resT.status === 'success') localStorage.setItem('edupro_time', resT.time); }).catch(()=>{});
+                    
+                    try { batalEditSemua(); } catch(e){} 
+                    renderSemuaData(dbGlobal);
+                    cekUrlParameter(); 
+                    try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { }
+                    
+                    document.getElementById('loader').style.display = 'none'; stopTimer();
+                } catch(errRender) {
+                    stopTimer(); document.getElementById('loader').style.display = 'none';
+                    Swal.fire('Error Tampilan', errRender.toString(), 'error');
+                    console.error("Critical error in UI pipeline:", errRender);
+                }
             }, 100);
-        } catch (e) { clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none'; Swal.fire('Koneksi Gagal', 'Gagal memuat data dari Google. Pastikan URL benar.', 'error'); }
+        } catch (e) { clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none'; Swal.fire('Koneksi Gagal', 'Gagal memuat data dari Google: ' + e.toString(), 'error'); }
     }
 }
