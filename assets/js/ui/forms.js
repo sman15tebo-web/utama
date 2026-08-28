@@ -63,7 +63,11 @@ function siapkanEdit(modul, id) {
 
     var btnU = document.getElementById('btn-' + modul); var btnB = document.getElementById('btn-batal-' + modul);
     if (btnU) { btnU.innerHTML = '<i class="fas fa-sync mr-2"></i> Update Data'; btnU.className = "px-8 py-3 bg-yellow-500 text-gray-900 rounded-xl font-bold shadow-lg hover:bg-yellow-400 w-full md:w-auto"; }
-    if (btnB) btnB.classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (btnB) btnB.classList.remove('hidden');
+    
+    // Buka modal yang relevan secara otomatis
+    var modalMap = { 'berita': 'modal-berita', 'guru': 'modal-guru', 'tu': 'modal-tu', 'siswa': 'modal-siswa', 'galeri': 'modal-galeri', 'slider': 'modal-slider', 'eksternal': 'modal-eksternal' };
+    if (modalMap[modul]) bukaModal(modalMap[modul]);
 }
 
 function gagalSimpan(err) { document.getElementById('loader').style.display = 'none'; stopTimer(); Swal.fire('Sistem Sibuk', err.toString(), 'error'); }
