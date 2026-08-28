@@ -375,22 +375,29 @@
             <button onclick="tutupModal('modal-berita')" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 hover:bg-red-100 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
         </div>
         <div class="p-8 overflow-y-auto">
-            <select class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-primary dark:text-white" id="b-kategori">
-<option value="Berita">Kategori: BERITA / ARTIKEL</option>
-<option value="Pengumuman">Kategori: PENGUMUMAN</option>
-</select>
-            <div class="md:col-span-2">
-<input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="b-judul" placeholder="Judul Berita / Pengumuman" type="text"/>
-</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <select class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-primary dark:text-white" id="b-kategori">
+                    <option value="Berita">Kategori: BERITA / ARTIKEL</option>
+                    <option value="Pengumuman">Kategori: PENGUMUMAN</option>
+                </select>
+                <input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700" id="b-tanggal" placeholder="Tanggal Tayang (Kosongi = Sekarang)" type="datetime-local"/>
+            </div>
+            <input class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold" id="b-judul" placeholder="Judul Berita / Pengumuman" type="text"/>
             <div class="mb-4 rounded-xl overflow-hidden border dark:border-gray-600 bg-white text-gray-800">
-<div id="b-konten" style="height: 300px; font-size: 16px;"></div>
-</div>
-            <div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Utama (Crop 5:3)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 5/3, 'berita', 'prev-berita')" type="file"/><img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-berita"/></div>
+                <div id="editor-container" style="height: 300px; font-size: 16px;"></div>
+            </div>
+            <div class="mb-4 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600">
+                <label class="block text-sm font-bold mb-2">Gambar Utama (Crop 5:3)</label>
+                <input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 5/3, 'berita', 'prev-berita')" type="file"/>
+                <img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-berita"/>
+            </div>
         </div>
         <div class="px-8 py-5 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
             <button onclick="tutupModal('modal-berita')" class="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold transition">Batal</button>
-            <div class="flex flex-col md:flex-row gap-4"><button class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700" id="btn-berita" onclick="simpanAtauUpdate('berita')">Publikasikan</button><button class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg hover:bg-gray-500" id="btn-batal-berita" onclick="batalEdit('berita')">Batal
-                        Edit</button></div>
+            <div class="flex gap-3">
+                <button class="hidden px-6 py-2.5 bg-gray-400 text-white rounded-xl font-bold shadow-lg hover:bg-gray-500" id="btn-batal-berita" onclick="batalEdit('berita')">Batal Edit</button>
+                <button class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700" id="btn-berita" onclick="simpanAtauUpdate('berita')">Publikasikan</button>
+            </div>
         </div>
     </div>
 </div>
@@ -402,16 +409,82 @@
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Data Guru</h3>
             <button onclick="tutupModal('modal-guru')" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-red-100 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
         </div>
-        <div class="p-8 overflow-y-auto">
-            <div><label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIPPPK/NIK (Username) <span class="text-red-500">*</span></label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-blue-600 dark:text-blue-400" id="g-nip" placeholder="Masukkan NIP/NIPPPK/NIK" type="text"/>
-</div>
-            <div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Upload Pas Foto (Rasio 3:4)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 3/4, 'guru', 'prev-guru')" type="file"/><img class="mt-4 hidden aspect-[3/4] w-28 object-cover rounded shadow border" id="prev-guru"/></div>
+        <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 mb-1">NIP / NIPPPK / NIK (Username Login) <span class="text-red-500">*</span></label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-blue-600" id="g-nip" placeholder="Masukkan NIP/NIPPPK/NIK" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-nama" placeholder="Nama Lengkap" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Password <span class="text-red-500">* (wajib saat tambah baru)</span></label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-pass" placeholder="Kosongi jika tidak diubah" type="password"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Jenis Kelamin</label>
+                <select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="g-jk">
+                    <option value="">-- Pilih --</option>
+                    <option value="Laki-Laki">Laki-Laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Status Kepegawaian</label>
+                <select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="g-status">
+                    <option value="">-- Pilih --</option>
+                    <option value="PNS">PNS</option>
+                    <option value="PPPK">PPPK</option>
+                    <option value="Honorer Daerah">Honorer Daerah</option>
+                    <option value="Honorer Sekolah">Honorer Sekolah</option>
+                    <option value="GTT">GTT</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Tempat Lahir</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-tempat_lahir" placeholder="Kota/Kabupaten" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Tanggal Lahir</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-tgl_lahir" type="date"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Pangkat / Golongan</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-golongan" placeholder="Cth: III/b" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">TMT (Terhitung Mulai Tugas)</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-tmt" type="date"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Jabatan Utama</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-jabatan" placeholder="Cth: Wali Kelas, Wakasek" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Mata Pelajaran</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-mapel" placeholder="Cth: Matematika, B. Indonesia" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">No. HP / WhatsApp</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-no_hp" placeholder="08xxxxxxxxx" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Alamat Email</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="g-email" placeholder="nama@email.com" type="email"/>
+            </div>
+            <div class="md:col-span-2 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600">
+                <label class="block text-sm font-bold mb-2">Upload Pas Foto (Rasio 3:4)</label>
+                <input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 3/4, 'guru', 'prev-guru')" type="file"/>
+                <img class="mt-4 hidden aspect-[3/4] w-28 object-cover rounded shadow border" id="prev-guru"/>
+            </div>
         </div>
         <div class="px-8 py-5 border-t dark:border-gray-700 bg-gray-50 flex justify-end gap-3">
             <button onclick="tutupModal('modal-guru')" class="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold transition">Batal</button>
-            <div class="flex flex-col md:flex-row gap-4"><button class="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg hover:bg-green-700" id="btn-guru" onclick="simpanAtauUpdate('guru')">Simpan
-                        Data Guru</button><button class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg" id="btn-batal-guru" onclick="batalEdit('guru')">Batal
-                        Edit</button></div>
+            <div class="flex gap-3">
+                <button class="hidden px-6 py-2.5 bg-gray-400 text-white rounded-xl font-bold shadow-lg" id="btn-batal-guru" onclick="batalEdit('guru')">Batal Edit</button>
+                <button class="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg hover:bg-green-700" id="btn-guru" onclick="simpanAtauUpdate('guru')">Simpan Data Guru</button>
+            </div>
         </div>
     </div>
 </div>
@@ -423,16 +496,81 @@
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Tenaga TU</h3>
             <button onclick="tutupModal('modal-tu')" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-red-100 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
         </div>
-        <div class="p-8 overflow-y-auto">
-            <div><label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIPPPK/NIK (Username) <span class="text-red-500">*</span></label><input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-blue-600 dark:text-blue-400" id="tu-nip" placeholder="Masukkan NIP/NIPPPK/NIK" type="text"/>
-</div>
-            <div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Upload Pas Foto (Rasio 3:4)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 3/4, 'tu', 'prev-tu')" type="file"/><img class="mt-4 hidden aspect-[3/4] w-28 object-cover rounded shadow border" id="prev-tu"/></div>
+        <div class="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 mb-1">NIP / NIPPPK / NIK (Username Login) <span class="text-red-500">*</span></label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-blue-600" id="tu-nip" placeholder="Masukkan NIP/NIPPPK/NIK" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-nama" placeholder="Nama Lengkap" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Password <span class="text-red-500">* (wajib saat tambah baru)</span></label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-pass" placeholder="Kosongi jika tidak diubah" type="password"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Jenis Kelamin</label>
+                <select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="tu-jk">
+                    <option value="">-- Pilih --</option>
+                    <option value="Laki-Laki">Laki-Laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Status Kepegawaian</label>
+                <select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="tu-status">
+                    <option value="">-- Pilih --</option>
+                    <option value="PNS">PNS</option>
+                    <option value="PPPK">PPPK</option>
+                    <option value="Honorer Daerah">Honorer Daerah</option>
+                    <option value="Honorer Sekolah">Honorer Sekolah</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Tempat Lahir</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-tempat_lahir" placeholder="Kota/Kabupaten" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Tanggal Lahir</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-tgl_lahir" type="date"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Pangkat / Golongan</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-golongan" placeholder="Cth: II/c" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">TMT (Terhitung Mulai Tugas)</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-tmt" type="date"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Jabatan Khusus</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-jabatan" placeholder="Cth: Kepala TU, Staf" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Bagian / Divisi</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-bagian" placeholder="Cth: Administrasi, Keuangan" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">No. HP / WhatsApp</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-no_hp" placeholder="08xxxxxxxxx" type="text"/>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">Alamat Email</label>
+                <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700" id="tu-email" placeholder="nama@email.com" type="email"/>
+            </div>
+            <div class="md:col-span-2 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600">
+                <label class="block text-sm font-bold mb-2">Upload Pas Foto (Rasio 3:4)</label>
+                <input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 3/4, 'tu', 'prev-tu')" type="file"/>
+                <img class="mt-4 hidden aspect-[3/4] w-28 object-cover rounded shadow border" id="prev-tu"/>
+            </div>
         </div>
         <div class="px-8 py-5 border-t dark:border-gray-700 bg-gray-50 flex justify-end gap-3">
             <button onclick="tutupModal('modal-tu')" class="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold transition">Batal</button>
-            <div class="flex flex-col md:flex-row gap-4"><button class="px-8 py-3 bg-teal-600 text-white rounded-xl font-bold shadow-lg hover:bg-teal-700" id="btn-tu" onclick="simpanAtauUpdate('tu')">Simpan
-                        Data TU</button><button class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg" id="btn-batal-tu" onclick="batalEdit('tu')">Batal
-                        Edit</button></div>
+            <div class="flex gap-3">
+                <button class="hidden px-6 py-2.5 bg-gray-400 text-white rounded-xl font-bold shadow-lg" id="btn-batal-tu" onclick="batalEdit('tu')">Batal Edit</button>
+                <button class="px-8 py-3 bg-teal-600 text-white rounded-xl font-bold shadow-lg hover:bg-teal-700" id="btn-tu" onclick="simpanAtauUpdate('tu')">Simpan Data TU</button>
+            </div>
         </div>
     </div>
 </div>
@@ -507,20 +645,20 @@
             <button onclick="tutupModal('modal-slider')" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-red-100 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
         </div>
         <div class="p-8 overflow-y-auto">
-            <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-xl mb-10 border border-gray-100 dark:border-gray-700">
-<input class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold" id="sl-judul" placeholder="Teks Utama Besar" type="text"/><input class="w-full px-5 py-3 border rounded-xl mb-5 dark:bg-gray-700" id="sl-sub" placeholder="Teks Subjudul Kecil" type="text"/>
-<div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Background Slider (Crop 7:3)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 7/3, 'slider', 'prev-slider')" type="file"/><img class="mt-4 hidden aspect-[7/3] w-full object-cover rounded shadow border" id="prev-slider"/></div>
-<div class="flex flex-col md:flex-row gap-4"><button class="px-8 py-3 bg-pink-600 text-white rounded-xl font-bold shadow-lg hover:bg-pink-700" id="btn-slider" onclick="simpanAtauUpdate('slider')">Simpan
-                        Slider</button><button class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg" id="btn-batal-slider" onclick="batalEdit('slider')">Batal
-                        Edit</button></div>
-</div>
-            <div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Background Slider (Crop 7:3)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 7/3, 'slider', 'prev-slider')" type="file"/><img class="mt-4 hidden aspect-[7/3] w-full object-cover rounded shadow border" id="prev-slider"/></div>
+            <input class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold" id="sl-judul" placeholder="Teks Utama Besar" type="text"/>
+            <input class="w-full px-5 py-3 border rounded-xl mb-5 dark:bg-gray-700" id="sl-sub" placeholder="Teks Subjudul Kecil" type="text"/>
+            <div class="mb-4 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600">
+                <label class="block text-sm font-bold mb-2">Gambar Background Slider (Crop 7:3)</label>
+                <input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 7/3, 'slider', 'prev-slider')" type="file"/>
+                <img class="mt-4 hidden aspect-[7/3] w-full object-cover rounded shadow border" id="prev-slider"/>
+            </div>
         </div>
         <div class="px-8 py-5 border-t dark:border-gray-700 bg-gray-50 flex justify-end gap-3">
             <button onclick="tutupModal('modal-slider')" class="px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-bold transition">Batal</button>
-            <div class="flex flex-col md:flex-row gap-4"><button class="px-8 py-3 bg-pink-600 text-white rounded-xl font-bold shadow-lg hover:bg-pink-700" id="btn-slider" onclick="simpanAtauUpdate('slider')">Simpan
-                        Slider</button><button class="hidden px-8 py-3 bg-gray-400 text-white rounded-xl font-bold shadow-lg" id="btn-batal-slider" onclick="batalEdit('slider')">Batal
-                        Edit</button></div>
+            <div class="flex gap-3">
+                <button class="hidden px-6 py-2.5 bg-gray-400 text-white rounded-xl font-bold shadow-lg" id="btn-batal-slider" onclick="batalEdit('slider')">Batal Edit</button>
+                <button class="px-8 py-3 bg-pink-600 text-white rounded-xl font-bold shadow-lg hover:bg-pink-700" id="btn-slider" onclick="simpanAtauUpdate('slider')">Simpan Slider</button>
+            </div>
         </div>
     </div>
 </div>
