@@ -57,7 +57,7 @@ async function muatDataServer() {
                 if (dbGlobal.status === 'error') { stopTimer(); document.getElementById('loader').style.display = 'none'; return Swal.fire('Error Database', dbGlobal.message, 'error'); }
                 localStorage.setItem('edupro_cache_v4', typeof resStr === 'string' ? resStr : JSON.stringify(dbGlobal));
                 callAPI('getServerTime').then(resT => { if (resT.status === 'success') localStorage.setItem('edupro_time', resT.time); });
-                batalEditSemua(); renderSemuaData(dbGlobal); cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { }
+                try { batalEditSemua(); } catch(e){ console.error('batalEditSemua error', e); } try { renderSemuaData(dbGlobal); } catch(e){ console.error('renderSemuaData error', e); document.getElementById('loader').style.display='none'; } cekUrlParameter(); try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { }
                 document.getElementById('loader').style.display = 'none'; stopTimer();
             }, 100);
         } catch (e) { clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none'; Swal.fire('Koneksi Gagal', 'Gagal memuat data dari Google. Pastikan URL benar.', 'error'); }
