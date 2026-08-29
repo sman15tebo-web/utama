@@ -639,6 +639,70 @@
     </div>
   </div>
 
+  <!-- Modal: Minta Reset Password -->
+  <div id="modal-lupa-pass" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
+      <div class="px-8 py-5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-3 relative">
+        <button onclick="tutupModal('modal-lupa-pass')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/30 text-white transition"><i class="fas fa-times"></i></button>
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-envelope"></i></div>
+        <div>
+          <h3 class="text-lg font-black">Lupa Password?</h3>
+          <p class="text-xs text-blue-100 mt-0.5">Kirim link pemulihan ke email Anda.</p>
+        </div>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIK Pegawai <span class="text-red-500">*</span></label>
+          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none focus:border-blue-500 focus:ring-2" id="req-nip" placeholder="Ketik NIP atau NIK" type="text"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Email Anda <span class="text-red-500">*</span></label>
+          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none focus:border-blue-500 focus:ring-2" id="req-email" placeholder="nama@email.com" type="email"/>
+        </div>
+        <p class="text-xs text-gray-400 italic">Catatan: Tautan reset password akan dikirim apabila data sesuai dengan profil Anda.</p>
+      </div>
+      <div class="px-6 pb-6">
+        <button class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition" onclick="prosesLupaPassword()">
+          <i class="fas fa-paper-plane mr-2"></i> Kirim Link Pemulihan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Reset Password (dari Link) -->
+  <div id="modal-reset-pass" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
+      <div class="px-8 py-5 bg-gradient-to-r from-emerald-600 to-teal-500 text-white flex items-center gap-3">
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-key"></i></div>
+        <div>
+          <h3 class="text-lg font-black">Buat Password Baru</h3>
+          <p class="text-xs text-emerald-100 mt-0.5">Tautan pemulihan valid. Silakan buat password baru Anda.</p>
+        </div>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Password Baru <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-emerald-500 outline-none pr-12" id="rp-baru" placeholder="Minimal 6 karakter" type="password"/>
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('rp-baru','rp-eye-baru')"><i class="fas fa-eye" id="rp-eye-baru"></i></button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Ulangi Password Baru <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-emerald-500 outline-none pr-12" id="rp-konfirm" placeholder="Ketik ulang password baru" type="password"/>
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('rp-konfirm','rp-eye-konfirm')"><i class="fas fa-eye" id="rp-eye-konfirm"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="px-6 pb-6">
+        <button class="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition" onclick="prosesResetPassToken()">
+          <i class="fas fa-save mr-2"></i> Simpan Password Baru
+        </button>
+      </div>
+    </div>
+  </div>
+
     <!-- Modular Scripts -->
     <script src="./assets/js/core/globals.js?v=1787931681"></script>
     <script src="./assets/js/ui/utils.js?v=1787931681"></script>
