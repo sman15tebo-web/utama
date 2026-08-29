@@ -270,7 +270,17 @@ function bukaProfilPegawai(modul, id) {
 }
 
 function bagikanBerita(platform) {
-    var baseShareUrl = dbGlobal.domainResmi ? dbGlobal.domainResmi.replace(/\/$/, "") : window.location.href.split('?')[0];
-    var shareUrl = baseShareUrl + "?article=" + curShareId; var teks = "Baca informasi selengkapnya: " + curShareTitle + "\n\n" + shareUrl;
+    var shareUrl = '';
+    var article = (dbGlobal && dbGlobal.berita) ? (dbGlobal.berita.find(function (it) { return it.id === curShareId; }) || null) : null;
+    if (article && article.html_url) {
+        shareUrl = article.html_url;
+    } else if (article && article.link_html) {
+        shareUrl = article.link_html;
+    } else {
+        var baseShareUrl = dbGlobal && dbGlobal.domainResmi ? dbGlobal.domainResmi.replace(/\/$/, '') : (window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://sman15tebo-web.github.io/utama');
+        shareUrl = baseShareUrl.replace(/\/$/, '') + '/berita/' + curShareId + '.html';
+    }
+
+    var teks = "Baca informasi selengkapnya: " + curShareTitle + "\n\n" + shareUrl;
     if (platform === 'wa') { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(teks), '_blank'); } else if (platform === 'fb') { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank'); } else if (platform === 'x') { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(teks), '_blank'); } else if (platform === 'copy') { navigator.clipboard.writeText(shareUrl).then(function () { Swal.fire({ title: 'Berhasil!', text: 'Link berita telah disalin.', icon: 'success', timer: 2000, showConfirmButton: false }); }).catch(function () { Swal.fire('Gagal Menyalin', 'Silakan block dan copy URL ini manual:\n' + shareUrl, 'info'); }); }
 }
