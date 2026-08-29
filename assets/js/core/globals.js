@@ -1,5 +1,5 @@
 // core/globals.js
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzgGTy6R55jbJvqPHL2p3owp3DQsnQm1iE1txSh7uQbd4PFyPQ8ogLZNplXSC_98eHs/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxibIaEhNhb87kRxu09Iz2TlqP3QmGrzirNHlPNqtGaHLAB86IvhG2m_aDsFtvsiCPZFQ/exec";
 
 var loadingInterval = null; var quillPegawaiBerita = null; var tFailsafe = setTimeout(function () { var l = document.getElementById('loader-text'); if (l) { l.innerHTML = "Menunggu respon server...<br><span class='text-xs font-normal'>Sistem sedang merakit data.</span>"; l.style.color = "#f59e0b"; } }, 3000);
 
