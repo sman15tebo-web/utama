@@ -140,10 +140,11 @@ async function simpanAtauUpdate(modul) {
     try {
         if (base64 && modul !== 'siswa') {
             if (modul === 'guru' || modul === 'tu') {
-                document.getElementById('loader-text').innerText = 'Siap menyimpan foto pegawai ke Drive...';
+                // Simpan base64 langsung ke spreadsheet (tidak ke Drive)
+                // karena Drive URL sudah tidak bisa di-embed dari luar
+                document.getElementById('loader-text').innerText = 'Menyimpan foto pegawai...';
                 d.foto_url = base64;
-                d.gambar_url = base64;
-                d.icon_url = base64;
+                base64 = null; // Pastikan base64Data=null agar GAS tidak upload ke Drive
             } else if (modul === 'berita' || modul === 'galeri' || modul === 'slider' || modul === 'eksternal') {
                 document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke Cloudinary...';
                 var imgUrl = await uploadKeCloudinary(base64);
@@ -152,7 +153,7 @@ async function simpanAtauUpdate(modul) {
                 d.icon_url = imgUrl;
                 base64 = null;
             } else {
-                document.getElementById('loader-text').innerText = 'Menyimpan gambar ke Drive...';
+                document.getElementById('loader-text').innerText = 'Menyimpan gambar...';
                 d.gambar_url = base64;
                 d.foto_url = base64;
                 d.icon_url = base64;
@@ -221,9 +222,10 @@ async function simpanDataDiriPegawai() {
     document.getElementById('loader-text').innerText = 'Menyimpan Biodata...'; document.getElementById('loader').style.display = 'flex'; startTimer();
     try {
         if (base64) {
-            document.getElementById('loader-text').innerText = 'Siap menyimpan foto pegawai ke Drive...';
+            // Simpan foto langsung sebagai base64 (tidak ke Drive)
+            document.getElementById('loader-text').innerText = 'Menyimpan foto profil...';
             d.foto_url = base64;
-            base64 = base64;
+            base64 = null; // null agar GAS tidak panggil uploadKeDrive
         }
     } catch (e) { return gagalSimpan(e.message); }
     callAPI('simpanProfilPegawai', { token: curToken, modul: curRole, id: curUserId, dataBaru: d, base64Data: base64, filename: 'foto_' + curUsername + '.jpg' }).then(selesaiSimpan).catch(gagalSimpan);
@@ -244,11 +246,14 @@ async function simpanPengaturanLengkap() {
         var setObj = { 'nama_sekolah': getInp('set-nama'), 'alamat': getInp('set-alamat'), 'deskripsi': getInp('set-deskripsi'), 'npsn': getInp('set-npsn'), 'nss': getInp('set-nss'), 'status_jenjang': getInp('set-status'), 'akreditasi': getInp('set-akreditasi'), 'tahun_berdiri': getInp('set-tahun'), 'sejarah': getInp('set-sejarah'), 'visi_misi': getInp('set-visimisi'), 'sarpras': getInp('set-sarpras'), 'privasi': getInp('set-privasi'), 'syarat': getInp('set-syarat'), 'domain_resmi': getInp('set-domain'), 'kepsek_nama': getInp('set-kepsek-nama'), 'kepsek_sambutan': getInp('set-kepsek-sambutan'), 'teks_berjalan': getInp('set-teks-berjalan'), 'maps_url': getInp('set-maps') };
         document.getElementById('loader-text').innerText = 'Menyimpan Profil Web...'; document.getElementById('loader').style.display = 'flex'; startTimer();
 
-        if (cropData.logo) { document.getElementById('loader-text').innerText = 'Menyimpan Logo ke Drive...'; setObj.logo_url = cropData.logo; }
-        if (cropData.struktur) { document.getElementById('loader-text').innerText = 'Menyimpan Struktur ke Drive...'; setObj.struktur_url = cropData.struktur; }
-        if (cropData.kepsek) { document.getElementById('loader-text').innerText = 'Menyimpan Foto Kepsek ke Drive...'; setObj.kepsek_foto = cropData.kepsek; }
+        if (cropData.logo) { document.getElementById('loader-text').innerText = 'Menyimpan Logo...'; setObj.logo_url = cropData.logo; }
+        if (cropData.struktur) { document.getElementById('loader-text').innerText = 'Menyimpan Struktur...'; setObj.struktur_url = cropData.struktur; }
+        if (cropData.kepsek) { document.getElementById('loader-text').innerText = 'Menyimpan Foto Kepsek...'; setObj.kepsek_foto = cropData.kepsek; }
 
-        callAPI('simpanPengaturan', { token: curToken, setObj: setObj, base64Logo: cropData.logo, namaFileLogo: 'logo.png', base64Str: cropData.struktur, namaFileStr: 'struktur.png', base64Kepsek: cropData.kepsek, namaFileKepsek: 'kepsek.jpg' }).then(selesaiSimpan).catch(gagalSimpan);
+        // Kirim null untuk base64Logo/Str/Kepsek agar GAS tidak upload ke Drive
+        // Logo, struktur, kepsek foto disimpan langsung sebagai base64 di spreadsheet
+        callAPI('simpanPengaturan', { token: curToken, setObj: setObj, base64Logo: null, namaFileLogo: null, base64Str: null, namaFileStr: null, base64Kepsek: null, namaFileKepsek: null }).then(selesaiSimpan).catch(gagalSimpan);
+
     } catch (e) { Swal.fire('Error System', e.message, 'error'); document.getElementById('loader').style.display = 'none'; stopTimer(); }
 }
 
