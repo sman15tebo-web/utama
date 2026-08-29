@@ -96,7 +96,7 @@
                             <button onclick="switchTab('posting', 'tab-pengumuman')" id="btn-tab-pengumuman" class="tab-btn-posting px-5 py-2.5 font-bold text-sm rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-800 transition-all"><i class="fas fa-bullhorn mr-1"></i> Pengumuman</button>
                         </div>
                     </div>
-                    <button onclick="bukaModal('modal-berita')" class="shrink-0 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform hover:-translate-y-0.5"><i class="fas fa-plus mr-2"></i> Tambah Posting</button>
+                    <button onclick="batalEdit('berita'); bukaModal('modal-berita')" class="shrink-0 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 transition-transform hover:-translate-y-0.5"><i class="fas fa-plus mr-2"></i> Tambah Posting</button>
                 </div>
                 
                 <!-- Tab Berita -->
@@ -184,7 +184,7 @@
                             <button onclick="switchTab('siswa', 'tab-alumni')" id="btn-tab-alumni" class="tab-btn-siswa px-5 py-2.5 font-bold text-sm rounded-lg text-gray-500 hover:text-gray-800 transition-all"><i class="fas fa-graduation-cap mr-1"></i> Alumni</button>
                         </div>
                     </div>
-                    <button onclick="bukaModal('modal-siswa')" class="shrink-0 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold shadow-lg shadow-orange-500/30 transition-transform hover:-translate-y-0.5"><i class="fas fa-plus mr-2"></i> Tambah Data</button>
+                    <button onclick="batalEdit('siswa'); bukaModal('modal-siswa')" class="shrink-0 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold shadow-lg shadow-orange-500/30 transition-transform hover:-translate-y-0.5"><i class="fas fa-plus mr-2"></i> Tambah Data</button>
                 </div>
                 
                 <!-- Tabel Manajemen (semua data Siswa+Alumni) - TERSEMBUNYI di UI publik tab -->
@@ -209,21 +209,26 @@
 <th class="p-4 text-center">Total</th>
 </tr>
 </thead>
-<tbody id="tbl-siswa-aktif"></tbody>
-<tfoot class="bg-gray-50 dark:bg-gray-800 font-bold" id="foot-siswa-aktif"></tfoot>
+<tbody id="admin-tbl-siswa-aktif"></tbody>
+<tfoot class="bg-gray-50 dark:bg-gray-800 font-bold" id="admin-foot-siswa-aktif"></tfoot>
 </table>
                 </div>
                 <!-- Tab Alumni -->
                 <div id="tab-alumni" class="tab-content-siswa hidden">
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
-                        <table class="w-full text-left text-sm min-w-max">
-                            <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300">
-                                <tr><th class="p-4 font-bold">Kategori</th><th class="p-4 font-bold">Label</th><th class="p-4 text-center text-blue-600 font-bold">L</th><th class="p-4 text-center text-pink-600 font-bold">P</th><th class="p-4 text-center font-bold">Total</th><th class="p-4 text-center font-bold">Aksi</th></tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="tbl-alumni"></tbody>
-                        </table>
-                    </div>
+                    <table class="w-full text-left min-w-max">
+<thead class="bg-gray-100 dark:bg-gray-700">
+<tr>
+<th class="p-4">Tahun / Lulusan</th>
+<th class="p-4 text-center text-blue-600">L</th>
+<th class="p-4 text-center text-pink-600">P</th>
+<th class="p-4 text-center">Total</th>
+</tr>
+</thead>
+<tbody id="admin-tbl-alumni"></tbody>
+<tfoot class="bg-gray-50 dark:bg-gray-800 font-bold" id="admin-foot-alumni"></tfoot>
+</table>
                 </div>
+
             </div>
 
             <!-- VIEW: GALERI -->
@@ -417,7 +422,7 @@
             <div id="admin-link" class="admin-view-content hidden animate-fade-in">
                 <div class="flex justify-between items-end mb-6 border-b dark:border-gray-700 pb-4">
                     <h2 class="text-2xl font-black text-gray-800 dark:text-white">Tautan Aplikasi Eksternal</h2>
-                    <button onclick="bukaModal('modal-eksternal')" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"><i class="fas fa-plus mr-2"></i> Tambah Link</button>
+                    <button onclick="batalEdit('eksternal'); bukaModal('modal-eksternal')" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"><i class="fas fa-plus mr-2"></i> Tambah Link</button>
                 </div>
                 <table class="w-full text-left min-w-max">
 <thead class="bg-gray-100 dark:bg-gray-700">
