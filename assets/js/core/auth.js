@@ -129,3 +129,57 @@ function logout() {
         }
     });
 }
+
+function prosesLupaPassword() {
+    var nip = document.getElementById('req-nip').value.trim();
+    var email = document.getElementById('req-email').value.trim();
+    if(!nip || !email) { return Swal.fire('Error', 'NIP dan Email wajib diisi!', 'error'); }
+    
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)) { return Swal.fire('Error', 'Format email tidak valid!', 'error'); }
+
+    var appUrl = window.location.href.split('?')[0];
+
+    document.getElementById('loader').style.display = 'flex';
+    var payload = { action: 'mintaResetPassword', nip: nip, email: email, appUrl: appUrl };
+    callAPI(payload, function(res) {
+        document.getElementById('loader').style.display = 'none';
+        if(res.status === 'success') {
+            tutupModal('modal-lupa-pass');
+            document.getElementById('req-nip').value = '';
+            document.getElementById('req-email').value = '';
+            Swal.fire('Sukses', res.message, 'success');
+        } else {
+            Swal.fire('Gagal', res.message, 'error');
+        }
+    });
+}
+
+function prosesResetPassToken() {
+    var passBaru = document.getElementById('rp-baru').value;
+    var konfirm = document.getElementById('rp-konfirm').value;
+    if(!passBaru || passBaru.length < 6) return Swal.fire('Error', 'Password baru minimal 6 karakter.', 'error');
+    if(passBaru !== konfirm) return Swal.fire('Error', 'Konfirmasi password tidak cocok!', 'error');
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var token = urlParams.get('reset_token');
+    
+    if(!token) return Swal.fire('Error', 'Token tidak ditemukan.', 'error');
+
+    document.getElementById('loader').style.display = 'flex';
+    var payload = { action: 'eksekusiResetPassword', token_reset: token, newPass: passBaru };
+    callAPI(payload, function(res) {
+        document.getElementById('loader').style.display = 'none';
+        if(res.status === 'success') {
+            tutupModal('modal-reset-pass');
+            document.getElementById('rp-baru').value = '';
+            document.getElementById('rp-konfirm').value = '';
+            window.history.replaceState({}, document.title, window.location.pathname);
+            Swal.fire('Sukses', res.message + '<br>Silakan login kembali.', 'success').then(() => {
+                navigate('login');
+            });
+        } else {
+            Swal.fire('Gagal', res.message, 'error');
+        }
+    });
+}
