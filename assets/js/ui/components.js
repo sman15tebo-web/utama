@@ -74,17 +74,26 @@ async function navigate(pageId) {
     try { if (pageId !== 'detail-berita') { window.history.replaceState(null, null, window.location.pathname); } } catch (e) { }
 
     await loadViewForPage(pageId);
+    
+    // Pastikan data di-render ulang jika view baru saja diload (memecahkan bug web publik kosong dari admin)
+    if (window.dbGlobal && Object.keys(window.dbGlobal).length > 0 && typeof renderSemuaData === 'function') {
+        renderSemuaData(window.dbGlobal);
+    }
 
     var sec = document.querySelectorAll('.page-section'); for (var k = 0; k < sec.length; k++) sec[k].classList.remove('active');
     
-    // Hide or show footer
+    // Sembunyikan elemen global yang mengganggu layout dashboard (admin/pegawai)
     var fp = document.getElementById('footer-publik');
-    if (fp) {
-        if (pageId.startsWith('admin-') || pageId.startsWith('pegawai-') || pageId === 'login') {
-            fp.classList.add('hidden');
-        } else {
-            fp.classList.remove('hidden');
-        }
+    var np = document.getElementById('nav-publik');
+    var na = document.getElementById('nav-admin');
+    
+    if (pageId.startsWith('admin-') || pageId.startsWith('pegawai-') || pageId === 'login') {
+        if(fp) fp.classList.add('hidden');
+        if(np) np.classList.add('hidden');
+        if(na) na.classList.add('hidden'); // Selalu sembunyikan nav-admin global di dashboard agar menu tidak tertutup
+    } else {
+        if(fp) fp.classList.remove('hidden');
+        if(np) np.classList.remove('hidden');
     }
 
     // Khusus Admin Dashboard
