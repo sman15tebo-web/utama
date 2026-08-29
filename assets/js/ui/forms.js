@@ -139,11 +139,18 @@ async function simpanAtauUpdate(modul) {
 
     try {
         if (base64 && modul !== 'siswa') {
-            document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke ImgBB...';
-            d.gambar_url = await uploadKeImgBB(base64);
-            d.foto_url = d.gambar_url;
-            d.icon_url = d.gambar_url;
-            base64 = null;
+            if (modul === 'guru' || modul === 'tu') {
+                document.getElementById('loader-text').innerText = 'Siap menyimpan foto pegawai ke Drive...';
+                d.foto_url = base64;
+                d.gambar_url = base64;
+                d.icon_url = base64;
+            } else {
+                document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke ImgBB...';
+                d.gambar_url = await uploadKeImgBB(base64);
+                d.foto_url = d.gambar_url;
+                d.icon_url = d.gambar_url;
+                base64 = null;
+            }
         }
         if (modul === 'berita') {
             document.getElementById('loader-text').innerText = 'Membangun HTML Statis & Menyimpan ke GitHub...';
@@ -208,9 +215,9 @@ async function simpanDataDiriPegawai() {
     document.getElementById('loader-text').innerText = 'Menyimpan Biodata...'; document.getElementById('loader').style.display = 'flex'; startTimer();
     try {
         if (base64) {
-            document.getElementById('loader-text').innerText = 'Mengunggah Profil ke ImgBB...';
-            d.foto_url = await uploadKeImgBB(base64);
-            base64 = null;
+            document.getElementById('loader-text').innerText = 'Siap menyimpan foto pegawai ke Drive...';
+            d.foto_url = base64;
+            base64 = base64;
         }
     } catch (e) { return gagalSimpan(e.message); }
     callAPI('simpanProfilPegawai', { token: curToken, modul: curRole, id: curUserId, dataBaru: d, base64Data: base64, filename: 'foto_' + curUsername + '.jpg' }).then(selesaiSimpan).catch(gagalSimpan);
