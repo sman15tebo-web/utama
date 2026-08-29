@@ -2,7 +2,7 @@
 window.onload = async function () {
     if (curRole === 'admin') {
         document.getElementById('nav-publik').classList.add('hidden');
-        document.getElementById('nav-admin').classList.remove('hidden');
+        document.getElementById('nav-admin').classList.add('hidden'); // Sembunyikan global nav-admin agar tidak tumpang tindih
         document.getElementById('bottom-nav-publik').classList.add('hidden');
         document.getElementById('bottom-nav-admin').classList.remove('hidden');
         await navigate('admin-dashboard');
