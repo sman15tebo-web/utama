@@ -7,32 +7,51 @@ function toggleMobileSub(id) { var el = document.getElementById(id); var icon = 
 function jalankanSlider() { clearInterval(sliderInterval); var slides = document.querySelectorAll('.slide-item'); if (slides.length <= 1) return; var curSlide = 0; sliderInterval = setInterval(function () { slides[curSlide].classList.remove('active'); curSlide = (curSlide + 1) % slides.length; slides[curSlide].classList.add('active'); }, 4500); }
 
 function bukaCropper(event, rasio, key, prevId) {
-    if (typeof Cropper === 'undefined') { Swal.fire('Peringatan', 'Sistem Cropper belum dimuat sempurna. Coba refresh halaman.', 'warning'); return; }
+    if (typeof Cropper === 'undefined') { Swal.fire('Peringatan', 'Sistem Cropper belum dimuat. Coba refresh halaman.', 'warning'); return; }
     var file = event.target.files[0]; if (!file) return; curKey = key; curPrevId = prevId;
     var reader = new FileReader();
     reader.onload = function (e) {
+        var cropModal = document.getElementById('crop-modal');
         var cropImg = document.getElementById('crop-image');
-        document.getElementById('crop-modal').style.display = 'flex';
-        // Destroy cropper lama dulu jika ada
-        if (cropperInst) { try { cropperInst.destroy(); } catch(ex) {} cropperInst = null; }
-        // Tunggu gambar selesai dimuat BARU inisialisasi Cropper
-        cropImg.onload = function () {
-            cropperInst = new Cropper(cropImg, {
-                aspectRatio: (rasio === 0 ? NaN : rasio),
-                viewMode: 1,
-                autoCropArea: 0.9,
-                movable: true,
-                zoomable: true,
-                rotatable: false
-            });
-        };
+        if (!cropModal || !cropImg) return;
+
+        // Destroy instance lama jika ada
+        if (cropperInst) { try { cropperInst.destroy(); } catch (ex) {} cropperInst = null; }
+
+        // Tampilkan modal & set gambar
+        cropModal.style.display = 'flex';
         cropImg.src = e.target.result;
+
+        // Tunggu 200ms agar browser selesai render gambar, BARU init Cropper
+        // (onload tidak reliable untuk data URL di semua browser)
+        setTimeout(function () {
+            if (cropperInst) return; // guard double-init
+            try {
+                cropperInst = new Cropper(cropImg, {
+                    aspectRatio: (rasio && rasio !== 0) ? rasio : NaN,
+                    viewMode: 1,
+                    autoCropArea: 0.9,
+                    movable: true,
+                    zoomable: true,
+                    scalable: false,
+                    rotatable: false
+                });
+            } catch (err) {
+                Swal.fire('Error Crop', 'Gagal memuat alat crop: ' + err.message, 'error');
+            }
+        }, 200);
     };
     reader.readAsDataURL(file);
 }
 
 
-function batalCrop() { document.getElementById('crop-modal').style.display = 'none'; if (cropperInst) cropperInst.destroy(); var inps = document.querySelectorAll('input[type="file"]'); for (var i = 0; i < inps.length; i++) inps[i].value = ''; }
+
+function batalCrop() {
+    document.getElementById('crop-modal').style.display = 'none';
+    if (cropperInst) { try { cropperInst.destroy(); } catch(e) {} cropperInst = null; }
+    var inps = document.querySelectorAll('input[type="file"]');
+    for (var i = 0; i < inps.length; i++) inps[i].value = '';
+}
 
 function terapkanCrop() {
     if (!cropperInst) return;
