@@ -16,28 +16,13 @@ async function callAPI(action, payload = {}) {
     try { const res = await fetch(GAS_URL, { redirect: "follow", method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }); const text = await res.text(); try { return JSON.parse(text); } catch (e) { return text; } } catch (e) { throw e; }
 }
 
-const IMGBB_API_KEY = '01ff241ffe5915782eecafa87273ebfb';
-
 async function uploadKeImgBB(base64Data) {
-    var pureBase64 = base64Data;
-    if (base64Data && base64Data.indexOf(',') !== -1) {
-        pureBase64 = base64Data.split(',')[1];
-    }
     try {
-        var formData = new FormData();
-        formData.append('key', IMGBB_API_KEY);
-        formData.append('image', pureBase64);
-
-        const res = await fetch('https://api.imgbb.com/1/upload', {
-            method: 'POST',
-            body: formData
-        });
-
-        const json = await res.json();
-        if (json && json.success && json.data && json.data.url) {
-            return json.data.url;
+        var result = await callAPI('proxyImgBB', { base64Data: base64Data });
+        if (result && result.status === 'success' && result.url) {
+            return result.url;
         }
-        throw new Error((json && json.error && json.error.message) || 'Gagal upload gambar ke ImgBB');
+        throw new Error((result && result.message) || 'Gagal upload gambar ke ImgBB');
     } catch (e) {
         throw new Error('Gagal upload gambar: ' + e.message);
     }
