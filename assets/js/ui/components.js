@@ -224,6 +224,12 @@ async function navigate(pageId) {
         if(targetEl) {
             targetEl.classList.add('active'); 
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            var fallbackHome = document.getElementById('home');
+            if (fallbackHome) {
+                fallbackHome.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
         // Isi form profil pegawai setiap kali halaman profil dibuka
         if (pageId === 'pegawai-dashboard' && (curRole === 'guru' || curRole === 'tu') && typeof siapkanFormPegawai === 'function') {
