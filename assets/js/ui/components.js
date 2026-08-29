@@ -110,6 +110,10 @@ async function navigate(pageId) {
             targetEl.classList.add('active'); 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        // Isi form profil pegawai setiap kali halaman profil dibuka
+        if (pageId === 'pegawai-dashboard' && (curRole === 'guru' || curRole === 'tu') && typeof siapkanFormPegawai === 'function') {
+            setTimeout(siapkanFormPegawai, 50);
+        }
     }
     
     try { if (typeof AOS !== 'undefined') AOS.refresh(); } catch (e) { }
