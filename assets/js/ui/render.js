@@ -64,8 +64,12 @@ function renderSemuaData(data) {
             else if (s.kategori === 'Alumni') { cAlumni += tot; aL += l; aP += p; tAlm += '<tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><td class="p-4 font-bold text-secondary">' + amankanTeks(s.label) + pdfIco + '</td><td class="p-4 text-center text-blue-500 font-bold">' + l + '</td><td class="p-4 text-center text-pink-500 font-bold">' + p + '</td><td class="p-4 text-center font-black">' + tot + '</td></tr>'; }
         }
         setTextAman('stat-siswa', cSiswa); setTextAman('stat-alumni', cAlumni); setTextAman('stat-siswa-dash', cSiswa);
+        // Isi tabel di halaman publik
         setHTMLAman('tbl-siswa-aktif', tSis || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-siswa-aktif', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + sL + '</td><td class="p-4 text-center text-pink-600">' + sP + '</td><td class="p-4 text-center text-xl">' + cSiswa + '</td></tr>');
         setHTMLAman('tbl-alumni', tAlm || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-alumni', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + aL + '</td><td class="p-4 text-center text-pink-600">' + aP + '</td><td class="p-4 text-center text-xl">' + cAlumni + '</td></tr>');
+        // Isi tabel di panel admin (ID unik agar tidak bentrok)
+        setHTMLAman('admin-tbl-siswa-aktif', tSis || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('admin-foot-siswa-aktif', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + sL + '</td><td class="p-4 text-center text-pink-600">' + sP + '</td><td class="p-4 text-center text-xl">' + cSiswa + '</td></tr>');
+        setHTMLAman('admin-tbl-alumni', tAlm || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('admin-foot-alumni', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + aL + '</td><td class="p-4 text-center text-pink-600">' + aP + '</td><td class="p-4 text-center text-xl">' + cAlumni + '</td></tr>');
         setHTMLAman('tbl-admin-siswa', tTSis);
 
         function renderPerson(arr, cId, tblId, mdl) {
@@ -119,8 +123,7 @@ function renderSemuaData(data) {
             // Tampilkan semua di Tabel Admin, beri badge "Terjadwal" jika belum waktunya
             var badgeJadwal = belumWaktunya ? '<br><span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-bold">Terjadwal</span>' : '';
             
-            var linkPreview = (dbGlobal.domainResmi || window.location.href.split('?')[0]) + '?article=' + ib.id;
-            var btnAksi = '<td class="p-3 text-center whitespace-nowrap"><a href="' + linkPreview + '" target="_blank" class="inline-block text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-eye"></i></a><button onclick="siapkanEdit(\'berita\',\'' + ib.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\'' + ib.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+            var btnAksi = '<td class="p-3 text-center whitespace-nowrap"><button onclick="bukaBerita(\'' + ib.id + '\')" class="text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2" title="Lihat Detail Berita"><i class="fas fa-eye"></i></button><button onclick="siapkanEdit(\'berita\',\'' + ib.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\'' + ib.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
             var trData = '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 ' + (isP ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-primary') + ' rounded text-xs font-bold">' + (isP ? 'Pengumuman' : 'Berita') + '</span></td><td class="p-3"><img src="' + getValidImg(ib.gambar_url, '') + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul || '-') + badgeJadwal + '</td>' + btnAksi;
             
             if (isP) tTblPengumuman += trData;
