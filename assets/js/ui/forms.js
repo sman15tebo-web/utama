@@ -32,6 +32,13 @@ function ubahTipeGaleri() { var val = document.getElementById('gl-kategori').val
 
 function ubahTipeGaleriPegawai() { var val = document.getElementById('pg-kategori').value; if (val === 'Video') { document.getElementById('wrap-pg-foto').style.display = 'none'; document.getElementById('file-pg-foto').value = ''; document.getElementById('wrap-pg-video').style.display = 'block'; } else { document.getElementById('wrap-pg-foto').style.display = 'block'; document.getElementById('wrap-pg-video').style.display = 'none'; document.getElementById('pg-video').value = ''; } }
 
+// ===== Bug Fix: Fungsi hitung total siswa otomatis =====
+function hitungTotalSiswa() {
+    var l = parseInt(document.getElementById('sw-l').value) || 0;
+    var p = parseInt(document.getElementById('sw-p').value) || 0;
+    document.getElementById('sw-jumlah').value = l + p;
+}
+
 function batalEditSemua() { var m = ['berita', 'guru', 'tu', 'siswa', 'galeri', 'slider', 'eksternal']; for (var i = 0; i < m.length; i++) batalEdit(m[i]); }
 
 function batalEdit(modul) {
@@ -45,6 +52,9 @@ function batalEdit(modul) {
     if (modul === 'galeri') { var gk = document.getElementById('gl-kategori'); if (gk) { gk.value = 'Foto'; ubahTipeGaleri(); } }
     if (modul === 'berita' && typeof quillEditor !== 'undefined' && quillEditor) { quillEditor.root.innerHTML = ''; document.getElementById('b-kategori').value = 'Berita'; var bTgl = document.getElementById('b-tanggal'); if (bTgl) bTgl.value = ''; }
     if (modul === 'siswa') { pdfBase64 = null; var pdfl = document.getElementById('sw-pdf-link'); if (pdfl) pdfl.classList.add('hidden'); var pdfn = document.getElementById('sw-pdf-name'); if (pdfn) pdfn.classList.add('hidden'); var pdfi = document.getElementById('sw-pdf'); if (pdfi) pdfi.value = ''; }
+    // Reset readonly NIP saat batalEdit
+    if (modul === 'guru') { var nipG = document.getElementById('g-nip'); if (nipG) { nipG.readOnly = false; nipG.classList.remove('bg-gray-100','cursor-not-allowed'); } }
+    if (modul === 'tu') { var nipT = document.getElementById('tu-nip'); if (nipT) { nipT.readOnly = false; nipT.classList.remove('bg-gray-100','cursor-not-allowed'); } }
 }
 
 function siapkanEdit(modul, id) {
@@ -54,8 +64,8 @@ function siapkanEdit(modul, id) {
     if (modul === 'slider') { document.getElementById('sl-judul').value = dt.judul; document.getElementById('sl-sub').value = dt.subjudul; }
     if (modul === 'eksternal') { document.getElementById('ex-nama').value = dt.nama; document.getElementById('ex-url').value = dt.url; }
     if (modul === 'galeri') { document.getElementById('gl-judul').value = dt.judul; document.getElementById('gl-deskripsi').value = dt.deskripsi || ''; var kateg = dt.kategori || 'Foto'; document.getElementById('gl-kategori').value = kateg; ubahTipeGaleri(); if (kateg === 'Video') document.getElementById('gl-video').value = dt.video_url || ''; }
-    if (modul === 'guru') { document.getElementById('g-nip').value = dt.nip || ''; document.getElementById('g-nama').value = dt.nama || ''; document.getElementById('g-pass').value = ''; document.getElementById('g-jk').value = dt.jk || ''; document.getElementById('g-tempat_lahir').value = dt.tempat_lahir || ''; document.getElementById('g-tgl_lahir').value = formatTanggal(dt.tanggal_lahir); document.getElementById('g-golongan').value = dt.pangkat_gol || ''; document.getElementById('g-status').value = dt.status_pegawai || ''; document.getElementById('g-tmt').value = formatTanggal(dt.tmt_pgw); document.getElementById('g-jabatan').value = dt.jabatan || ''; document.getElementById('g-mapel').value = dt.mapel || ''; document.getElementById('g-no_hp').value = dt.no_hp || ''; document.getElementById('g-email').value = dt.email || ''; }
-    if (modul === 'tu') { document.getElementById('tu-nip').value = dt.nip || ''; document.getElementById('tu-nama').value = dt.nama || ''; document.getElementById('tu-pass').value = ''; document.getElementById('tu-jk').value = dt.jk || ''; document.getElementById('tu-tempat_lahir').value = dt.tempat_lahir || ''; document.getElementById('tu-tgl_lahir').value = formatTanggal(dt.tanggal_lahir); document.getElementById('tu-golongan').value = dt.pangkat_gol || ''; document.getElementById('tu-status').value = dt.status_pegawai || ''; document.getElementById('tu-tmt').value = formatTanggal(dt.tmt_pgw); document.getElementById('tu-jabatan').value = dt.jabatan || ''; document.getElementById('tu-bagian').value = dt.bagian || ''; document.getElementById('tu-no_hp').value = dt.no_hp || ''; document.getElementById('tu-email').value = dt.email || ''; }
+    if (modul === 'guru') { document.getElementById('g-nip').value = dt.nip || ''; document.getElementById('g-nama').value = dt.nama || ''; document.getElementById('g-pass').value = ''; document.getElementById('g-jk').value = dt.jk || ''; document.getElementById('g-tempat_lahir').value = dt.tempat_lahir || ''; document.getElementById('g-tgl_lahir').value = formatTanggal(dt.tanggal_lahir); document.getElementById('g-golongan').value = dt.pangkat_gol || ''; document.getElementById('g-status').value = dt.status_pegawai || ''; document.getElementById('g-tmt').value = formatTanggal(dt.tmt_pgw); document.getElementById('g-jabatan').value = dt.jabatan || ''; document.getElementById('g-mapel').value = dt.mapel || ''; document.getElementById('g-no_hp').value = dt.no_hp || ''; document.getElementById('g-email').value = dt.email || ''; var nipG = document.getElementById('g-nip'); if (nipG) { nipG.readOnly = true; nipG.classList.add('bg-gray-100','cursor-not-allowed'); } }
+    if (modul === 'tu') { document.getElementById('tu-nip').value = dt.nip || ''; document.getElementById('tu-nama').value = dt.nama || ''; document.getElementById('tu-pass').value = ''; document.getElementById('tu-jk').value = dt.jk || ''; document.getElementById('tu-tempat_lahir').value = dt.tempat_lahir || ''; document.getElementById('tu-tgl_lahir').value = formatTanggal(dt.tanggal_lahir); document.getElementById('tu-golongan').value = dt.pangkat_gol || ''; document.getElementById('tu-status').value = dt.status_pegawai || ''; document.getElementById('tu-tmt').value = formatTanggal(dt.tmt_pgw); document.getElementById('tu-jabatan').value = dt.jabatan || ''; document.getElementById('tu-bagian').value = dt.bagian || ''; document.getElementById('tu-no_hp').value = dt.no_hp || ''; document.getElementById('tu-email').value = dt.email || ''; var nipT = document.getElementById('tu-nip'); if (nipT) { nipT.readOnly = true; nipT.classList.add('bg-gray-100','cursor-not-allowed'); } }
 
     var imgUrl = dt.gambar_url || dt.foto_url || dt.icon_url;
     var img2 = document.getElementById('prev-' + modul);
@@ -241,6 +251,13 @@ function simpanPengaturanWidget() {
 function selesaiSimpan(res) {
     document.getElementById('loader').style.display = 'none'; stopTimer();
     if (res.status === 'success') {
+        // Tutup semua modal yang mungkin terbuka setelah simpan/update berhasil
+        var semuaModal = ['modal-berita', 'modal-guru', 'modal-tu', 'modal-siswa', 'modal-galeri', 'modal-slider', 'modal-eksternal'];
+        for (var mi = 0; mi < semuaModal.length; mi++) {
+            var mEl = document.getElementById(semuaModal[mi]);
+            if (mEl && !mEl.classList.contains('hidden')) { tutupModal(semuaModal[mi]); }
+        }
+        batalEditSemua();
         Swal.fire({ title: 'Berhasil!', text: res.message || 'Data telah tersimpan.', icon: 'success', timer: 2000, showConfirmButton: false });
         refreshHalamanLunak();
     } else { Swal.fire('Gagal Menyimpan', res.message, 'error'); }
