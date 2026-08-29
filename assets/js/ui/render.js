@@ -167,7 +167,7 @@ function renderSemuaData(data) {
             var hb = lBerita[w]; var tmp = document.createElement("DIV"); tmp.innerHTML = hb.konten; var plainText = tmp.textContent || tmp.innerText || "";
             tHomeB += '<div onclick="bukaBerita(\'' + hb.id + '\')" class="flex flex-col md:flex-row bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><div class="md:w-1/3 h-48 md:h-auto relative"><img src="' + getValidImg(hb.gambar_url, '') + '" loading="lazy" class="w-full h-full object-cover absolute inset-0"></div><div class="md:w-2/3 p-6 flex flex-col justify-center"><span class="inline-block px-3 py-1 bg-blue-100 text-primary rounded-full text-[10px] md:text-xs font-bold w-max mb-3">' + amankanTeks(hb.tanggal || '-') + '</span><h3 class="text-lg md:text-xl font-black mb-2 text-gray-800 dark:text-white line-clamp-2">' + amankanTeks(hb.judul || '-') + '</h3><p class="text-sm text-gray-500 line-clamp-2 leading-relaxed">' + plainText + '</p></div></div>';
         }
-        document.getElementById('home-berita-list').innerHTML = tHomeB || '<p class="text-gray-500">Belum ada berita.</p>';
+        setHTMLAman('home-berita-list', tHomeB || '<p class="text-gray-500">Belum ada berita.</p>');
         for (var p = 0; p < Math.min(3, lPengumuman.length); p++) {
             var hp = lPengumuman[p]; tHomeP += '<div onclick="bukaBerita(\'' + hp.id + '\')" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden cursor-pointer hover:-translate-y-1 border border-gray-100 dark:border-gray-700"><img src="' + getValidImg(hp.gambar_url, '') + '" loading="lazy" class="w-full aspect-[5/3] object-cover"><div class="p-6"><span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-[10px] md:text-xs font-bold mb-4">' + amankanTeks(hp.tanggal || '-') + '</span><h3 class="text-base md:text-lg font-black text-gray-800 dark:text-white leading-tight line-clamp-2">' + amankanTeks(hp.judul || '-') + '</h3></div></div>';
         }
@@ -216,28 +216,31 @@ function renderSemuaData(data) {
 
 function bukaBerita(id) {
     var dt = null;
-    for (var i = 0; i < dbGlobal.berita.length; i++) { if (dbGlobal.berita[i].id == id) { dt = dbGlobal.berita[i]; break; } }
+    for (var i = 0; i < (dbGlobal.berita || []).length; i++) { if (dbGlobal.berita[i].id == id) { dt = dbGlobal.berita[i]; break; } }
     if (dt) {
         curShareId = id; curShareTitle = dt.judul;
 
-        // --- FORMAT TANGGAL & JAM ---
         var tglTampil = dt.tanggal;
         try {
             var d = new Date(dt.tanggal);
             if (!isNaN(d.getTime())) { tglTampil = d.toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
         } catch (e) { }
 
-        // --- TAMBAH NAMA PENULIS DI BAWAH ---
         var nmPenulis = dt.penulis ? dt.penulis : 'Admin';
         var infoPenulis = '<div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"><p class="font-bold text-gray-500 text-sm md:text-base"><i class="fas fa-pencil-alt text-primary mr-2"></i> Post by : <span class="text-gray-800 dark:text-white">' + amankanTeks(nmPenulis) + '</span></p></div>';
 
-        // Selalu buka halaman detail berita untuk semua role.
-        // Popup modal tidak sesuai untuk web publik dan membuat user merasa "terlempar" ke layar floating.
-        document.getElementById('detail-judul').innerText = dt.judul;
-        document.getElementById('detail-konten').innerHTML = dt.konten + infoPenulis;
-        document.getElementById('detail-tgl').innerText = tglTampil;
-        document.getElementById('detail-cat').innerText = ((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita';
-        document.getElementById('detail-img').src = getValidImg(dt.gambar_url, '');
+        var detailJudul = document.getElementById('detail-judul');
+        var detailKonten = document.getElementById('detail-konten');
+        var detailTgl = document.getElementById('detail-tgl');
+        var detailCat = document.getElementById('detail-cat');
+        var detailImg = document.getElementById('detail-img');
+
+        if (detailJudul) detailJudul.innerText = dt.judul;
+        if (detailKonten) detailKonten.innerHTML = dt.konten + infoPenulis;
+        if (detailTgl) detailTgl.innerText = tglTampil;
+        if (detailCat) detailCat.innerText = ((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita';
+        if (detailImg) detailImg.src = getValidImg(dt.gambar_url, '');
+
         try { window.history.replaceState(null, null, "?article=" + id); } catch (e) { }
         navigate('detail-berita');
     }
@@ -245,23 +248,21 @@ function bukaBerita(id) {
 
 
 function bukaProfilPegawai(modul, id) {
-    var dt = null; for (var i = 0; i < dbGlobal[modul].length; i++) { if (dbGlobal[modul][i].id == id) { dt = dbGlobal[modul][i]; break; } }
+    var dt = null; for (var i = 0; i < (dbGlobal[modul] || []).length; i++) { if (dbGlobal[modul][i].id == id) { dt = dbGlobal[modul][i]; break; } }
     if (dt) {
-        document.getElementById('dp-foto').src = getValidImg(dt.foto_url, 'https://ui-avatars.com/api/?name=' + amankanTeks(dt.nama) + '&background=random');
-        document.getElementById('dp-status').innerText = amankanTeks(dt.status_pegawai || 'Pegawai');
-        document.getElementById('dp-jabatan').innerText = amankanTeks(dt.jabatan || 'Staf');
-        document.getElementById('dp-nama').innerText = amankanTeks(dt.nama || '-');
-        document.getElementById('dp-nip').innerText = maskNip(amankanTeks(dt.nip || '-'));
-        document.getElementById('dp-jk').innerText = amankanTeks(dt.jk || '-');
-        document.getElementById('dp-gol').innerText = amankanTeks(dt.pangkat_gol || '-');
-        document.getElementById('dp-tmt').innerText = formatTanggal(dt.tmt_pgw) || '-';
-        if (modul === 'guru') { document.getElementById('dp-lbl-tugas').innerText = 'Mata Pelajaran Diampu'; document.getElementById('dp-tugas').innerText = amankanTeks(dt.mapel || '-'); }
-        else { document.getElementById('dp-lbl-tugas').innerText = 'Bagian / Divisi'; document.getElementById('dp-tugas').innerText = amankanTeks(dt.bagian || '-'); }
+        var dpFoto = document.getElementById('dp-foto'); if (dpFoto) dpFoto.src = getValidImg(dt.foto_url, 'https://ui-avatars.com/api/?name=' + amankanTeks(dt.nama) + '&background=random');
+        var dpStatus = document.getElementById('dp-status'); if (dpStatus) dpStatus.innerText = amankanTeks(dt.status_pegawai || 'Pegawai');
+        var dpJabatan = document.getElementById('dp-jabatan'); if (dpJabatan) dpJabatan.innerText = amankanTeks(dt.jabatan || 'Staf');
+        var dpNama = document.getElementById('dp-nama'); if (dpNama) dpNama.innerText = amankanTeks(dt.nama || '-');
+        var dpNip = document.getElementById('dp-nip'); if (dpNip) dpNip.innerText = maskNip(amankanTeks(dt.nip || '-'));
+        var dpJk = document.getElementById('dp-jk'); if (dpJk) dpJk.innerText = amankanTeks(dt.jk || '-');
+        var dpGol = document.getElementById('dp-gol'); if (dpGol) dpGol.innerText = amankanTeks(dt.pangkat_gol || '-');
+        var dpTmt = document.getElementById('dp-tmt'); if (dpTmt) dpTmt.innerText = formatTanggal(dt.tmt_pgw) || '-';
+        if (modul === 'guru') { var dpLbl = document.getElementById('dp-lbl-tugas'); if (dpLbl) dpLbl.innerText = 'Mata Pelajaran Diampu'; var dpTugas = document.getElementById('dp-tugas'); if (dpTugas) dpTugas.innerText = amankanTeks(dt.mapel || '-'); }
+        else { var dpLbl = document.getElementById('dp-lbl-tugas'); if (dpLbl) dpLbl.innerText = 'Bagian / Divisi'; var dpTugas = document.getElementById('dp-tugas'); if (dpTugas) dpTugas.innerText = amankanTeks(dt.bagian || '-'); }
 
-        var nohp = amankanTeks(dt.no_hp || '-'); document.getElementById('dp-nohp').innerText = nohp;
-        if (nohp !== '-') { document.getElementById('dp-nohp').href = 'https://wa.me/' + nohp.replace(/[^0-9]/g, ''); }
-        else { document.getElementById('dp-nohp').removeAttribute('href'); }
-        document.getElementById('dp-email').innerText = amankanTeks(dt.email || '-');
+        var nohp = amankanTeks(dt.no_hp || '-'); var dpNoHp = document.getElementById('dp-nohp'); if (dpNoHp) { dpNoHp.innerText = nohp; if (nohp !== '-') { dpNoHp.href = 'https://wa.me/' + nohp.replace(/[^0-9]/g, ''); } else { dpNoHp.removeAttribute('href'); } }
+        var dpEmail = document.getElementById('dp-email'); if (dpEmail) dpEmail.innerText = amankanTeks(dt.email || '-');
 
         var btnBack = document.getElementById('btn-back-pegawai'); if (btnBack) btnBack.setAttribute('onclick', "navigate('" + modul + "')");
         navigate('detail-pegawai');
