@@ -43,7 +43,7 @@ function batalEdit(modul) {
     var imgP = document.getElementById('prev-' + modul); if (imgP) { imgP.classList.add('hidden'); imgP.src = ''; }
     cropData[modul] = null;
     if (modul === 'galeri') { var gk = document.getElementById('gl-kategori'); if (gk) { gk.value = 'Foto'; ubahTipeGaleri(); } }
-    if (modul === 'berita' && typeof quillEditor !== 'undefined' && quillEditor) { quillEditor.root.innerHTML = ''; document.getElementById('b-kategori').value = 'Berita'; }
+    if (modul === 'berita' && typeof quillEditor !== 'undefined' && quillEditor) { quillEditor.root.innerHTML = ''; document.getElementById('b-kategori').value = 'Berita'; var bTgl = document.getElementById('b-tanggal'); if (bTgl) bTgl.value = ''; }
     if (modul === 'siswa') { pdfBase64 = null; var pdfl = document.getElementById('sw-pdf-link'); if (pdfl) pdfl.classList.add('hidden'); var pdfn = document.getElementById('sw-pdf-name'); if (pdfn) pdfn.classList.add('hidden'); var pdfi = document.getElementById('sw-pdf'); if (pdfi) pdfi.value = ''; }
 }
 
