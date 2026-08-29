@@ -231,39 +231,8 @@ function bukaBerita(id) {
         var nmPenulis = dt.penulis ? dt.penulis : 'Admin';
         var infoPenulis = '<div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"><p class="font-bold text-gray-500 text-sm md:text-base"><i class="fas fa-pencil-alt text-primary mr-2"></i> Post by : <span class="text-gray-800 dark:text-white">' + amankanTeks(nmPenulis) + '</span></p></div>';
 
-        // Jika sedang di akun admin/guru, tampilkan sebagai modal popup (bukan navigasi ke publik)
-        if (curRole === 'admin' || curRole === 'guru' || curRole === 'tu') {
-            // Cari atau buat modal preview berita
-            var existModal = document.getElementById('modal-preview-berita');
-            if (!existModal) {
-                var m = document.createElement('div');
-                m.id = 'modal-preview-berita';
-                m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;';
-                m.innerHTML = '<div style="background:#fff;border-radius:1.5rem;width:100%;max-width:800px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.4);margin:auto;" class="dark:bg-gray-800">' +
-                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid #e5e7eb;">' +
-                    '<span style="font-weight:900;font-size:1rem;color:#1e3a8a;" id="mpb-cat">Berita</span>' +
-                    '<button onclick="document.getElementById(\'modal-preview-berita\').style.display=\'none\'" style="background:#f3f4f6;border:none;border-radius:50%;width:2rem;height:2rem;cursor:pointer;font-size:1rem;">✕</button>' +
-                    '</div>' +
-                    '<img id="mpb-img" style="width:100%;aspect-ratio:5/3;object-fit:cover;" src=""/>' +
-                    '<div style="padding:1.5rem 2rem;">' +
-                    '<p id="mpb-tgl" style="font-size:0.8rem;color:#9ca3af;margin-bottom:0.5rem;"></p>' +
-                    '<h2 id="mpb-judul" style="font-size:1.5rem;font-weight:900;color:#1f2937;margin-bottom:1rem;line-height:1.3;"></h2>' +
-                    '<div id="mpb-konten" style="font-size:0.95rem;color:#374151;line-height:1.8;"></div>' +
-                    '</div>' +
-                    '</div>';
-                document.body.appendChild(m);
-            }
-            var modal = document.getElementById('modal-preview-berita');
-            document.getElementById('mpb-cat').innerText = ((dt.kategori || '').toLowerCase() === 'pengumuman') ? '📢 Pengumuman' : '📰 Berita';
-            document.getElementById('mpb-img').src = getValidImg(dt.gambar_url, '');
-            document.getElementById('mpb-tgl').innerText = tglTampil;
-            document.getElementById('mpb-judul').innerText = dt.judul || '-';
-            document.getElementById('mpb-konten').innerHTML = dt.konten + infoPenulis;
-            modal.style.display = 'flex';
-            return;
-        }
-
-        // Pengunjung publik: navigasi normal ke halaman detail
+        // Selalu buka halaman detail berita untuk semua role.
+        // Popup modal tidak sesuai untuk web publik dan membuat user merasa "terlempar" ke layar floating.
         document.getElementById('detail-judul').innerText = dt.judul;
         document.getElementById('detail-konten').innerHTML = dt.konten + infoPenulis;
         document.getElementById('detail-tgl').innerText = tglTampil;
