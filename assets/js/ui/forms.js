@@ -144,12 +144,18 @@ async function simpanAtauUpdate(modul) {
                 d.foto_url = base64;
                 d.gambar_url = base64;
                 d.icon_url = base64;
-            } else {
+            } else if (modul === 'berita' || modul === 'galeri' || modul === 'slider' || modul === 'eksternal') {
                 document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke ImgBB...';
-                d.gambar_url = await uploadKeImgBB(base64);
-                d.foto_url = d.gambar_url;
-                d.icon_url = d.gambar_url;
+                var imgUrl = await uploadKeImgBB(base64);
+                d.gambar_url = imgUrl;
+                d.foto_url = imgUrl;
+                d.icon_url = imgUrl;
                 base64 = null;
+            } else {
+                document.getElementById('loader-text').innerText = 'Menyimpan gambar ke Drive...';
+                d.gambar_url = base64;
+                d.foto_url = base64;
+                d.icon_url = base64;
             }
         }
         if (modul === 'berita') {
@@ -238,9 +244,9 @@ async function simpanPengaturanLengkap() {
         var setObj = { 'nama_sekolah': getInp('set-nama'), 'alamat': getInp('set-alamat'), 'deskripsi': getInp('set-deskripsi'), 'npsn': getInp('set-npsn'), 'nss': getInp('set-nss'), 'status_jenjang': getInp('set-status'), 'akreditasi': getInp('set-akreditasi'), 'tahun_berdiri': getInp('set-tahun'), 'sejarah': getInp('set-sejarah'), 'visi_misi': getInp('set-visimisi'), 'sarpras': getInp('set-sarpras'), 'privasi': getInp('set-privasi'), 'syarat': getInp('set-syarat'), 'domain_resmi': getInp('set-domain'), 'kepsek_nama': getInp('set-kepsek-nama'), 'kepsek_sambutan': getInp('set-kepsek-sambutan'), 'teks_berjalan': getInp('set-teks-berjalan'), 'maps_url': getInp('set-maps') };
         document.getElementById('loader-text').innerText = 'Menyimpan Profil Web...'; document.getElementById('loader').style.display = 'flex'; startTimer();
 
-        if (cropData.logo) { document.getElementById('loader-text').innerText = 'Upload Logo ke ImgBB...'; setObj.logo_url = await uploadKeImgBB(cropData.logo); cropData.logo = null; }
-        if (cropData.struktur) { document.getElementById('loader-text').innerText = 'Upload Struktur ke ImgBB...'; setObj.struktur_url = await uploadKeImgBB(cropData.struktur); cropData.struktur = null; }
-        if (cropData.kepsek) { document.getElementById('loader-text').innerText = 'Upload Foto Kepsek ke ImgBB...'; setObj.kepsek_foto = await uploadKeImgBB(cropData.kepsek); cropData.kepsek = null; }
+        if (cropData.logo) { document.getElementById('loader-text').innerText = 'Menyimpan Logo ke Drive...'; setObj.logo_url = cropData.logo; }
+        if (cropData.struktur) { document.getElementById('loader-text').innerText = 'Menyimpan Struktur ke Drive...'; setObj.struktur_url = cropData.struktur; }
+        if (cropData.kepsek) { document.getElementById('loader-text').innerText = 'Menyimpan Foto Kepsek ke Drive...'; setObj.kepsek_foto = cropData.kepsek; }
 
         callAPI('simpanPengaturan', { token: curToken, setObj: setObj, base64Logo: cropData.logo, namaFileLogo: 'logo.png', base64Str: cropData.struktur, namaFileStr: 'struktur.png', base64Kepsek: cropData.kepsek, namaFileKepsek: 'kepsek.jpg' }).then(selesaiSimpan).catch(gagalSimpan);
     } catch (e) { Swal.fire('Error System', e.message, 'error'); document.getElementById('loader').style.display = 'none'; stopTimer(); }
@@ -360,7 +366,8 @@ async function simpanBeritaPegawai() {
     document.getElementById('loader-text').innerText = 'Menyimpan Postingan...';
     document.getElementById('loader').style.display = 'flex'; startTimer();
 
-    try {        if (base64) {
+    try {
+        if (base64) {
             document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke ImgBB...';
             d.gambar_url = await uploadKeImgBB(base64);
             base64 = null;
