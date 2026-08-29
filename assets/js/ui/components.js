@@ -11,10 +11,26 @@ function bukaCropper(event, rasio, key, prevId) {
     var file = event.target.files[0]; if (!file) return; curKey = key; curPrevId = prevId;
     var reader = new FileReader();
     reader.onload = function (e) {
-        document.getElementById('crop-image').src = e.target.result; document.getElementById('crop-modal').style.display = 'flex';
-        if (cropperInst) cropperInst.destroy(); cropperInst = new Cropper(document.getElementById('crop-image'), { aspectRatio: (rasio === 0 ? NaN : rasio), viewMode: 1, autoCropArea: 1 });
-    }; reader.readAsDataURL(file);
+        var cropImg = document.getElementById('crop-image');
+        document.getElementById('crop-modal').style.display = 'flex';
+        // Destroy cropper lama dulu jika ada
+        if (cropperInst) { try { cropperInst.destroy(); } catch(ex) {} cropperInst = null; }
+        // Tunggu gambar selesai dimuat BARU inisialisasi Cropper
+        cropImg.onload = function () {
+            cropperInst = new Cropper(cropImg, {
+                aspectRatio: (rasio === 0 ? NaN : rasio),
+                viewMode: 1,
+                autoCropArea: 0.9,
+                movable: true,
+                zoomable: true,
+                rotatable: false
+            });
+        };
+        cropImg.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
 }
+
 
 function batalCrop() { document.getElementById('crop-modal').style.display = 'none'; if (cropperInst) cropperInst.destroy(); var inps = document.querySelectorAll('input[type="file"]'); for (var i = 0; i < inps.length; i++) inps[i].value = ''; }
 
