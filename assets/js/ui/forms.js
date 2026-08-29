@@ -38,12 +38,12 @@ function batalEdit(modul) {
     editDataId[modul] = null; var btnU = document.getElementById('btn-' + modul); var btnB = document.getElementById('btn-batal-' + modul);
     if (btnU) { btnU.innerHTML = '<i class="fas fa-save mr-2"></i> Simpan Data'; btnU.className = "px-8 py-3 text-white rounded-xl font-bold shadow-lg w-full md:w-auto " + (modul === 'guru' ? 'bg-green-600 hover:bg-green-700' : modul === 'tu' ? 'bg-teal-600 hover:bg-teal-700' : modul === 'siswa' ? 'bg-orange-600 hover:bg-orange-700' : modul === 'slider' ? 'bg-pink-600 hover:bg-pink-700' : modul === 'galeri' ? 'bg-purple-600 hover:bg-purple-700' : modul === 'eksternal' ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-blue-600 hover:bg-blue-700'); }
     if (btnB) btnB.classList.add('hidden');
-    var inps = document.querySelectorAll('#admin-' + modul + ' input, #admin-' + modul + ' textarea, #admin-' + modul + ' select');
+    var inps = document.querySelectorAll('#modal-' + modul + ' input, #modal-' + modul + ' textarea, #modal-' + modul + ' select');
     for (var i = 0; i < inps.length; i++) { if (inps[i].type !== 'file') inps[i].value = ''; }
     var imgP = document.getElementById('prev-' + modul); if (imgP) { imgP.classList.add('hidden'); imgP.src = ''; }
     cropData[modul] = null;
     if (modul === 'galeri') { var gk = document.getElementById('gl-kategori'); if (gk) { gk.value = 'Foto'; ubahTipeGaleri(); } }
-    if (modul === 'berita' && typeof quillEditor !== 'undefined' && quillEditor) { quillEditor.root.innerHTML = ''; }
+    if (modul === 'berita' && typeof quillEditor !== 'undefined' && quillEditor) { quillEditor.root.innerHTML = ''; document.getElementById('b-kategori').value = 'Berita'; }
     if (modul === 'siswa') { pdfBase64 = null; var pdfl = document.getElementById('sw-pdf-link'); if (pdfl) pdfl.classList.add('hidden'); var pdfn = document.getElementById('sw-pdf-name'); if (pdfn) pdfn.classList.add('hidden'); var pdfi = document.getElementById('sw-pdf'); if (pdfi) pdfi.value = ''; }
 }
 
