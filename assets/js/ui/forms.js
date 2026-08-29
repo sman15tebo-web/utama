@@ -145,8 +145,8 @@ async function simpanAtauUpdate(modul) {
                 d.gambar_url = base64;
                 d.icon_url = base64;
             } else if (modul === 'berita' || modul === 'galeri' || modul === 'slider' || modul === 'eksternal') {
-                document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke ImgBB...';
-                var imgUrl = await uploadKeImgBB(base64);
+                document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke Cloudinary...';
+                var imgUrl = await uploadKeCloudinary(base64);
                 d.gambar_url = imgUrl;
                 d.foto_url = imgUrl;
                 d.icon_url = imgUrl;
@@ -189,8 +189,8 @@ async function simpanGaleriPegawai() {
 
     try {
         if (base64 && d.kategori === 'Foto') {
-            document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke ImgBB...';
-            d.gambar_url = await uploadKeImgBB(base64);
+            document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke Cloudinary...';
+            d.gambar_url = await uploadKeCloudinary(base64);
             base64 = null;
         }
     } catch (e) { return gagalSimpan(e.message); }
@@ -368,8 +368,8 @@ async function simpanBeritaPegawai() {
 
     try {
         if (base64) {
-            document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke ImgBB...';
-            d.gambar_url = await uploadKeImgBB(base64);
+            document.getElementById('loader-text').innerText = 'Mengunggah Gambar ke Cloudinary...';
+            d.gambar_url = await uploadKeCloudinary(base64);
             base64 = null;
         }
         document.getElementById('loader-text').innerText = 'Membangun HTML Statis & Menyimpan ke GitHub...';
