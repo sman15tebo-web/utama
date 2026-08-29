@@ -16,13 +16,13 @@ async function callAPI(action, payload = {}) {
     try { const res = await fetch(GAS_URL, { redirect: "follow", method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }); const text = await res.text(); try { return JSON.parse(text); } catch (e) { return text; } } catch (e) { throw e; }
 }
 
-async function uploadKeImgBB(base64Data) {
+async function uploadKeCloudinary(base64Data) {
     try {
-        var result = await callAPI('proxyImgBB', { base64Data: base64Data });
+        var result = await callAPI('proxyCloudinary', { base64Data: base64Data });
         if (result && result.status === 'success' && result.url) {
             return result.url;
         }
-        throw new Error((result && result.message) || 'Gagal upload gambar ke ImgBB');
+        throw new Error((result && result.message) || 'Gagal upload gambar ke Cloudinary');
     } catch (e) {
         throw new Error('Gagal upload gambar: ' + e.message);
     }
