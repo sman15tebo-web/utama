@@ -8,7 +8,7 @@ function maskNip(nip) {
 
 function amankanTeks(str) { if (!str) return ''; var map = { '&': '&', '<': '<', '>': '>', '"': '"', "'": "'" }; return str.toString().replace(/[&<>"']/g, function (m) { return map[m]; }); }
 
-function getValidImg(url, fallback) { if (!url) return fallback; var id = ""; if (url.indexOf('/file/d/') !== -1) { id = url.split('/file/d/')[1].split('/')[0]; } else if (url.indexOf('id=') !== -1) { id = url.split('id=')[1].split('&')[0]; } if (id) return 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1000'; return amankanTeks(url); }
+function getValidImg(url, fallback) { if (!url) return fallback; var id = ""; if (url.indexOf('/file/d/') !== -1) { id = url.split('/file/d/')[1].split('/')[0]; } else if (url.indexOf('id=') !== -1) { id = url.split('id=')[1].split('&')[0]; } if (id) return 'https://drive.google.com/uc?export=view&id=' + encodeURIComponent(id); return amankanTeks(url); }
 
 function formatTanggal(tglStr) { if (!tglStr) return ''; if (tglStr.indexOf('-') !== -1 && tglStr.length === 10) return tglStr; if (tglStr.indexOf('/') !== -1) { var parts = tglStr.split('/'); if (parts.length === 3) return parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0'); } try { var d = new Date(tglStr); if (!isNaN(d.getTime())) { var y = d.getFullYear(); var m = ('0' + (d.getMonth() + 1)).slice(-2); var day = ('0' + d.getDate()).slice(-2); return y + '-' + m + '-' + day; } } catch (e) { } return ''; }
 
