@@ -70,10 +70,10 @@ function renderSemuaData(data) {
                 tAlmPub += '<tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"><td class="p-4 font-bold text-secondary">' + amankanTeks(s.label) + pdfIco + '</td><td class="p-4 text-center text-blue-500 font-bold">' + l + '</td><td class="p-4 text-center text-pink-500 font-bold">' + p + '</td><td class="p-4 text-center font-black">' + tot + '</td></tr>'; }
         }
         setTextAman('stat-siswa', cSiswa); setTextAman('stat-alumni', cAlumni); setTextAman('stat-siswa-dash', cSiswa);
-        setHTMLAman('tbl-siswa-aktif', tSisPub || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-siswa-aktif', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + sL + '</td><td class="p-4 text-center text-pink-600">' + sP + '</td><td class="p-4 text-center text-xl">' + cSiswa + '</td></tr>');
-        setHTMLAman('tbl-alumni', tAlmPub || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-alumni', '<tr><td class="p-4 text-right">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + aL + '</td><td class="p-4 text-center text-pink-600">' + aP + '</td><td class="p-4 text-center text-xl">' + cAlumni + '</td></tr>');
-        setHTMLAman('admin-tbl-siswa-aktif', tSis || '<tr><td colspan="5" class="p-4 text-center text-gray-400">Belum ada data Siswa Aktif.</td></tr>'); setHTMLAman('admin-foot-siswa-aktif', '<tr><td class="p-4 text-right font-bold" colspan="4">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600 font-bold">' + sL + '</td><td class="p-4 text-center text-pink-600 font-bold">' + sP + '</td><td class="p-4 text-center font-black text-xl" colspan="2">Total: ' + cSiswa + '</td></tr>');
-        setHTMLAman('admin-tbl-alumni', tAlm || '<tr><td colspan="5" class="p-4 text-center text-gray-400">Belum ada data Alumni.</td></tr>'); setHTMLAman('admin-foot-alumni', '<tr><td class="p-4 text-right font-bold" colspan="4">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600 font-bold">' + aL + '</td><td class="p-4 text-center text-pink-600 font-bold">' + aP + '</td><td class="p-4 text-center font-black text-xl" colspan="2">Total: ' + cAlumni + '</td></tr>');
+        setHTMLAman('tbl-siswa-aktif', tSisPub || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-siswa-aktif', '<tr class="font-bold"><td class="p-4 text-right text-gray-600 dark:text-gray-300">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + sL + '</td><td class="p-4 text-center text-pink-600">' + sP + '</td><td class="p-4 text-center font-black text-lg">' + cSiswa + '</td></tr>');
+        setHTMLAman('tbl-alumni', tAlmPub || '<tr><td colspan="4" class="p-4 text-center">Data kosong</td></tr>'); setHTMLAman('foot-alumni', '<tr class="font-bold"><td class="p-4 text-right text-gray-600 dark:text-gray-300">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + aL + '</td><td class="p-4 text-center text-pink-600">' + aP + '</td><td class="p-4 text-center font-black text-lg">' + cAlumni + '</td></tr>');
+        setHTMLAman('admin-tbl-siswa-aktif', tSis || '<tr><td colspan="5" class="p-4 text-center text-gray-400">Belum ada data Siswa Aktif.</td></tr>'); setHTMLAman('admin-foot-siswa-aktif', '<tr class="font-bold bg-orange-50 dark:bg-gray-700"><td class="p-4 text-right text-gray-600 dark:text-gray-300">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + sL + '</td><td class="p-4 text-center text-pink-600">' + sP + '</td><td class="p-4 text-center font-black text-xl text-gray-800 dark:text-white">' + cSiswa + '</td><td></td></tr>');
+        setHTMLAman('admin-tbl-alumni', tAlm || '<tr><td colspan="5" class="p-4 text-center text-gray-400">Belum ada data Alumni.</td></tr>'); setHTMLAman('admin-foot-alumni', '<tr class="font-bold bg-green-50 dark:bg-gray-700"><td class="p-4 text-right text-gray-600 dark:text-gray-300">TOTAL KESELURUHAN:</td><td class="p-4 text-center text-blue-600">' + aL + '</td><td class="p-4 text-center text-pink-600">' + aP + '</td><td class="p-4 text-center font-black text-xl text-gray-800 dark:text-white">' + cAlumni + '</td><td></td></tr>');
 
         function renderPerson(arr, cId, tblId, mdl) {
             var th = '', tbl = '';
@@ -219,12 +219,6 @@ function bukaBerita(id) {
     for (var i = 0; i < dbGlobal.berita.length; i++) { if (dbGlobal.berita[i].id == id) { dt = dbGlobal.berita[i]; break; } }
     if (dt) {
         curShareId = id; curShareTitle = dt.judul;
-        document.getElementById('detail-judul').innerText = dt.judul;
-
-        // --- TAMBAH NAMA PENULIS DI BAWAH ---
-        var nmPenulis = dt.penulis ? dt.penulis : 'Admin';
-        var infoPenulis = '<div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"><p class="font-bold text-gray-500 text-sm md:text-base"><i class="fas fa-pencil-alt text-primary mr-2"></i> Post by : <span class="text-gray-800 dark:text-white">' + amankanTeks(nmPenulis) + '</span></p></div>';
-        document.getElementById('detail-konten').innerHTML = dt.konten + infoPenulis;
 
         // --- FORMAT TANGGAL & JAM ---
         var tglTampil = dt.tanggal;
@@ -233,6 +227,45 @@ function bukaBerita(id) {
             if (!isNaN(d.getTime())) { tglTampil = d.toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
         } catch (e) { }
 
+        // --- TAMBAH NAMA PENULIS DI BAWAH ---
+        var nmPenulis = dt.penulis ? dt.penulis : 'Admin';
+        var infoPenulis = '<div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"><p class="font-bold text-gray-500 text-sm md:text-base"><i class="fas fa-pencil-alt text-primary mr-2"></i> Post by : <span class="text-gray-800 dark:text-white">' + amankanTeks(nmPenulis) + '</span></p></div>';
+
+        // Jika sedang di akun admin/guru, tampilkan sebagai modal popup (bukan navigasi ke publik)
+        if (curRole === 'admin' || curRole === 'guru' || curRole === 'tu') {
+            // Cari atau buat modal preview berita
+            var existModal = document.getElementById('modal-preview-berita');
+            if (!existModal) {
+                var m = document.createElement('div');
+                m.id = 'modal-preview-berita';
+                m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;';
+                m.innerHTML = '<div style="background:#fff;border-radius:1.5rem;width:100%;max-width:800px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.4);margin:auto;" class="dark:bg-gray-800">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid #e5e7eb;">' +
+                    '<span style="font-weight:900;font-size:1rem;color:#1e3a8a;" id="mpb-cat">Berita</span>' +
+                    '<button onclick="document.getElementById(\'modal-preview-berita\').style.display=\'none\'" style="background:#f3f4f6;border:none;border-radius:50%;width:2rem;height:2rem;cursor:pointer;font-size:1rem;">✕</button>' +
+                    '</div>' +
+                    '<img id="mpb-img" style="width:100%;aspect-ratio:5/3;object-fit:cover;" src=""/>' +
+                    '<div style="padding:1.5rem 2rem;">' +
+                    '<p id="mpb-tgl" style="font-size:0.8rem;color:#9ca3af;margin-bottom:0.5rem;"></p>' +
+                    '<h2 id="mpb-judul" style="font-size:1.5rem;font-weight:900;color:#1f2937;margin-bottom:1rem;line-height:1.3;"></h2>' +
+                    '<div id="mpb-konten" style="font-size:0.95rem;color:#374151;line-height:1.8;"></div>' +
+                    '</div>' +
+                    '</div>';
+                document.body.appendChild(m);
+            }
+            var modal = document.getElementById('modal-preview-berita');
+            document.getElementById('mpb-cat').innerText = ((dt.kategori || '').toLowerCase() === 'pengumuman') ? '📢 Pengumuman' : '📰 Berita';
+            document.getElementById('mpb-img').src = getValidImg(dt.gambar_url, '');
+            document.getElementById('mpb-tgl').innerText = tglTampil;
+            document.getElementById('mpb-judul').innerText = dt.judul || '-';
+            document.getElementById('mpb-konten').innerHTML = dt.konten + infoPenulis;
+            modal.style.display = 'flex';
+            return;
+        }
+
+        // Pengunjung publik: navigasi normal ke halaman detail
+        document.getElementById('detail-judul').innerText = dt.judul;
+        document.getElementById('detail-konten').innerHTML = dt.konten + infoPenulis;
         document.getElementById('detail-tgl').innerText = tglTampil;
         document.getElementById('detail-cat').innerText = ((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita';
         document.getElementById('detail-img').src = getValidImg(dt.gambar_url, '');
@@ -240,6 +273,7 @@ function bukaBerita(id) {
         navigate('detail-berita');
     }
 }
+
 
 function bukaProfilPegawai(modul, id) {
     var dt = null; for (var i = 0; i < dbGlobal[modul].length; i++) { if (dbGlobal[modul][i].id == id) { dt = dbGlobal[modul][i]; break; } }
