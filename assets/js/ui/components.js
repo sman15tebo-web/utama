@@ -72,10 +72,62 @@ function batalCrop() {
     for (var i = 0; i < inps.length; i++) inps[i].value = '';
 }
 
-function terapkanCrop() {
+function compressEmployeePhotoCanvas(cropCanvas, minLongSide, targetSizeKB) {
+    return new Promise(function (resolve) {
+        var sourceCanvas = cropCanvas || document.createElement('canvas');
+        var maxSide = Math.max(sourceCanvas.width || 0, sourceCanvas.height || 0);
+        var scale = 1;
+        if (maxSide > 1200) scale = 1200 / maxSide;
+        var targetW = Math.max(250, Math.round((sourceCanvas.width || 250) * scale));
+        var targetH = Math.max(250, Math.round((sourceCanvas.height || 250) * scale));
+
+        var outCanvas = document.createElement('canvas');
+        outCanvas.width = targetW;
+        outCanvas.height = targetH;
+        var ctx = outCanvas.getContext('2d');
+        ctx.clearRect(0, 0, targetW, targetH);
+        ctx.drawImage(sourceCanvas, 0, 0, targetW, targetH);
+
+        var quality = 0.82;
+        var result = outCanvas.toDataURL('image/jpeg', quality);
+        var targetBytes = (targetSizeKB || 50) * 1024;
+
+        for (var i = 0; i < 8; i++) {
+            var sizeBytes = Math.round((result.length * 3) / 4);
+            if (sizeBytes <= targetBytes) break;
+            quality = Math.max(0.35, quality - 0.08);
+            result = outCanvas.toDataURL('image/jpeg', quality);
+        }
+
+        if (minLongSide && (targetW < minLongSide || targetH < minLongSide)) {
+            var finalCanvas = document.createElement('canvas');
+            finalCanvas.width = Math.max(minLongSide, targetW);
+            finalCanvas.height = Math.max(minLongSide, targetH);
+            var fctx = finalCanvas.getContext('2d');
+            fctx.fillStyle = '#ffffff';
+            fctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+            var x = Math.round((finalCanvas.width - targetW) / 2);
+            var y = Math.round((finalCanvas.height - targetH) / 2);
+            fctx.drawImage(outCanvas, x, y, targetW, targetH);
+            result = finalCanvas.toDataURL('image/jpeg', 0.72);
+        }
+
+        resolve(result);
+    });
+}
+
+async function terapkanCrop() {
     if (!cropperInst) return;
     var isT = (curKey === 'logo' || curKey === 'struktur' || curKey === 'eksternal');
-    var base64 = cropperInst.getCroppedCanvas({ imageSmoothingEnabled: true, imageSmoothingQuality: 'high' }).toDataURL(isT ? 'image/png' : 'image/jpeg', isT ? undefined : 0.7);
+    var cropCanvas = cropperInst.getCroppedCanvas({ imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
+
+    var base64 = '';
+    if (curKey === 'guru' || curKey === 'tu' || curKey === 'pegawai_foto') {
+        base64 = await compressEmployeePhotoCanvas(cropCanvas, 250, 50);
+    } else {
+        base64 = cropCanvas.toDataURL(isT ? 'image/png' : 'image/jpeg', isT ? undefined : 0.7);
+    }
+
     cropData[curKey] = base64;
     var p = document.getElementById(curPrevId); p.src = base64; p.classList.remove('hidden');
     batalCrop();
