@@ -231,14 +231,12 @@ document.addEventListener('click', function(e) {
 });
 
 function bukaModalPegawai() {
-    if(activePegawaiTab === 'guru') bukaModal('modal-guru');
-    else bukaModal('modal-tu');
+    if(activePegawaiTab === 'guru') { batalEdit('guru'); bukaModal('modal-guru'); }
+    else { batalEdit('tu'); bukaModal('modal-tu'); }
 }
 
 function bukaModalGaleri() {
-    // Galeri actually has 3 sub types: Banner, Foto, Video.
-    // They have different modals.
     var act = document.querySelector('.tab-btn-galeri.bg-white'); // Find active
-    if(act && act.id === 'btn-tab-banner') { bukaModal('modal-slider'); }
-    else { bukaModal('modal-galeri'); } // Galeri Foto and Video use same modal-galeri, the category dropdown will handle it
+    if(act && act.id === 'btn-tab-banner') { batalEdit('slider'); bukaModal('modal-slider'); }
+    else { batalEdit('galeri'); bukaModal('modal-galeri'); } // Galeri Foto and Video use same modal-galeri, the category dropdown will handle it
 }
