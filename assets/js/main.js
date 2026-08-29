@@ -18,14 +18,27 @@ window.onload = async function () {
     muatDataServer();
     setInterval(jalankanSlider, 5000);
     var Quill = window.Quill;
+    var toolbarOptions = [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ 'script': 'sub'}, { 'script': 'super' }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }, { 'align': [] }],
+        [{ 'color': [] }, { 'background': [] }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ];
     if (Quill) {
         var adminEditor = document.getElementById('editor-container');
         if (adminEditor) {
-            quillEditor = new Quill(adminEditor, { theme: 'snow' });
+            quillEditor = new Quill(adminEditor, { theme: 'snow', modules: { toolbar: toolbarOptions } });
         }
-        var pgEditor = document.getElementById('pg-editor-container');
-        if (pgEditor) {
-            quillPegawaiBerita = new Quill(pgEditor, { theme: 'snow' });
+        var pgEditor = document.getElementById('pg-b-konten');
+        if (pgEditor && !quillPegawaiBerita) {
+            quillPegawaiBerita = new Quill(pgEditor, { theme: 'snow', modules: { toolbar: toolbarOptions } });
         }
     }
 };
