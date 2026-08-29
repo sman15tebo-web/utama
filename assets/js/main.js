@@ -1,5 +1,11 @@
 // main.js
 window.onload = async function () {
+    var urlParams = new URLSearchParams(window.location.search);
+    var resetToken = urlParams.get('reset_token');
+    if (resetToken) {
+        bukaModal('modal-reset-pass');
+    }
+
     if (curRole === 'admin') {
         document.getElementById('nav-publik').classList.add('hidden');
         document.getElementById('nav-admin').classList.add('hidden'); // Sembunyikan global nav-admin agar tidak tumpang tindih
