@@ -12,6 +12,9 @@ var curToken = sessionStorage.getItem('edupro_token') || '';
 
 var dbGlobal = {}; var sliderInterval; var curShareId = ''; var curShareTitle = '';
 var cropData = { berita: null, guru: null, tu: null, galeri: null, slider: null, logo: null, struktur: null, kepsek: null, pegawai_foto: null, eksternal: null };
+var cropperInst = null;
+var curKey = '';
+var curPrevId = '';
 var editDataId = { berita: null, guru: null, tu: null, siswa: null, galeri: null, slider: null, eksternal: null };
 var pdfBase64 = null;
 var quillEditor;
