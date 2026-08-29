@@ -130,32 +130,36 @@ function logout() {
     });
 }
 
-function prosesLupaPassword() {
+async function prosesLupaPassword() {
     var nip = document.getElementById('req-nip').value.trim();
     var email = document.getElementById('req-email').value.trim();
     if(!nip || !email) { return Swal.fire('Error', 'NIP dan Email wajib diisi!', 'error'); }
-    
+
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(email)) { return Swal.fire('Error', 'Format email tidak valid!', 'error'); }
 
     var appUrl = window.location.href.split('?')[0];
 
     document.getElementById('loader').style.display = 'flex';
-    var payload = { action: 'mintaResetPassword', nip: nip, email: email, appUrl: appUrl };
-    callAPI(payload, function(res) {
+    try {
+        var res = await callAPI('mintaResetPassword', { nip: nip, email: email, appUrl: appUrl });
         document.getElementById('loader').style.display = 'none';
-        if(res.status === 'success') {
+        if (res && res.status === 'success') {
             tutupModal('modal-lupa-pass');
             document.getElementById('req-nip').value = '';
             document.getElementById('req-email').value = '';
-            Swal.fire('Sukses', res.message, 'success');
+            Swal.fire('Sukses', res.message || 'Link reset password berhasil dikirim ke email Anda.', 'success');
         } else {
-            Swal.fire('Gagal', res.message, 'error');
+            Swal.fire('Gagal', (res && res.message) || 'NIP/NIK atau Email tidak terdaftar/tidak cocok.', 'error');
         }
-    });
+    } catch (err) {
+        document.getElementById('loader').style.display = 'none';
+        Swal.fire('Gagal', 'Terjadi kesalahan saat mengirim permintaan reset password.', 'error');
+        console.error(err);
+    }
 }
 
-function prosesResetPassToken() {
+async function prosesResetPassToken() {
     var passBaru = document.getElementById('rp-baru').value;
     var konfirm = document.getElementById('rp-konfirm').value;
     if(!passBaru || passBaru.length < 6) return Swal.fire('Error', 'Password baru minimal 6 karakter.', 'error');
@@ -163,23 +167,27 @@ function prosesResetPassToken() {
 
     var urlParams = new URLSearchParams(window.location.search);
     var token = urlParams.get('reset_token');
-    
+
     if(!token) return Swal.fire('Error', 'Token tidak ditemukan.', 'error');
 
     document.getElementById('loader').style.display = 'flex';
-    var payload = { action: 'eksekusiResetPassword', token_reset: token, newPass: passBaru };
-    callAPI(payload, function(res) {
+    try {
+        var res = await callAPI('eksekusiResetPassword', { token_reset: token, newPass: passBaru });
         document.getElementById('loader').style.display = 'none';
-        if(res.status === 'success') {
+        if (res && res.status === 'success') {
             tutupModal('modal-reset-pass');
             document.getElementById('rp-baru').value = '';
             document.getElementById('rp-konfirm').value = '';
             window.history.replaceState({}, document.title, window.location.pathname);
-            Swal.fire('Sukses', res.message + '<br>Silakan login kembali.', 'success').then(() => {
+            Swal.fire('Sukses', (res.message || 'Password berhasil diubah.') + '<br>Silakan login kembali.', 'success').then(() => {
                 navigate('login');
             });
         } else {
-            Swal.fire('Gagal', res.message, 'error');
+            Swal.fire('Gagal', (res && res.message) || 'Link pemulihan tidak valid atau sudah kadaluarsa.', 'error');
         }
-    });
+    } catch (err) {
+        document.getElementById('loader').style.display = 'none';
+        Swal.fire('Gagal', 'Terjadi kesalahan saat memperbarui password.', 'error');
+        console.error(err);
+    }
 }
