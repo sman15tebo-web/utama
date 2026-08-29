@@ -16,7 +16,6 @@ window.onload = async function () {
         await navigate('home');
     }
     muatDataServer();
-    setInterval(jalankanSlider, 5000);
     var Quill = window.Quill;
     var toolbarOptions = [
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
