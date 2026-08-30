@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html class="light" lang="id">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>
-   Website SMAN 15 Tebo
+    Website SMAN 15 Tebo
   </title>
-  <link href="./logo.png" rel="icon" type="image/png"/>
-  <link href="https://script.google.com" rel="preconnect"/>
-  <link href="https://drive.google.com" rel="preconnect"/>
+  <link href="./logo.png" rel="icon" type="image/png" />
+  <link href="https://script.google.com" rel="preconnect" />
+  <link href="https://drive.google.com" rel="preconnect" />
   <script src="https://cdn.tailwindcss.com">
   </script>
   <script>
-   tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#1e3a8a', secondary: '#f59e0b' } } } }
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#1e3a8a', secondary: '#f59e0b' } } } }
   </script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"/>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
   <script defer="" src="https://cdn.quilljs.com/1.3.6/quill.min.js">
   </script>
   <script defer="" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js">
@@ -26,613 +27,724 @@
   </script>
   <script defer="" src="https://unpkg.com/aos@2.3.1/dist/aos.js">
   </script>
-  <link href="./assets/css/style.css?v=1787931682" rel="stylesheet"/>
- </head>
- <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <link href="./assets/css/style.css?v=1787931682" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
   <div id="loader">
-   <div class="spinner">
-   </div>
-   <p class="font-bold text-gray-700 dark:text-gray-300 mt-2 text-center text-lg" id="loader-text">
-    Menarik Data
-            Terbaru...
-   </p>
-   <div class="mt-4 px-5 py-2 bg-blue-100 dark:bg-gray-800 text-blue-700 dark:text-secondary rounded-full font-bold text-sm tracking-widest shadow-inner border border-blue-200 dark:border-gray-700 animate-pulse">
-    Estimasi Waktu:
-    <span class="text-xl font-black" id="loader-timer">
-     3
-    </span>
-    detik
-   </div>
-  </div>
-  <div class="fixed bottom-24 md:bottom-6 right-6 z-[80] flex flex-col gap-3 transition-all duration-500 opacity-0 pointer-events-none translate-y-10" id="float-btn">
-   <button class="w-12 h-12 bg-blue-600 text-white rounded-full shadow-2xl hover:bg-blue-700 flex items-center justify-center text-lg transition-transform hover:scale-110" onclick="refreshHalamanLunak()" title="Refresh Halaman">
-    <i class="fas fa-sync-alt">
-    </i>
-   </button>
-   <button class="w-12 h-12 bg-secondary text-gray-900 rounded-full shadow-2xl hover:bg-yellow-400 flex items-center justify-center text-xl transition-transform hover:scale-110" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Ke Atas">
-    <i class="fas fa-arrow-up">
-    </i>
-   </button>
-  </div>
-  <div class="fixed inset-0 bg-black/90 z-[99999] flex-col items-center justify-center p-4" id="crop-modal" style="display:none">
-   <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl w-full max-w-4xl shadow-2xl">
-    <h3 class="font-bold mb-4 text-xl text-primary dark:text-secondary">
-     Sesuaikan Gambar (Crop)
-    </h3>
-    <div class="w-full h-[60vh] bg-gray-200 dark:bg-gray-900 mb-6 rounded" style="position:relative;overflow:hidden;">
-     <img id="crop-image" style="display:block;max-width:100%;"/>
+    <div class="spinner">
     </div>
-    <div class="flex justify-end space-x-4">
-     <button class="px-6 py-2 bg-gray-300 dark:bg-gray-700 rounded font-bold hover:bg-gray-400" onclick="batalCrop()">
-      Batal
-     </button>
-     <button class="px-6 py-2 bg-primary text-white rounded font-bold hover:bg-blue-800" onclick="terapkanCrop()">
-      <i class="fas fa-crop-alt mr-2">
+    <p class="font-bold text-gray-700 dark:text-gray-300 mt-2 text-center text-lg" id="loader-text">
+      Menarik Data
+      Terbaru...
+    </p>
+    <div
+      class="mt-4 px-5 py-2 bg-blue-100 dark:bg-gray-800 text-blue-700 dark:text-secondary rounded-full font-bold text-sm tracking-widest shadow-inner border border-blue-200 dark:border-gray-700 animate-pulse">
+      Estimasi Waktu:
+      <span class="text-xl font-black" id="loader-timer">
+        3
+      </span>
+      detik
+    </div>
+  </div>
+  <div
+    class="fixed bottom-24 md:bottom-6 right-6 z-[80] flex flex-col gap-3 transition-all duration-500 opacity-0 pointer-events-none translate-y-10"
+    id="float-btn">
+    <button
+      class="w-12 h-12 bg-blue-600 text-white rounded-full shadow-2xl hover:bg-blue-700 flex items-center justify-center text-lg transition-transform hover:scale-110"
+      onclick="refreshHalamanLunak()" title="Refresh Halaman">
+      <i class="fas fa-sync-alt">
       </i>
-      Potong &amp; Gunakan
-     </button>
+    </button>
+    <button
+      class="w-12 h-12 bg-secondary text-gray-900 rounded-full shadow-2xl hover:bg-yellow-400 flex items-center justify-center text-xl transition-transform hover:scale-110"
+      onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Ke Atas">
+      <i class="fas fa-arrow-up">
+      </i>
+    </button>
+  </div>
+  <div class="fixed inset-0 bg-black/90 z-[99999] flex-col items-center justify-center p-4" id="crop-modal"
+    style="display:none">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl w-full max-w-4xl shadow-2xl">
+      <h3 class="font-bold mb-4 text-xl text-primary dark:text-secondary">
+        Sesuaikan Gambar (Crop)
+      </h3>
+      <div class="w-full h-[60vh] bg-gray-200 dark:bg-gray-900 mb-6 rounded" style="position:relative;overflow:hidden;">
+        <img id="crop-image" style="display:block;max-width:100%;" />
+      </div>
+      <div class="flex justify-end space-x-4">
+        <button class="px-6 py-2 bg-gray-300 dark:bg-gray-700 rounded font-bold hover:bg-gray-400"
+          onclick="batalCrop()">
+          Batal
+        </button>
+        <button class="px-6 py-2 bg-primary text-white rounded font-bold hover:bg-blue-800" onclick="terapkanCrop()">
+          <i class="fas fa-crop-alt mr-2">
+          </i>
+          Potong &amp; Gunakan
+        </button>
+      </div>
     </div>
-   </div>
   </div>
   <nav class="fixed w-full z-50 glass transition-all" id="nav-publik">
-   <div class="max-w-7xl mx-auto px-4 flex justify-between h-20 items-center">
-    <div class="flex items-center cursor-pointer" onclick="navigate('home')">
-     <img class="h-10 w-10 md:h-12 md:w-12 object-contain mr-3 hidden rounded" id="nav-logo" src=""/>
-     <div class="flex flex-col justify-center">
-      <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 leading-tight">
-       Website
-                        Resmi
-      </span>
-      <span class="font-black text-lg md:text-2xl text-primary dark:text-secondary leading-tight tracking-wide" id="nav-nama-sekolah">
-       NAMA
-                        SEKOLAH
-      </span>
-     </div>
-    </div>
-    <button class="md:hidden text-2xl text-gray-700 dark:text-gray-300 focus:outline-none p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition" onclick="toggleMobileMenu('mobile-menu', 'btn-mobile-icon')">
-     <i class="fas fa-bars" id="btn-mobile-icon">
-     </i>
-    </button>
-    <div class="hidden md:flex space-x-6 items-center font-bold text-sm tracking-wide z-50">
-     <button class="hover:text-primary transition" onclick="navigate('home')">
-      Beranda
-     </button>
-     <div class="relative group">
-      <button class="hover:text-primary transition flex items-center py-6">
-       Profil
-       <i class="fas fa-chevron-down ml-1 text-xs">
-       </i>
-      </button>
-      <div class="dropdown-menu absolute left-0 top-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('profil-sejarah')">
-        Sejarah
-                            Singkat
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('profil-identitas')">
-        Identitas
-                            Sekolah
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('profil-visimisi')">
-        Visi
-                            Misi
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('profil-pegawai-stat')">
-        Statistik
-                            Pegawai
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('profil-struktur')">
-        Struktur
-                            Organisasi
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('profil-sarpras')">
-        Sarana
-                            Prasarana
-       </button>
+    <div class="max-w-7xl mx-auto px-4 flex justify-between h-20 items-center">
+      <div class="flex items-center cursor-pointer" onclick="navigate('home')">
+        <img class="h-10 w-10 md:h-12 md:w-12 object-contain mr-3 hidden rounded" id="nav-logo" src="" />
+        <div class="flex flex-col justify-center">
+          <span
+            class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 leading-tight">
+            Website
+            Resmi
+          </span>
+          <span class="font-black text-lg md:text-2xl text-primary dark:text-secondary leading-tight tracking-wide"
+            id="nav-nama-sekolah">
+            NAMA
+            SEKOLAH
+          </span>
+        </div>
       </div>
-     </div>
-     <div class="relative group">
-      <button class="hover:text-primary transition flex items-center py-6">
-       Pegawai
-       <i class="fas fa-chevron-down ml-1 text-xs">
-       </i>
-      </button>
-      <div class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('guru')">
-        Guru
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('tu')">
-        Tata
-                            Usaha
-       </button>
-      </div>
-     </div>
-     <button class="hover:text-primary transition" onclick="navigate('siswa')">
-      Siswa
-     </button>
-     <div class="relative group">
-      <button class="hover:text-primary transition flex items-center py-6">
-       Informasi
-       <i class="fas fa-chevron-down ml-1 text-xs">
-       </i>
-      </button>
-      <div class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('halaman-berita')">
-        Berita
-                            Sekolah
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('halaman-pengumuman')">
-        Pengumuman
-       </button>
-      </div>
-     </div>
-     <div class="relative group">
-      <button class="hover:text-primary transition flex items-center py-6">
-       Galeri
-       <i class="fas fa-chevron-down ml-1 text-xs">
-       </i>
-      </button>
-      <div class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('galeri-foto')">
-        <i class="fas fa-image text-primary mr-2">
+      <button
+        class="md:hidden text-2xl text-gray-700 dark:text-gray-300 focus:outline-none p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+        onclick="toggleMobileMenu('mobile-menu', 'btn-mobile-icon')">
+        <i class="fas fa-bars" id="btn-mobile-icon">
         </i>
-        Galeri Foto
-       </button>
-       <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition" onclick="navigate('galeri-video')">
-        <i class="fas fa-video text-red-500 mr-2">
-        </i>
-        Galeri Video
-       </button>
+      </button>
+      <div class="hidden md:flex space-x-6 items-center font-bold text-sm tracking-wide z-50">
+        <button class="hover:text-primary transition" onclick="navigate('home')">
+          Beranda
+        </button>
+        <div class="relative group">
+          <button class="hover:text-primary transition flex items-center py-6">
+            Profil
+            <i class="fas fa-chevron-down ml-1 text-xs">
+            </i>
+          </button>
+          <div
+            class="dropdown-menu absolute left-0 top-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('profil-sejarah')">
+              Sejarah
+              Singkat
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('profil-identitas')">
+              Identitas
+              Sekolah
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('profil-visimisi')">
+              Visi
+              Misi
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('profil-pegawai-stat')">
+              Statistik
+              Pegawai
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('profil-struktur')">
+              Struktur
+              Organisasi
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('profil-sarpras')">
+              Sarana
+              Prasarana
+            </button>
+          </div>
+        </div>
+        <div class="relative group">
+          <button class="hover:text-primary transition flex items-center py-6">
+            Pegawai
+            <i class="fas fa-chevron-down ml-1 text-xs">
+            </i>
+          </button>
+          <div
+            class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('guru')">
+              Guru
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('tu')">
+              Tata
+              Usaha
+            </button>
+          </div>
+        </div>
+        <button class="hover:text-primary transition" onclick="navigate('siswa')">
+          Siswa
+        </button>
+        <div class="relative group">
+          <button class="hover:text-primary transition flex items-center py-6">
+            Informasi
+            <i class="fas fa-chevron-down ml-1 text-xs">
+            </i>
+          </button>
+          <div
+            class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('halaman-berita')">
+              Berita
+              Sekolah
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('halaman-pengumuman')">
+              Pengumuman
+            </button>
+          </div>
+        </div>
+        <div class="relative group">
+          <button class="hover:text-primary transition flex items-center py-6">
+            Galeri
+            <i class="fas fa-chevron-down ml-1 text-xs">
+            </i>
+          </button>
+          <div
+            class="dropdown-menu absolute left-0 top-full w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('galeri-foto')">
+              <i class="fas fa-image text-primary mr-2">
+              </i>
+              Galeri Foto
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="navigate('galeri-video')">
+              <i class="fas fa-video text-red-500 mr-2">
+              </i>
+              Galeri Video
+            </button>
+          </div>
+        </div>
+        <button class="hover:text-primary transition" onclick="navigate('kontak-kami')">
+          Kontak
+        </button>
+        <button class="text-gray-500 hover:text-primary text-lg ml-2" id="theme-toggle">
+          <i class="fas fa-moon" id="theme-icon">
+          </i>
+        </button>
+        <button class="px-6 py-2 bg-primary text-white rounded-full hover:bg-blue-800 shadow ml-2"
+          onclick="navigate('login')">
+          Login
+        </button>
       </div>
-     </div>
-     <button class="hover:text-primary transition" onclick="navigate('kontak-kami')">
-      Kontak
-     </button>
-     <button class="text-gray-500 hover:text-primary text-lg ml-2" id="theme-toggle">
-      <i class="fas fa-moon" id="theme-icon">
-      </i>
-     </button>
-     <button class="px-6 py-2 bg-primary text-white rounded-full hover:bg-blue-800 shadow ml-2" onclick="navigate('login')">
-      Login
-     </button>
     </div>
-   </div>
-   <div class="hidden md:hidden absolute top-20 left-0 w-full bg-white dark:bg-gray-900 border-b-4 border-secondary shadow-2xl flex-col font-bold text-sm z-[80] max-h-[80vh] overflow-y-auto" id="mobile-menu">
-    <button class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition" onclick="toggleMobileSub('mob-profil')">
-     Profil
-                Sekolah
-     <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-profil">
-     </i>
-    </button>
-    <div class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700" id="mob-profil">
-     <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium" onclick="navigate('profil-sejarah')">
-      Sejarah
-                    Singkat
-     </button>
-     <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium" onclick="navigate('profil-identitas')">
-      Identitas
-                    Sekolah
-     </button>
-     <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium" onclick="navigate('profil-visimisi')">
-      Visi
-                    Misi
-     </button>
-     <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium" onclick="navigate('profil-pegawai-stat')">
-      Statistik
-                    Pegawai
-     </button>
-     <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium" onclick="navigate('profil-struktur')">
-      Struktur
-                    Organisasi
-     </button>
-     <button class="p-3 text-left font-medium" onclick="navigate('profil-sarpras')">
-      Sarana Prasarana
-     </button>
+    <div
+      class="hidden md:hidden absolute top-20 left-0 w-full bg-white dark:bg-gray-900 border-b-4 border-secondary shadow-2xl flex-col font-bold text-sm z-[80] max-h-[80vh] overflow-y-auto"
+      id="mobile-menu">
+      <button
+        class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+        onclick="toggleMobileSub('mob-profil')">
+        Profil
+        Sekolah
+        <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-profil">
+        </i>
+      </button>
+      <div class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700"
+        id="mob-profil">
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="navigate('profil-sejarah')">
+          Sejarah
+          Singkat
+        </button>
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="navigate('profil-identitas')">
+          Identitas
+          Sekolah
+        </button>
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="navigate('profil-visimisi')">
+          Visi
+          Misi
+        </button>
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="navigate('profil-pegawai-stat')">
+          Statistik
+          Pegawai
+        </button>
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="navigate('profil-struktur')">
+          Struktur
+          Organisasi
+        </button>
+        <button class="p-3 text-left font-medium" onclick="navigate('profil-sarpras')">
+          Sarana Prasarana
+        </button>
+      </div>
+      <button
+        class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+        onclick="toggleMobileSub('mob-pegawai')">
+        Direktori
+        Pegawai
+        <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-pegawai">
+        </i>
+      </button>
+      <div class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700"
+        id="mob-pegawai">
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="navigate('guru')">
+          Tenaga Pendidik
+          (Guru)
+        </button>
+        <button class="p-3 text-left font-medium" onclick="navigate('tu')">
+          Tata Usaha
+          (TU)
+        </button>
+      </div>
+      <button
+        class="p-4 text-left border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+        onclick="navigate('siswa')">
+        Data
+        Siswa
+      </button>
+      <button
+        class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+        onclick="toggleMobileSub('mob-galeri')">
+        Galeri
+        <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-galeri">
+        </i>
+      </button>
+      <div class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700"
+        id="mob-galeri">
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="navigate('galeri-foto')">
+          <i class="fas fa-image text-primary mr-2">
+          </i>
+          Galeri Foto
+        </button>
+        <button class="p-3 text-left font-medium" onclick="navigate('galeri-video')">
+          <i class="fas fa-video text-red-500 mr-2">
+          </i>
+          Galeri Video
+        </button>
+      </div>
+      <div class="p-5 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
+        <button class="text-gray-500 hover:text-primary text-xl px-4 py-2 border rounded shadow-sm"
+          id="theme-toggle-mobile">
+          <i class="fas fa-moon" id="theme-icon-mobile">
+          </i>
+        </button>
+        <button class="px-8 py-3 bg-primary text-white rounded-full shadow-lg hover:bg-blue-800"
+          onclick="navigate('login')">
+          Login User
+        </button>
+      </div>
     </div>
-    <button class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition" onclick="toggleMobileSub('mob-pegawai')">
-     Direktori
-                Pegawai
-     <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-pegawai">
-     </i>
-    </button>
-    <div class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700" id="mob-pegawai">
-     <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium" onclick="navigate('guru')">
-      Tenaga Pendidik
-                    (Guru)
-     </button>
-     <button class="p-3 text-left font-medium" onclick="navigate('tu')">
-      Tata Usaha
-                    (TU)
-     </button>
-    </div>
-    <button class="p-4 text-left border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition" onclick="navigate('siswa')">
-     Data
-                Siswa
-    </button>
-    <button class="p-4 text-left border-b border-gray-100 dark:border-gray-800 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition" onclick="toggleMobileSub('mob-galeri')">
-     Galeri
-     <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="icon-mob-galeri">
-     </i>
-    </button>
-    <div class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700" id="mob-galeri">
-     <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium" onclick="navigate('galeri-foto')">
-      <i class="fas fa-image text-primary mr-2">
-      </i>
-      Galeri Foto
-     </button>
-     <button class="p-3 text-left font-medium" onclick="navigate('galeri-video')">
-      <i class="fas fa-video text-red-500 mr-2">
-      </i>
-      Galeri Video
-     </button>
-    </div>
-    <div class="p-5 flex justify-between items-center bg-gray-50 dark:bg-gray-950">
-     <button class="text-gray-500 hover:text-primary text-xl px-4 py-2 border rounded shadow-sm" id="theme-toggle-mobile">
-      <i class="fas fa-moon" id="theme-icon-mobile">
-      </i>
-     </button>
-     <button class="px-8 py-3 bg-primary text-white rounded-full shadow-lg hover:bg-blue-800" onclick="navigate('login')">
-      Login User
-     </button>
-    </div>
-   </div>
   </nav>
   <div id="view-container">
   </div>
-  <nav class="fixed top-0 w-full z-50 bg-gray-800 text-white hidden shadow-lg border-b-4 border-secondary" id="nav-admin">
-   <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
-    <div class="font-bold text-lg md:text-xl text-secondary flex items-center cursor-pointer" onclick="navigate('admin-dashboard')">
-     <i class="fas fa-cogs mr-2">
-     </i>
-     <span class="hidden md:inline">
-      SUPER
-     </span>
-     ADMIN
+  <nav class="fixed top-0 w-full z-50 bg-gray-800 text-white hidden shadow-lg border-b-4 border-secondary"
+    id="nav-admin">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
+      <div class="font-bold text-lg md:text-xl text-secondary flex items-center cursor-pointer"
+        onclick="navigate('admin-dashboard')">
+        <i class="fas fa-cogs mr-2">
+        </i>
+        <span class="hidden md:inline">
+          SUPER
+        </span>
+        ADMIN
+      </div>
+      <button class="hidden text-2xl focus:outline-none">
+        <i class="fas fa-bars" id="btn-admin-icon">
+        </i>
+      </button>
+      <div class="hidden md:flex space-x-6 items-center text-sm font-bold">
+        <button class="hover:text-secondary" onclick="navigate('admin-dashboard')">
+          <i class="fas fa-tachometer-alt mr-1">
+          </i>
+          Dashboard
+        </button>
+        <button class="hover:text-secondary" onclick="navigate('home')">
+          <i class="fas fa-globe mr-1">
+          </i>
+          Web
+          Publik
+        </button>
+        <button class="px-4 py-1.5 bg-red-600 rounded shadow hover:bg-red-700 transition" onclick="logout()">
+          Logout
+        </button>
+      </div>
     </div>
-    <button class="hidden text-2xl focus:outline-none">
-     <i class="fas fa-bars" id="btn-admin-icon">
-     </i>
-    </button>
-    <div class="hidden md:flex space-x-6 items-center text-sm font-bold">
-     <button class="hover:text-secondary" onclick="navigate('admin-dashboard')">
-      <i class="fas fa-tachometer-alt mr-1">
-      </i>
-      Dashboard
-     </button>
-     <button class="hover:text-secondary" onclick="navigate('home')">
-      <i class="fas fa-globe mr-1">
-      </i>
-      Web
-                    Publik
-     </button>
-     <button class="px-4 py-1.5 bg-red-600 rounded shadow hover:bg-red-700 transition" onclick="logout()">
-      Logout
-     </button>
+    <div
+      class="hidden md:hidden absolute top-16 left-0 w-full bg-gray-700 border-b-4 border-secondary flex-col font-bold text-sm z-40"
+      id="mobile-admin">
+      <button class="p-4 text-left border-b border-gray-600" onclick="navigate('admin-dashboard')">
+        <i class="fas fa-tachometer-alt mr-2">
+        </i>
+        Dashboard Admin
+      </button>
+      <button class="p-4 text-left border-b border-gray-600" onclick="navigate('home')">
+        <i class="fas fa-globe mr-2">
+        </i>
+        Lihat Web
+        Publik
+      </button>
+      <button class="p-4 text-left text-red-400" onclick="logout()">
+        <i class="fas fa-sign-out-alt mr-2">
+        </i>
+        Logout
+      </button>
     </div>
-   </div>
-   <div class="hidden md:hidden absolute top-16 left-0 w-full bg-gray-700 border-b-4 border-secondary flex-col font-bold text-sm z-40" id="mobile-admin">
-    <button class="p-4 text-left border-b border-gray-600" onclick="navigate('admin-dashboard')">
-     <i class="fas fa-tachometer-alt mr-2">
-     </i>
-     Dashboard Admin
-    </button>
-    <button class="p-4 text-left border-b border-gray-600" onclick="navigate('home')">
-     <i class="fas fa-globe mr-2">
-     </i>
-     Lihat Web
-                Publik
-    </button>
-    <button class="p-4 text-left text-red-400" onclick="logout()">
-     <i class="fas fa-sign-out-alt mr-2">
-     </i>
-     Logout
-    </button>
-   </div>
   </nav>
-  <nav class="fixed top-0 w-full z-50 bg-green-800 text-white hidden shadow-lg border-b-4 border-secondary" id="nav-pegawai">
-   <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
-    <div class="font-bold text-lg md:text-xl text-secondary flex items-center cursor-pointer" onclick="navigate('pegawai-dashboard')">
-     <i class="fas fa-user-circle mr-2">
-     </i>
-     PANEL PEGAWAI
+  <nav class="fixed top-0 w-full z-50 bg-green-800 text-white hidden shadow-lg border-b-4 border-secondary"
+    id="nav-pegawai">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
+      <div class="font-bold text-lg md:text-xl text-secondary flex items-center cursor-pointer"
+        onclick="navigate('pegawai-dashboard')">
+        <i class="fas fa-user-circle mr-2">
+        </i>
+        PANEL PEGAWAI
+      </div>
+      <button class="hidden text-2xl focus:outline-none">
+        <i class="fas fa-bars" id="btn-pegawai-icon">
+        </i>
+      </button>
+      <div class="hidden md:flex space-x-6 items-center text-sm font-bold">
+        <button class="hover:text-secondary transition" onclick="navigate('pegawai-dash')">
+          <i class="fas fa-chart-line mr-1"></i> Dashboard
+        </button>
+        <button class="hover:text-secondary transition" onclick="navigate('pegawai-dashboard')">
+          <i class="fas fa-id-card mr-1"></i> Profil Saya
+        </button>
+        <button class="hover:text-secondary transition" onclick="navigate('ubah-password')">
+          <i class="fas fa-key mr-1"></i> Akun
+        </button>
+        <button class="hover:text-secondary transition" onclick="navigate('pegawai-galeri')">
+          <i class="fas fa-camera-retro mr-1"></i> Galeri
+        </button>
+        <button class="hover:text-secondary transition hidden" id="menu-berita-pegawai"
+          onclick="navigate('pegawai-berita')">
+          <i class="fas fa-newspaper mr-1"></i> Berita
+        </button>
+        <span class="border-l border-green-600 h-6 mx-2"></span>
+        <button class="hover:text-secondary transition" onclick="navigate('home')">
+          <i class="fas fa-globe mr-1"></i> Web Publik
+        </button>
+        <button class="px-4 py-1.5 bg-red-600 rounded shadow hover:bg-red-700 transition" onclick="logout()">
+          Logout
+        </button>
+      </div>
     </div>
-    <button class="hidden text-2xl focus:outline-none">
-     <i class="fas fa-bars" id="btn-pegawai-icon">
-     </i>
-    </button>
-    <div class="hidden md:flex space-x-6 items-center text-sm font-bold">
-     <button class="hover:text-secondary transition" onclick="navigate('pegawai-dash')">
-      <i class="fas fa-chart-line mr-1"></i> Dashboard
-     </button>
-     <button class="hover:text-secondary transition" onclick="navigate('pegawai-dashboard')">
-      <i class="fas fa-id-card mr-1"></i> Profil Saya
-     </button>
-     <button class="hover:text-secondary transition" onclick="navigate('ubah-password')">
-      <i class="fas fa-key mr-1"></i> Akun
-     </button>
-     <button class="hover:text-secondary transition" onclick="navigate('pegawai-galeri')">
-      <i class="fas fa-camera-retro mr-1"></i> Galeri
-     </button>
-     <button class="hover:text-secondary transition hidden" id="menu-berita-pegawai" onclick="navigate('pegawai-berita')">
-      <i class="fas fa-newspaper mr-1"></i> Berita
-     </button>
-     <span class="border-l border-green-600 h-6 mx-2"></span>
-     <button class="hover:text-secondary transition" onclick="navigate('home')">
-      <i class="fas fa-globe mr-1"></i> Web Publik
-     </button>
-     <button class="px-4 py-1.5 bg-red-600 rounded shadow hover:bg-red-700 transition" onclick="logout()">
-      Logout
-     </button>
+    <div
+      class="hidden md:hidden absolute top-16 left-0 w-full bg-green-700 border-b-4 border-secondary flex-col font-bold text-sm z-40"
+      id="mobile-pegawai">
+      <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-dash')">
+        <i class="fas fa-chart-line mr-2"></i> Dashboard
+      </button>
+      <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-dashboard')">
+        <i class="fas fa-id-card mr-2"></i> Profil Saya
+      </button>
+      <button class="p-4 text-left border-b border-green-600" onclick="navigate('ubah-password')">
+        <i class="fas fa-key mr-2"></i> Ubah Password
+      </button>
+      <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-galeri')">
+        <i class="fas fa-camera-retro mr-2"></i> Upload Galeri
+      </button>
+      <button class="p-4 text-left border-b border-green-600 hidden" id="menu-berita-pegawai-mob"
+        onclick="navigate('pegawai-berita')">
+        <i class="fas fa-newspaper mr-2"></i> Tulis Berita
+      </button>
+      <button class="p-4 text-left border-b border-green-600" onclick="navigate('home')">
+        <i class="fas fa-globe mr-2"></i> Lihat Web Publik
+      </button>
+      <button class="p-4 text-left text-red-200" onclick="logout()">
+        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+      </button>
     </div>
-   </div>
-   <div class="hidden md:hidden absolute top-16 left-0 w-full bg-green-700 border-b-4 border-secondary flex-col font-bold text-sm z-40" id="mobile-pegawai">
-    <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-dash')">
-     <i class="fas fa-chart-line mr-2"></i> Dashboard
-    </button>
-    <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-dashboard')">
-     <i class="fas fa-id-card mr-2"></i> Profil Saya
-    </button>
-    <button class="p-4 text-left border-b border-green-600" onclick="navigate('ubah-password')">
-     <i class="fas fa-key mr-2"></i> Ubah Password
-    </button>
-    <button class="p-4 text-left border-b border-green-600" onclick="navigate('pegawai-galeri')">
-     <i class="fas fa-camera-retro mr-2"></i> Upload Galeri
-    </button>
-    <button class="p-4 text-left border-b border-green-600 hidden" id="menu-berita-pegawai-mob" onclick="navigate('pegawai-berita')">
-     <i class="fas fa-newspaper mr-2"></i> Tulis Berita
-    </button>
-    <button class="p-4 text-left border-b border-green-600" onclick="navigate('home')">
-     <i class="fas fa-globe mr-2"></i> Lihat Web Publik
-    </button>
-    <button class="p-4 text-left text-red-200" onclick="logout()">
-     <i class="fas fa-sign-out-alt mr-2"></i> Logout
-    </button>
-   </div>
   </nav>
   <main class="min-h-screen pt-20 pb-20 md:pb-0">
   </main>
-  <div class="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-[90] px-2 pb-2 pt-1 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]" id="bottom-nav-publik">
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white" onclick="navigate('halaman-berita')">
-    <i class="fas fa-newspaper text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Berita
-    </span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white" onclick="navigate('halaman-pengumuman')">
-    <i class="fas fa-bullhorn text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Pengumuman
-    </span>
-   </button>
-   <div class="flex-1 flex justify-center -mt-6">
-    <button class="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-gray-50 dark:border-gray-900 hover:bg-blue-800 transition transform hover:scale-105" onclick="navigate('home')">
-     <i class="fas fa-home text-2xl">
-     </i>
+  <div
+    class="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-[90] px-2 pb-2 pt-1 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]"
+    id="bottom-nav-publik">
+    <button
+      class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white"
+      onclick="navigate('halaman-berita')">
+      <i class="fas fa-newspaper text-xl mb-1">
+      </i>
+      <span class="text-[10px] font-bold">
+        Berita
+      </span>
     </button>
-   </div>
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white" onclick="navigate('profil-identitas')">
-    <i class="fas fa-id-card text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Identitas
-    </span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white" onclick="navigate('kontak-kami')">
-    <i class="fas fa-envelope text-xl mb-1">
-    </i>
-    <span class="text-[10px] font-bold">
-     Kontak
-    </span>
-   </button>
+    <button
+      class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white"
+      onclick="navigate('halaman-pengumuman')">
+      <i class="fas fa-bullhorn text-xl mb-1">
+      </i>
+      <span class="text-[10px] font-bold">
+        Pengumuman
+      </span>
+    </button>
+    <div class="flex-1 flex justify-center -mt-6">
+      <button
+        class="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-gray-50 dark:border-gray-900 hover:bg-blue-800 transition transform hover:scale-105"
+        onclick="navigate('home')">
+        <i class="fas fa-home text-2xl">
+        </i>
+      </button>
+    </div>
+    <button
+      class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white"
+      onclick="navigate('profil-identitas')">
+      <i class="fas fa-id-card text-xl mb-1">
+      </i>
+      <span class="text-[10px] font-bold">
+        Identitas
+      </span>
+    </button>
+    <button
+      class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white"
+      onclick="navigate('kontak-kami')">
+      <i class="fas fa-envelope text-xl mb-1">
+      </i>
+      <span class="text-[10px] font-bold">
+        Kontak
+      </span>
+    </button>
   </div>
-  <div class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-[60] px-2 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]" id="bottom-nav-pegawai">
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" onclick="navigate('pegawai-dash')">
-    <i class="fas fa-chart-line text-xl mb-1"></i>
-    <span class="text-[10px] font-bold">Dashboard</span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" onclick="navigate('pegawai-dashboard')">
-    <i class="fas fa-id-card text-xl mb-1"></i>
-    <span class="text-[10px] font-bold">Profil</span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" onclick="navigate('ubah-password')">
-    <i class="fas fa-key text-xl mb-1"></i>
-    <span class="text-[10px] font-bold">Akun</span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400" id="btn-bot-berita-pegawai" onclick="navigate('pegawai-berita')">
-    <i class="fas fa-newspaper text-xl mb-1"></i>
-    <span class="text-[10px] font-bold">Berita</span>
-   </button>
-   <button class="flex-1 flex flex-col items-center py-1 text-primary hover:text-blue-800 dark:text-blue-400" onclick="navigate('home')">
-    <i class="fas fa-globe text-xl mb-1"></i>
-    <span class="text-[10px] font-bold">Publik</span>
-   </button>
+  <div
+    class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center z-[60] px-2 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]"
+    id="bottom-nav-pegawai">
+    <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400"
+      onclick="navigate('pegawai-dash')">
+      <i class="fas fa-chart-line text-xl mb-1"></i>
+      <span class="text-[10px] font-bold">Dashboard</span>
+    </button>
+    <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400"
+      onclick="navigate('pegawai-dashboard')">
+      <i class="fas fa-id-card text-xl mb-1"></i>
+      <span class="text-[10px] font-bold">Profil</span>
+    </button>
+    <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400"
+      onclick="navigate('ubah-password')">
+      <i class="fas fa-key text-xl mb-1"></i>
+      <span class="text-[10px] font-bold">Akun</span>
+    </button>
+    <button class="flex-1 flex flex-col items-center py-1 text-gray-500 hover:text-green-600 dark:text-gray-400"
+      id="btn-bot-berita-pegawai" onclick="navigate('pegawai-berita')">
+      <i class="fas fa-newspaper text-xl mb-1"></i>
+      <span class="text-[10px] font-bold">Berita</span>
+    </button>
+    <button class="flex-1 flex flex-col items-center py-1 text-primary hover:text-blue-800 dark:text-blue-400"
+      onclick="navigate('home')">
+      <i class="fas fa-globe text-xl mb-1"></i>
+      <span class="text-[10px] font-bold">Publik</span>
+    </button>
   </div>
-  <div class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-[60] px-4 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]" id="bottom-nav-admin">
-   <button class="flex flex-col items-center py-1 text-gray-500 hover:text-secondary dark:text-gray-400" onclick="navigate('admin-dashboard')">
-    <i class="fas fa-tachometer-alt text-2xl mb-1">
-    </i>
-    <span class="text-xs font-bold">
-     Beranda
-    </span>
-   </button>
-   <button class="flex flex-col items-center py-1 text-primary hover:text-blue-800 dark:text-blue-400" onclick="navigate('home')">
-    <i class="fas fa-globe text-2xl mb-1">
-    </i>
-    <span class="text-xs font-bold">
-     Web Publik
-    </span>
-   </button>
-   <button class="flex flex-col items-center py-1 text-red-500 hover:text-red-700" onclick="logout()">
-    <i class="fas fa-sign-out-alt text-2xl mb-1">
-    </i>
-    <span class="text-xs font-bold">
-     Logout
-    </span>
-   </button>
+  <div
+    class="hidden md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-[60] px-4 pb-2 pt-2 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]"
+    id="bottom-nav-admin">
+    <button class="flex flex-col items-center py-1 text-gray-500 hover:text-secondary dark:text-gray-400"
+      onclick="navigate('admin-dashboard')">
+      <i class="fas fa-tachometer-alt text-2xl mb-1">
+      </i>
+      <span class="text-xs font-bold">
+        Beranda
+      </span>
+    </button>
+    <button class="flex flex-col items-center py-1 text-primary hover:text-blue-800 dark:text-blue-400"
+      onclick="navigate('home')">
+      <i class="fas fa-globe text-2xl mb-1">
+      </i>
+      <span class="text-xs font-bold">
+        Web Publik
+      </span>
+    </button>
+    <button class="flex flex-col items-center py-1 text-red-500 hover:text-red-700" onclick="logout()">
+      <i class="fas fa-sign-out-alt text-2xl mb-1">
+      </i>
+      <span class="text-xs font-bold">
+        Logout
+      </span>
+    </button>
   </div>
-  <footer class="bg-gray-900 text-white py-12 md:py-16 border-t-8 border-secondary mt-12 relative overflow-hidden" id="footer-publik">
-   <div class="max-w-7xl mx-auto px-4 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12">
-    <div class="flex flex-col items-start">
-     <div class="flex items-center mb-6">
-      <img class="h-14 w-14 md:h-16 md:w-16 object-contain hidden bg-white rounded-full p-1 border-2 border-gray-700 mr-4" id="foot-logo" loading="lazy" src=""/>
-      <div>
-       <h4 class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">
-        Website
-                            Resmi
-       </h4>
-       <h3 class="text-2xl md:text-3xl font-black text-white tracking-wider" id="foot-nama">
-        SMA EduPro
-       </h3>
+  <footer class="bg-gray-900 text-white py-12 md:py-16 border-t-8 border-secondary mt-12 relative overflow-hidden"
+    id="footer-publik">
+    <div class="max-w-7xl mx-auto px-4 relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div class="flex flex-col items-start">
+        <div class="flex items-center mb-6">
+          <img
+            class="h-14 w-14 md:h-16 md:w-16 object-contain hidden bg-white rounded-full p-1 border-2 border-gray-700 mr-4"
+            id="foot-logo" loading="lazy" src="" />
+          <div>
+            <h4 class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest">
+              Website
+              Resmi
+            </h4>
+            <h3 class="text-2xl md:text-3xl font-black text-white tracking-wider" id="foot-nama">
+              SMA EduPro
+            </h3>
+          </div>
+        </div>
+        <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6" id="foot-alamat">
+          Jl. Pendidikan No 1.
+        </p>
+        <div class="flex space-x-3 md:space-x-4">
+          <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition"
+            href="#" id="link-fb" target="_blank">
+            <i class="fab fa-facebook-f">
+            </i>
+          </a>
+          <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-600 hover:text-white transition"
+            href="#" id="link-ig" target="_blank">
+            <i class="fab fa-instagram">
+            </i>
+          </a>
+          <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-green-500 hover:text-white transition"
+            href="#" id="link-wa" target="_blank">
+            <i class="fab fa-whatsapp">
+            </i>
+          </a>
+          <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 hover:text-white transition"
+            href="#" id="link-email" target="_blank">
+            <i class="fas fa-envelope">
+            </i>
+          </a>
+        </div>
       </div>
-     </div>
-     <p class="text-gray-400 text-xs md:text-sm leading-relaxed mb-6" id="foot-alamat">
-      Jl. Pendidikan No 1.
-     </p>
-     <div class="flex space-x-3 md:space-x-4">
-      <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition" href="#" id="link-fb" target="_blank">
-       <i class="fab fa-facebook-f">
-       </i>
-      </a>
-      <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-pink-600 hover:text-white transition" href="#" id="link-ig" target="_blank">
-       <i class="fab fa-instagram">
-       </i>
-      </a>
-      <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-green-500 hover:text-white transition" href="#" id="link-wa" target="_blank">
-       <i class="fab fa-whatsapp">
-       </i>
-      </a>
-      <a class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-500 hover:text-white transition" href="#" id="link-email" target="_blank">
-       <i class="fas fa-envelope">
-       </i>
-      </a>
-     </div>
+      <div>
+        <h4 class="text-lg md:text-xl font-bold mb-6 border-b-2 border-secondary pb-2 inline-block">
+          Tautan
+          Terkait
+        </h4>
+        <ul class="space-y-4 text-gray-400 font-medium text-sm md:text-base">
+          <li>
+            <a class="hover:text-secondary transition flex items-center" href="#" id="link-ppdb" target="_blank">
+              <i class="fas fa-chevron-right text-xs mr-3 text-secondary">
+              </i>
+              Pendaftaran Murid Baru
+              (SPMB)
+            </a>
+          </li>
+          <li>
+            <a class="hover:text-secondary transition flex items-center" href="#" id="link-dinas" target="_blank">
+              <i class="fas fa-chevron-right text-xs mr-3 text-secondary">
+              </i>
+              Dinas Pendidikan
+              Provinsi
+            </a>
+          </li>
+          <li>
+            <a class="hover:text-secondary transition flex items-center" href="#" id="link-dapodik" target="_blank">
+              <i class="fas fa-chevron-right text-xs mr-3 text-secondary">
+              </i>
+              Portal Dapodikdasmen
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-lg md:text-xl font-bold mb-6 border-b-2 border-primary pb-2 inline-block">
+          Akses Cepat
+        </h4>
+        <ul class="space-y-4 text-gray-400 font-medium text-sm md:text-base">
+          <li>
+            <button class="hover:text-white transition flex items-center" onclick="navigate('profil-identitas')">
+              <i class="fas fa-id-card text-xs mr-3 text-primary">
+              </i>
+              Identitas Sekolah
+            </button>
+          </li>
+          <li>
+            <button class="hover:text-white transition flex items-center" onclick="navigate('guru')">
+              <i class="fas fa-chalkboard-teacher text-xs mr-3 text-primary">
+              </i>
+              Direktori
+              Pegawai
+            </button>
+          </li>
+          <li>
+            <button class="hover:text-white transition flex items-center" onclick="navigate('halaman-berita')">
+              <i class="fas fa-newspaper text-xs mr-3 text-primary">
+              </i>
+              Arsip Berita
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div>
-     <h4 class="text-lg md:text-xl font-bold mb-6 border-b-2 border-secondary pb-2 inline-block">
-      Tautan
-                    Terkait
-     </h4>
-     <ul class="space-y-4 text-gray-400 font-medium text-sm md:text-base">
-      <li>
-       <a class="hover:text-secondary transition flex items-center" href="#" id="link-ppdb" target="_blank">
-        <i class="fas fa-chevron-right text-xs mr-3 text-secondary">
-        </i>
-        Pendaftaran Murid Baru
-                            (SPMB)
-       </a>
-      </li>
-      <li>
-       <a class="hover:text-secondary transition flex items-center" href="#" id="link-dinas" target="_blank">
-        <i class="fas fa-chevron-right text-xs mr-3 text-secondary">
-        </i>
-        Dinas Pendidikan
-                            Provinsi
-       </a>
-      </li>
-      <li>
-       <a class="hover:text-secondary transition flex items-center" href="#" id="link-dapodik" target="_blank">
-        <i class="fas fa-chevron-right text-xs mr-3 text-secondary">
-        </i>
-        Portal Dapodikdasmen
-       </a>
-      </li>
-     </ul>
+    <div class="max-w-7xl mx-auto text-center border-t border-gray-800 mt-12 pt-8 px-4">
+      <div
+        class="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm text-gray-500 font-bold space-y-4 md:space-y-0">
+        <p>
+          © 2026 Website Resmi
+          <span id="foot-copy-nama">
+            Sekolah
+          </span>
+          . Hak Cipta Dilindungi
+        </p>
+        <div class="flex items-center space-x-3 md:space-x-6">
+          <button class="hover:text-secondary transition" onclick="navigate('halaman-privasi')">
+            Kebijakan
+            Privasi
+          </button>
+          <button class="hover:text-secondary transition" onclick="navigate('halaman-syarat')">
+            Syarat &amp;
+            Ketentuan
+          </button>
+          <span class="text-gray-700 hidden md:inline">
+            |
+          </span>
+          <span class="text-gray-400">
+            Created by :
+            <a href="https://www.farypin-inovasiteknologi.com" target="_blank">
+              PT. Farypin Inovasi Teknologi
+            </a>
+          </span>
+        </div>
+      </div>
     </div>
-    <div>
-     <h4 class="text-lg md:text-xl font-bold mb-6 border-b-2 border-primary pb-2 inline-block">
-      Akses Cepat
-     </h4>
-     <ul class="space-y-4 text-gray-400 font-medium text-sm md:text-base">
-      <li>
-       <button class="hover:text-white transition flex items-center" onclick="navigate('profil-identitas')">
-        <i class="fas fa-id-card text-xs mr-3 text-primary">
-        </i>
-        Identitas Sekolah
-       </button>
-      </li>
-      <li>
-       <button class="hover:text-white transition flex items-center" onclick="navigate('guru')">
-        <i class="fas fa-chalkboard-teacher text-xs mr-3 text-primary">
-        </i>
-        Direktori
-                            Pegawai
-       </button>
-      </li>
-      <li>
-       <button class="hover:text-white transition flex items-center" onclick="navigate('halaman-berita')">
-        <i class="fas fa-newspaper text-xs mr-3 text-primary">
-        </i>
-        Arsip Berita
-       </button>
-      </li>
-     </ul>
-    </div>
-   </div>
-   <div class="max-w-7xl mx-auto text-center border-t border-gray-800 mt-12 pt-8 px-4">
-    <div class="flex flex-col md:flex-row justify-between items-center text-xs md:text-sm text-gray-500 font-bold space-y-4 md:space-y-0">
-     <p>
-      © 2026 Website Resmi
-      <span id="foot-copy-nama">
-       Sekolah
-      </span>
-      . Hak Cipta Dilindungi
-     </p>
-     <div class="flex items-center space-x-3 md:space-x-6">
-      <button class="hover:text-secondary transition" onclick="navigate('halaman-privasi')">
-       Kebijakan
-                        Privasi
-      </button>
-      <button class="hover:text-secondary transition" onclick="navigate('halaman-syarat')">
-       Syarat &amp;
-                        Ketentuan
-      </button>
-      <span class="text-gray-700 hidden md:inline">
-       |
-      </span>
-      <span class="text-gray-400">
-       Created by :
-       <a href="https://www.fary-edtech.my.id" target="_blank">
-        Fary EdTech
-       </a>
-      </span>
-     </div>
-    </div>
-   </div>
   </footer>
 
   <!-- Modal: Ganti Password Paksa (saat pertama login setelah reset) -->
-  <div id="modal-forced-pass" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+  <div id="modal-forced-pass"
+    class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
       <div class="px-8 py-5 bg-gradient-to-r from-red-600 to-orange-500 text-white flex items-center gap-3">
-        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-lock"></i></div>
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i
+            class="fas fa-lock"></i></div>
         <div>
           <h3 class="text-lg font-black">Ganti Password Sekarang!</h3>
-          <p class="text-xs text-red-100 mt-0.5">Password Anda telah direset oleh Admin. Wajib membuat password baru.</p>
+          <p class="text-xs text-red-100 mt-0.5">Password Anda telah direset oleh Admin. Wajib membuat password baru.
+          </p>
         </div>
       </div>
       <div class="p-6 space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-500 mb-1">Password Baru <span class="text-red-500">*</span></label>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Password Baru <span
+              class="text-red-500">*</span></label>
           <div class="relative">
-            <input class="w-full px-4 py-3 border-2 border-red-300 rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-red-500 outline-none pr-12" id="fp-baru" placeholder="Minimal 6 karakter" type="password"/>
-            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('fp-baru','fp-eye-baru')"><i class="fas fa-eye" id="fp-eye-baru"></i></button>
+            <input
+              class="w-full px-4 py-3 border-2 border-red-300 rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-red-500 outline-none pr-12"
+              id="fp-baru" placeholder="Minimal 6 karakter" type="password" />
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600"
+              onclick="togglePasswordVisibility('fp-baru','fp-eye-baru')"><i class="fas fa-eye"
+                id="fp-eye-baru"></i></button>
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-500 mb-1">Ulangi Password Baru <span class="text-red-500">*</span></label>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Ulangi Password Baru <span
+              class="text-red-500">*</span></label>
           <div class="relative">
-            <input class="w-full px-4 py-3 border-2 border-red-300 rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-red-500 outline-none pr-12" id="fp-konfirm" placeholder="Ketik ulang password baru" type="password"/>
-            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('fp-konfirm','fp-eye-konfirm')"><i class="fas fa-eye" id="fp-eye-konfirm"></i></button>
+            <input
+              class="w-full px-4 py-3 border-2 border-red-300 rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-red-500 outline-none pr-12"
+              id="fp-konfirm" placeholder="Ketik ulang password baru" type="password" />
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600"
+              onclick="togglePasswordVisibility('fp-konfirm','fp-eye-konfirm')"><i class="fas fa-eye"
+                id="fp-eye-konfirm"></i></button>
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-500 mb-1">Email Pemulihan <span class="text-gray-400 font-normal">(opsional, untuk verifikasi)</span></label>
-          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="fp-email" placeholder="nama@email.com" type="email"/>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Email Pemulihan <span
+              class="text-gray-400 font-normal">(opsional, untuk verifikasi)</span></label>
+          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="fp-email"
+            placeholder="nama@email.com" type="email" />
         </div>
       </div>
       <div class="px-6 pb-6">
-        <button class="w-full py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition" onclick="prosesGantiForcedPassword()">
+        <button
+          class="w-full py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition"
+          onclick="prosesGantiForcedPassword()">
           <i class="fas fa-save mr-2"></i> Simpan Password Baru
         </button>
       </div>
@@ -640,11 +752,15 @@
   </div>
 
   <!-- Modal: Minta Reset Password -->
-  <div id="modal-lupa-pass" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+  <div id="modal-lupa-pass"
+    class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
       <div class="px-8 py-5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-3 relative">
-        <button onclick="tutupModal('modal-lupa-pass')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/30 text-white transition"><i class="fas fa-times"></i></button>
-        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-envelope"></i></div>
+        <button onclick="tutupModal('modal-lupa-pass')"
+          class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/30 text-white transition"><i
+            class="fas fa-times"></i></button>
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i
+            class="fas fa-envelope"></i></div>
         <div>
           <h3 class="text-lg font-black">Lupa Password?</h3>
           <p class="text-xs text-blue-100 mt-0.5">Kirim link pemulihan ke email Anda.</p>
@@ -652,17 +768,26 @@
       </div>
       <div class="p-6 space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIK Pegawai <span class="text-red-500">*</span></label>
-          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none focus:border-blue-500 focus:ring-2" id="req-nip" placeholder="Ketik NIP atau NIK" type="text"/>
+          <label class="block text-xs font-bold text-gray-500 mb-1">NIP/NIK Pegawai <span
+              class="text-red-500">*</span></label>
+          <input
+            class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none focus:border-blue-500 focus:ring-2"
+            id="req-nip" placeholder="Ketik NIP atau NIK" type="text" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-500 mb-1">Email Anda <span class="text-red-500">*</span></label>
-          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none focus:border-blue-500 focus:ring-2" id="req-email" placeholder="nama@email.com" type="email"/>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Email Anda <span
+              class="text-red-500">*</span></label>
+          <input
+            class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none focus:border-blue-500 focus:ring-2"
+            id="req-email" placeholder="nama@email.com" type="email" />
         </div>
-        <p class="text-xs text-gray-400 italic">Catatan: Tautan reset password akan dikirim apabila data sesuai dengan profil Anda.</p>
+        <p class="text-xs text-gray-400 italic">Catatan: Tautan reset password akan dikirim apabila data sesuai dengan
+          profil Anda.</p>
       </div>
       <div class="px-6 pb-6">
-        <button class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition" onclick="prosesLupaPassword()">
+        <button
+          class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition"
+          onclick="prosesLupaPassword()">
           <i class="fas fa-paper-plane mr-2"></i> Kirim Link Pemulihan
         </button>
       </div>
@@ -670,10 +795,12 @@
   </div>
 
   <!-- Modal: Reset Password (dari Link) -->
-  <div id="modal-reset-pass" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+  <div id="modal-reset-pass"
+    class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
       <div class="px-8 py-5 bg-gradient-to-r from-emerald-600 to-teal-500 text-white flex items-center gap-3">
-        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i class="fas fa-key"></i></div>
+        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl"><i
+            class="fas fa-key"></i></div>
         <div>
           <h3 class="text-lg font-black">Buat Password Baru</h3>
           <p class="text-xs text-emerald-100 mt-0.5">Tautan pemulihan valid. Silakan buat password baru Anda.</p>
@@ -681,36 +808,49 @@
       </div>
       <div class="p-6 space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-500 mb-1">Password Baru <span class="text-red-500">*</span></label>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Password Baru <span
+              class="text-red-500">*</span></label>
           <div class="relative">
-            <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-emerald-500 outline-none pr-12" id="rp-baru" placeholder="Minimal 6 karakter" type="password"/>
-            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('rp-baru','rp-eye-baru')"><i class="fas fa-eye" id="rp-eye-baru"></i></button>
+            <input
+              class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-emerald-500 outline-none pr-12"
+              id="rp-baru" placeholder="Minimal 6 karakter" type="password" />
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600"
+              onclick="togglePasswordVisibility('rp-baru','rp-eye-baru')"><i class="fas fa-eye"
+                id="rp-eye-baru"></i></button>
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-500 mb-1">Ulangi Password Baru <span class="text-red-500">*</span></label>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Ulangi Password Baru <span
+              class="text-red-500">*</span></label>
           <div class="relative">
-            <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-emerald-500 outline-none pr-12" id="rp-konfirm" placeholder="Ketik ulang password baru" type="password"/>
-            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600" onclick="togglePasswordVisibility('rp-konfirm','rp-eye-konfirm')"><i class="fas fa-eye" id="rp-eye-konfirm"></i></button>
+            <input
+              class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold focus:ring-2 focus:border-emerald-500 outline-none pr-12"
+              id="rp-konfirm" placeholder="Ketik ulang password baru" type="password" />
+            <button class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600"
+              onclick="togglePasswordVisibility('rp-konfirm','rp-eye-konfirm')"><i class="fas fa-eye"
+                id="rp-eye-konfirm"></i></button>
           </div>
         </div>
       </div>
       <div class="px-6 pb-6">
-        <button class="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition" onclick="prosesResetPassToken()">
+        <button
+          class="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-xl font-black text-lg shadow-lg hover:opacity-90 transition"
+          onclick="prosesResetPassToken()">
           <i class="fas fa-save mr-2"></i> Simpan Password Baru
         </button>
       </div>
     </div>
   </div>
 
-    <!-- Modular Scripts -->
-    <script src="./assets/js/core/globals.js?v=1787931682"></script>
-    <script src="./assets/js/ui/utils.js?v=1787931682"></script>
-    <script src="./assets/js/core/api.js?v=1787931682"></script>
-    <script src="./assets/js/core/auth.js?v=1787931682"></script>
-    <script src="./assets/js/ui/components.js?v=1787931682"></script>
-    <script src="./assets/js/ui/render.js?v=1787931682"></script>
-    <script src="./assets/js/ui/forms.js?v=1787931682"></script>
-    <script src="./assets/js/main.js?v=1787931682"></script>
- </body>
+  <!-- Modular Scripts -->
+  <script src="./assets/js/core/globals.js?v=1787931682"></script>
+  <script src="./assets/js/ui/utils.js?v=1787931682"></script>
+  <script src="./assets/js/core/api.js?v=1787931682"></script>
+  <script src="./assets/js/core/auth.js?v=1787931682"></script>
+  <script src="./assets/js/ui/components.js?v=1787931682"></script>
+  <script src="./assets/js/ui/render.js?v=1787931682"></script>
+  <script src="./assets/js/ui/forms.js?v=1787931682"></script>
+  <script src="./assets/js/main.js?v=1787931682"></script>
+</body>
+
 </html>
