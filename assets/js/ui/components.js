@@ -122,19 +122,19 @@ async function terapkanCrop() {
 
     var base64 = '';
     if (curKey === 'guru' || curKey === 'tu' || curKey === 'pegawai_foto') {
-        // Foto pegawai: MAX 250px, target 30KB → base64 ≈ 40K chars (aman batas 50K Sheets)
-        base64 = await compressEmployeePhotoCanvas(cropCanvas, 250, 30);
+        // Foto pegawai: MAX 400px, target 35KB → base64 ≈ 48K chars (aman batas 50K Sheets)
+        base64 = await compressEmployeePhotoCanvas(cropCanvas, 400, 35);
     } else if (curKey === 'kepsek') {
-        // Foto kepsek: MAX 300px, target 30KB
-        base64 = await compressEmployeePhotoCanvas(cropCanvas, 300, 30);
+        // Foto kepsek: MAX 400px, target 35KB
+        base64 = await compressEmployeePhotoCanvas(cropCanvas, 400, 35);
     } else if (curKey === 'logo') {
-        // Logo sekolah: MAX 300px, JPEG 80%, target 30KB
+        // Logo sekolah: MAX 300px, target 30KB (disimpan di Sheets)
         base64 = await compressEmployeePhotoCanvas(cropCanvas, 300, 30);
     } else if (curKey === 'struktur') {
-        // Bagan struktur: MAX 800px, JPEG 75%, target 35KB
-        base64 = await compressEmployeePhotoCanvas(cropCanvas, 800, 35);
+        // Bagan struktur: bebas ukuran, JPEG 85% — akan diupload ke Cloudinary
+        base64 = cropCanvas.toDataURL('image/jpeg', 0.85);
     } else {
-        // Default (galeri, slider, dll): JPEG 70% tanpa resize paksa
+        // Default (galeri, slider, dll): JPEG 70%
         base64 = cropCanvas.toDataURL('image/jpeg', 0.7);
     }
 
