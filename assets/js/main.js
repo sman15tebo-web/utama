@@ -50,15 +50,15 @@ window.onload = async function () {
         ['clean']
     ];
     if (Quill) {
-        var adminEditor = document.getElementById('editor-container');
-        if (adminEditor) {
-            quillEditor = new Quill(adminEditor, { theme: 'snow', modules: { toolbar: toolbarOptions } });
-        }
+        // Editor Admin: di-init saat modal-berita dibuka (bukan di sini) agar toolbar bisa render
+        // quillEditor di-init di components.js bukaModal('modal-berita')
         var pgEditor = document.getElementById('pg-b-konten');
         if (pgEditor && !quillPegawaiBerita) {
             quillPegawaiBerita = new Quill(pgEditor, { theme: 'snow', modules: { toolbar: toolbarOptions } });
         }
     }
+    // Simpan toolbarOptions ke global agar bisa dipakai saat init Quill admin di modal
+    window._quillToolbar = toolbarOptions;
 };
 
 window.addEventListener('popstate', function (e) {
