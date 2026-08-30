@@ -365,11 +365,12 @@ function siapkanFormPegawai() {
     }
 }
 
-function ubahAksesBerita(idGuru, statusBaru) {
-    showAlert({ title: 'Ubah Akses?', text: "Anda akan merubah hak akses pembuat berita untuk guru ini.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Ubah' }).then((result) => {
+function ubahAksesBerita(idPegawai, statusBaru, modul) {
+    modul = modul || 'guru'; // default guru agar backward-compatible
+    showAlert({ title: 'Ubah Akses?', text: "Anda akan merubah hak akses pembuat berita untuk " + modul + " ini.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Ubah' }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('loader-text').innerText = 'Menyimpan Izin...'; document.getElementById('loader').style.display = 'flex'; startTimer();
-            callAPI('updateData', { token: curToken, modul: 'guru', id: idGuru, dataBaru: { akses_berita: statusBaru } }).then(selesaiSimpan).catch(gagalSimpan);
+            callAPI('updateData', { token: curToken, modul: modul, id: idPegawai, dataBaru: { akses_berita: statusBaru } }).then(selesaiSimpan).catch(gagalSimpan);
         }
     });
 }
@@ -420,7 +421,7 @@ async function simpanBeritaPegawai() {
 
     var action = editId ? 'updateData' : 'simpanData';
     var payload = editId
-        ? { token: curToken, modul: 'berita', id: editId, dataUpdate: d }
+        ? { token: curToken, modul: 'berita', id: editId, dataBaru: d }
         : { token: curToken, modul: 'berita', dataBaru: d, base64Data: null, filename: 'berita_guru.jpg' };
 
     callAPI(action, payload).then(function (res) {
