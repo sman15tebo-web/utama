@@ -272,15 +272,74 @@ function bukaProfilPegawai(modul, id) {
 function bagikanBerita(platform) {
     var shareUrl = '';
     var article = (dbGlobal && dbGlobal.berita) ? (dbGlobal.berita.find(function (it) { return it.id === curShareId; }) || null) : null;
+
+    // Ambil URL berita
     if (article && article.html_url) {
         shareUrl = article.html_url;
     } else if (article && article.link_html) {
         shareUrl = article.link_html;
     } else {
-        var baseShareUrl = dbGlobal && dbGlobal.domainResmi ? dbGlobal.domainResmi.replace(/\/$/, '') : (window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://sman15tebo-web.github.io/utama');
+        var baseShareUrl = dbGlobal && dbGlobal.domainResmi
+            ? dbGlobal.domainResmi.replace(/\/$/, '')
+            : (window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://sman15tebo-web.github.io/utama');
         shareUrl = baseShareUrl.replace(/\/$/, '') + '/berita/' + curShareId + '.html';
     }
 
-    var teks = "Baca informasi selengkapnya: " + curShareTitle + "\n\n" + shareUrl;
-    if (platform === 'wa') { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(teks), '_blank'); } else if (platform === 'fb') { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank'); } else if (platform === 'x') { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(teks), '_blank'); } else if (platform === 'copy') { navigator.clipboard.writeText(shareUrl).then(function () { Swal.fire({ title: 'Berhasil!', text: 'Link berita telah disalin.', icon: 'success', timer: 2000, showConfirmButton: false }); }).catch(function () { Swal.fire('Gagal Menyalin', 'Silakan block dan copy URL ini manual:\n' + shareUrl, 'info'); }); }
+    // Buat ringkasan teks dari konten (hapus HTML tag, ambil 120 karakter)
+    var ringkasan = '';
+    if (article && article.konten) {
+        ringkasan = article.konten.replace(/<[^>]*>/g, '').trim().substring(0, 120);
+        if (ringkasan.length === 120) ringkasan += '...';
+    }
+
+    var namaSekolah = (dbGlobal && dbGlobal.settings)
+        ? (function() { for (var i = 0; i < dbGlobal.settings.length; i++) { if (dbGlobal.settings[i].key === 'nama_sekolah') return dbGlobal.settings[i].value; } return 'Sekolah Kami'; })()
+        : 'Sekolah Kami';
+
+    // Teks untuk WA & Telegram (lebih informatif)
+    var teksWA = '📰 *' + curShareTitle + '*\n\n'
+        + (ringkasan ? ringkasan + '\n\n' : '')
+        + '🔗 Baca selengkapnya:\n' + shareUrl
+        + '\n\n_— ' + namaSekolah + '_';
+
+    // Teks untuk X/Twitter (ringkas, pakai karakter)
+    var teksX = curShareTitle + ' ' + shareUrl + ' #' + namaSekolah.replace(/\s/g, '');
+
+    if (platform === 'native') {
+        // Web Share API — dipakai jika tersedia (mobile)
+        if (navigator.share) {
+            navigator.share({ title: curShareTitle, text: ringkasan || curShareTitle, url: shareUrl })
+                .catch(function() {});
+        } else {
+            bagikanBerita('copy');
+        }
+    } else if (platform === 'wa') {
+        window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(teksWA), '_blank');
+    } else if (platform === 'telegram') {
+        window.open('https://t.me/share/url?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(curShareTitle), '_blank');
+    } else if (platform === 'fb') {
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank');
+    } else if (platform === 'x') {
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(teksX), '_blank');
+    } else if (platform === 'copy') {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(function () {
+                Swal.fire({ title: '✅ Berhasil!', text: 'Link berita telah disalin ke clipboard.', icon: 'success', timer: 2000, showConfirmButton: false });
+            }).catch(function () {
+                _fallbackCopy(shareUrl);
+            });
+        } else {
+            _fallbackCopy(shareUrl);
+        }
+    }
+}
+
+// Fallback copy untuk browser yang tidak support Clipboard API
+function _fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); Swal.fire({ title: '✅ Berhasil!', text: 'Link disalin.', icon: 'success', timer: 2000, showConfirmButton: false }); }
+    catch (e) { Swal.fire('Salin Manual', text, 'info'); }
+    document.body.removeChild(ta);
 }
