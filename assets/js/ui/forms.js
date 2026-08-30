@@ -400,7 +400,8 @@ async function simpanBeritaPegawai() {
     // Saat edit tanpa gambar baru, gunakan gambar lama
     if (editId && !base64) {
         var lama = (dbGlobal.berita || []).find(function(x) { return x.id == editId; });
-        if (lama && lama.gambar_url) d.gambar_url = lama.gambar_url;
+        if (!lama) return showAlert('Error', 'Data berita tidak ditemukan di lokal. Coba refresh.', 'error');
+        if (lama.gambar_url) d.gambar_url = lama.gambar_url;
     }
 
     document.getElementById('loader-text').innerText = editId ? 'Menyimpan Perubahan...' : 'Menyimpan Postingan...';
@@ -471,6 +472,7 @@ function renderTabelBeritaPegawai() {
         html += '<td class="px-4 py-3">' + badge + '</td>';
         html += '<td class="px-4 py-3 text-gray-500 text-xs">' + tgl + '</td>';
         html += '<td class="px-4 py-3 text-center"><div class="flex justify-center gap-2">';
+        html += '<button onclick="bukaBerita(\'' + b.id + '\')" class="px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-bold hover:bg-green-600 transition"><i class="fas fa-eye mr-1"></i>Lihat</button>';
         html += '<button onclick="editBeritaPegawai(\'' + b.id + '\')" class="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-xs font-bold hover:bg-blue-600 transition"><i class="fas fa-edit mr-1"></i>Edit</button>';
         html += '<button onclick="hapusBeritaPegawai(\'' + b.id + '\')" class="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition"><i class="fas fa-trash mr-1"></i>Hapus</button>';
         html += '</div></td></tr>';
@@ -496,7 +498,12 @@ function renderTabelGaleriPegawai() {
         html += '<td class="px-4 py-3 font-medium text-gray-800 dark:text-white max-w-xs truncate" title="' + (g.judul||'') + '">' + (g.judul || '-') + '</td>';
         html += '<td class="px-4 py-3">' + badge + '</td>';
         html += '<td class="px-4 py-3 text-gray-500 text-xs">' + (g.tanggal || '-') + '</td>';
-        html += '<td class="px-4 py-3 text-center"><button onclick="hapusGaleriPegawai(\'' + g.id + '\')" class="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition"><i class="fas fa-trash mr-1"></i>Hapus</button></td></tr>';
+        html += '<td class="px-4 py-3 text-center"><div class="flex justify-center gap-2">';
+        if (g.foto_url) {
+            html += '<button onclick="window.open(\'' + g.foto_url + '\', \'_blank\')" class="px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-bold hover:bg-green-600 transition"><i class="fas fa-eye mr-1"></i>Lihat</button>';
+        }
+        html += '<button onclick="hapusGaleriPegawai(\'' + g.id + '\')" class="px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition"><i class="fas fa-trash mr-1"></i>Hapus</button>';
+        html += '</div></td></tr>';
     });
     tbody.innerHTML = html;
 }
@@ -517,6 +524,17 @@ function editBeritaPegawai(id) {
         } catch(e) { document.getElementById('pg-b-tanggal').value = ''; }
     }
     if (quillPegawaiBerita) quillPegawaiBerita.root.innerHTML = b.konten || '';
+    // Tampilkan preview gambar lama
+    var prevImg = document.getElementById('prev-pg-berita');
+    if (prevImg) {
+        if (b.gambar_url) {
+            prevImg.src = b.gambar_url;
+            prevImg.classList.remove('hidden');
+        } else {
+            prevImg.src = ''; prevImg.classList.add('hidden');
+        }
+    }
+    cropData['berita_guru'] = null; // reset crop baru, biar pakai gambar lama
     var label = document.getElementById('label-btn-berita-pegawai'); if (label) label.textContent = 'Simpan Perubahan';
     var h = document.getElementById('judul-form-berita-pegawai'); if (h) h.innerHTML = '<i class="fas fa-edit text-orange-500"></i> Edit Berita / Pengumuman';
     var info = document.getElementById('info-gambar-berita-pegawai'); if (info) info.textContent = 'Kosongkan jika tidak ingin mengubah gambar.';
