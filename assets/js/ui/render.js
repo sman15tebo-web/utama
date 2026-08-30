@@ -2,6 +2,10 @@ function renderSemuaData(data) {
     try {
         var setArr = data.settings || []; var widArr = data.widget || []; var nSekolah = getVal('nama_sekolah', setArr) || 'SMA EduPro';
         setTextAman('nav-nama-sekolah', nSekolah); setTextAman('foot-nama', nSekolah); setTextAman('id-nama', nSekolah); setTextAman('id-npsn', getVal('npsn', setArr) || '-'); setTextAman('id-nss', getVal('nss', setArr) || '-'); setTextAman('id-akreditasi', getVal('akreditasi', setArr) || '-'); setTextAman('id-tahun', getVal('tahun_berdiri', setArr) || '-'); setTextAman('id-status', getVal('status_jenjang', setArr) || '-'); setTextAman('id-alamat', getVal('alamat', setArr)); setTextAman('id-desc', getVal('deskripsi', setArr)); setTextAman('foot-alamat', getVal('alamat', setArr)); setTextAman('home-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('home-kepsek-sambutan', '"' + (getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.') + '"'); setTextAman('detail-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('detail-kepsek-sambutan', getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.'); setTextAman('teks-sejarah', getVal('sejarah', setArr) || 'Sejarah belum ditulis.'); setTextAman('teks-visimisi', getVal('visi_misi', setArr) || 'Visi Misi belum ditulis.'); setTextAman('teks-sarpras', getVal('sarpras', setArr) || 'Sarana Prasarana belum diisi.'); setTextAman('teks-privasi', getVal('privasi', setArr) || 'Kebijakan privasi belum diatur.'); setTextAman('teks-syarat', getVal('syarat', setArr) || 'Syarat dan ketentuan belum diatur.'); setTextAman('foot-copy-nama', nSekolah); setTextAman('teks-berjalan', getVal('teks_berjalan', setArr) || 'Selamat datang di website resmi kami.');
+        // Footer admin
+        setTextAman('footer-admin-nama', nSekolah);
+        var faLogo = document.getElementById('footer-admin-logo'); if (faLogo) { var logoUrl = getVal('logo_url', setArr); if (logoUrl) { faLogo.src = logoUrl; faLogo.classList.remove('hidden'); } }
+
 
         setTextAman('kk-nama', nSekolah); setTextAman('kk-alamat', getVal('alamat', setArr) || '-'); setTextAman('kk-wa', getVal('wa', widArr) || '-'); setTextAman('kk-email', getVal('email', widArr) || '-'); setTextAman('kk-web', getVal('domain_resmi', setArr) || window.location.hostname); setTextAman('kk-fb', getVal('fb', widArr) || 'Facebook'); setTextAman('kk-ig', getVal('ig', widArr) || 'Instagram');
         setLinkAman('kk-link-wa', getVal('wa', widArr) ? 'https://wa.me/' + amankanTeks(getVal('wa', widArr)) : '#'); setLinkAman('kk-link-email', getVal('email', widArr) ? 'mailto:' + amankanTeks(getVal('email', widArr)) : '#'); setLinkAman('kk-link-fb', getVal('fb', widArr)); setLinkAman('kk-link-ig', getVal('ig', widArr)); setLinkAman('kk-link-ppdb', getVal('link_ppdb', widArr)); setLinkAman('kk-link-dinas', getVal('link_dinas', widArr)); setLinkAman('kk-link-dapodik', getVal('link_dapodik', widArr));
@@ -343,7 +347,7 @@ function bagikanBerita(platform) {
     } else if (platform === 'copy') {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(shareUrl).then(function () {
-                Swal.fire({ title: '✅ Berhasil!', text: 'Link berita telah disalin ke clipboard.', icon: 'success', timer: 2000, showConfirmButton: false });
+                showAlert({ title: '✅ Berhasil!', text: 'Link berita telah disalin ke clipboard.', icon: 'success', timer: 2000, showConfirmButton: false });
             }).catch(function () {
                 _fallbackCopy(shareUrl);
             });
@@ -358,7 +362,7 @@ function _fallbackCopy(text) {
     var ta = document.createElement('textarea');
     ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); Swal.fire({ title: '✅ Berhasil!', text: 'Link disalin.', icon: 'success', timer: 2000, showConfirmButton: false }); }
-    catch (e) { Swal.fire('Salin Manual', text, 'info'); }
+    try { document.execCommand('copy'); showAlert({ title: '✅ Berhasil!', text: 'Link disalin.', icon: 'success', timer: 2000, showConfirmButton: false }); }
+    catch (e) { showAlert('Salin Manual', text, 'info'); }
     document.body.removeChild(ta);
 }
