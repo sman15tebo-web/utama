@@ -59,28 +59,38 @@ function prosesLogin() {
 
 function prosesGantiForcedPassword() {
     if (window.isSavingPassword) return;
-    var newP = document.getElementById('fp-baru').value;
+    var newP  = document.getElementById('fp-baru').value;
     var confP = document.getElementById('fp-konfirm').value;
     var email = document.getElementById('fp-email').value;
     if (!newP || !confP) return Swal.fire('Peringatan', 'Password baru dan konfirmasi wajib diisi!', 'warning');
-    if (newP !== confP) return Swal.fire('Peringatan', 'Password baru tidak sama!', 'warning');
+    if (newP !== confP)  return Swal.fire('Peringatan', 'Password baru tidak sama!', 'warning');
     if (newP.length < 6) return Swal.fire('Peringatan', 'Password minimal 6 karakter!', 'warning');
-    
+
     window.isSavingPassword = true;
-    document.getElementById('loader-text').innerText = 'Menyimpan password baru...'; document.getElementById('loader').style.display = 'flex'; startTimer();
-    callAPI('gantiForcedPassword', { token: curToken, role: curRole, id: curUserId, newPass: newP, email: email }).then(function(res) {
+
+    // Gunakan loading state di DALAM tombol modal (bukan loader global yang tertutup modal)
+    var btn = document.querySelector('#modal-forced-pass button[onclick="prosesGantiForcedPassword()"]');
+    var btnOrigHTML = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...'; }
+
+    callAPI('gantiForcedPassword', { token: curToken, role: curRole, id: curUserId, newPass: newP, email: email })
+    .then(function(res) {
         window.isSavingPassword = false;
-        document.getElementById('loader').style.display = 'none'; stopTimer();
+        if (btn) { btn.disabled = false; btn.innerHTML = btnOrigHTML; }
         if (res.status === 'success') {
             tutupModal('modal-forced-pass');
             Swal.fire({ title: '✅ Password Diperbarui!', text: 'Selamat datang, ' + curNama + '. Gunakan password baru Anda untuk login berikutnya.', icon: 'success', timer: 2500, showConfirmButton: false });
             sessionStorage.setItem('edupro_email', email);
-        } else { Swal.fire('Gagal', res.message, 'error'); }
+        } else {
+            Swal.fire('Gagal', res.message || 'Gagal menyimpan password.', 'error');
+        }
     }).catch(function(err) {
         window.isSavingPassword = false;
-        gagalSimpan(err);
+        if (btn) { btn.disabled = false; btn.innerHTML = btnOrigHTML; }
+        Swal.fire('Error', err.message || err.toString(), 'error');
     });
 }
+
 
 function prosesUbahPassword() {
     if (!curUsername) return Swal.fire('Error', 'Sesi tidak ditemukan.', 'error');
@@ -131,33 +141,47 @@ function logout() {
 }
 
 async function prosesLupaPassword() {
-    var nip = document.getElementById('req-nip').value.trim();
+    var nip   = document.getElementById('req-nip').value.trim();
     var email = document.getElementById('req-email').value.trim();
-    if(!nip || !email) { return Swal.fire('Error', 'NIP dan Email wajib diisi!', 'error'); }
+    if (!nip || !email) { return Swal.fire('Error', 'NIP dan Email wajib diisi!', 'error'); }
 
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(!emailRegex.test(email)) { return Swal.fire('Error', 'Format email tidak valid!', 'error'); }
+    if (!emailRegex.test(email)) { return Swal.fire('Error', 'Format email tidak valid!', 'error'); }
 
     var appUrl = window.location.href.split('?')[0];
 
-    document.getElementById('loader').style.display = 'flex';
+    // Loading state di tombol
+    var btn = document.querySelector('#modal-lupa-pass button[onclick="prosesLupaPassword()"]');
+    var btnOrig = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...'; }
+
     try {
         var res = await callAPI('mintaResetPassword', { nip: nip, email: email, appUrl: appUrl });
-        document.getElementById('loader').style.display = 'none';
+        if (btn) { btn.disabled = false; btn.innerHTML = btnOrig; }
+
         if (res && res.status === 'success') {
             tutupModal('modal-lupa-pass');
             document.getElementById('req-nip').value = '';
             document.getElementById('req-email').value = '';
-            Swal.fire('Sukses', res.message || 'Link reset password berhasil dikirim ke email Anda.', 'success');
+            Swal.fire({
+                title: '📧 Email Terkirim!',
+                html: (res.message || 'Link reset password berhasil dikirim ke email Anda.') +
+                      '<br><br><small class="text-gray-400">Cek folder <b>Spam/Junk</b> jika tidak muncul di Inbox.</small>',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
         } else {
-            Swal.fire('Gagal', (res && res.message) || 'NIP/NIK atau Email tidak terdaftar/tidak cocok.', 'error');
+            var errMsg = (res && res.message) || 'NIP/NIK atau Email tidak terdaftar atau tidak cocok.';
+            Swal.fire('Gagal Mengirim', errMsg, 'error');
         }
     } catch (err) {
-        document.getElementById('loader').style.display = 'none';
-        Swal.fire('Gagal', 'Terjadi kesalahan saat mengirim permintaan reset password.', 'error');
-        console.error(err);
+        if (btn) { btn.disabled = false; btn.innerHTML = btnOrig; }
+        console.error('[LupaPassword] Error:', err);
+        Swal.fire('Gagal', 'Terjadi kesalahan koneksi. Coba lagi beberapa saat.', 'error');
     }
 }
+
+
 
 async function prosesResetPassToken() {
     var passBaru = document.getElementById('rp-baru').value;
