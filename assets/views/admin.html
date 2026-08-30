@@ -432,38 +432,31 @@
 <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="tbl-eksternal"></tbody>
 </table>
             </div>
-            
-        </div>
 
-    <!-- Footer Admin (di dalam main flex-col, tampil di bawah) -->
-    <footer class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-3 flex-shrink-0">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-            <div class="flex items-center gap-2">
-                <img id="footer-admin-logo" src="" class="h-5 w-5 object-contain rounded hidden" />
-                <span class="font-bold text-gray-500 dark:text-gray-400" id="footer-admin-nama">Panel Admin</span>
+        <!-- Footer Admin: simpel seperti copyright bar web publik -->
+        <footer class="bg-gray-900 border-t-4 border-secondary mt-auto">
+            <div class="px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
+                <p class="text-xs text-gray-400 text-center md:text-left">
+                    © <span id="footer-admin-tahun"></span>
+                    Website Resmi <span class="text-white font-semibold" id="footer-admin-copy-nama">Sekolah</span>.
+                    Hak Cipta Dilindungi.
+                </p>
+                <p class="text-xs text-gray-600 text-center md:text-right">
+                    <i class="fas fa-shield-alt mr-1 text-secondary"></i> Panel Kontrol Admin &nbsp;·&nbsp;
+                    <span class="text-gray-500">Sistem Manajemen Website Sekolah</span>
+                </p>
             </div>
-            <div class="text-center">
-                <span>© <span id="footer-admin-tahun"></span> Website Resmi Sekolah &nbsp;·&nbsp; Panel Kontrol Admin</span>
-                <script>document.getElementById('footer-admin-tahun').textContent = new Date().getFullYear();</script>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="navigate('home')" class="flex items-center gap-1 hover:text-blue-500 transition font-bold">
-                    <i class="fas fa-globe text-xs"></i> Web Publik
-                </button>
-                <span class="text-gray-300">|</span>
-                <button onclick="logout()" class="flex items-center gap-1 hover:text-red-500 transition font-bold">
-                    <i class="fas fa-sign-out-alt text-xs"></i> Logout
-                </button>
-            </div>
+            <script>document.getElementById('footer-admin-tahun').textContent = new Date().getFullYear();</script>
+        </footer>
+
         </div>
-    </footer>
     </main>
 </section>
 
 <!-- MODAL OVERLAYS -->
 
 <!-- Modal Posting -->
-<div id="modal-berita" class="fixed inset-0 bg-slate-900/70 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+<div id="modal-berita" class="fixed inset-0 bg-slate-900/70 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="modal-berita-content">
         <div class="px-8 py-5 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
             <h3 class="text-xl font-black text-gray-800 dark:text-white" id="title-modal-berita">Form Posting</h3>
@@ -498,7 +491,7 @@
 </div>
 
 <!-- Modal Pegawai (Guru) -->
-<div id="modal-guru" class="fixed inset-0 bg-slate-900/70 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+<div id="modal-guru" class="fixed inset-0 bg-slate-900/70 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
         <div class="px-8 py-5 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Data Guru</h3>
@@ -585,7 +578,7 @@
 </div>
 
 <!-- Modal Pegawai (TU) -->
-<div id="modal-tu" class="fixed inset-0 bg-slate-900/70 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+<div id="modal-tu" class="fixed inset-0 bg-slate-900/70 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
         <div class="px-8 py-5 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Tenaga TU</h3>
@@ -672,7 +665,7 @@
 </div>
 
 <!-- Modal Siswa -->
-<div id="modal-siswa" class="fixed inset-0 bg-slate-900/70 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+<div id="modal-siswa" class="fixed inset-0 bg-slate-900/70 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col overflow-hidden">
         <div class="px-8 py-5 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Siswa / Alumni</h3>
@@ -707,7 +700,7 @@
 </div>
 
 <!-- Modal Galeri / Media -->
-<div id="modal-galeri" class="fixed inset-0 bg-slate-900/70 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+<div id="modal-galeri" class="fixed inset-0 bg-slate-900/70 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col overflow-hidden">
         <div class="px-8 py-5 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Galeri Media</h3>
@@ -734,7 +727,7 @@
 </div>
 
 <!-- Modal Slider Banner -->
-<div id="modal-slider" class="fixed inset-0 bg-slate-900/70 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+<div id="modal-slider" class="fixed inset-0 bg-slate-900/70 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col overflow-hidden">
         <div class="px-8 py-5 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Banner Slider</h3>
@@ -760,7 +753,7 @@
 </div>
 
 <!-- Modal Eksternal -->
-<div id="modal-eksternal" class="fixed inset-0 bg-slate-900/70 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
+<div id="modal-eksternal" class="fixed inset-0 bg-slate-900/70 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-3xl flex flex-col overflow-hidden">
         <div class="px-8 py-5 border-b dark:border-gray-700 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-xl font-black text-gray-800 dark:text-white">Form Tautan Aplikasi</h3>
