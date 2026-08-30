@@ -183,6 +183,20 @@ async function loadViewForPage(pageId) {
     }
 }
 
+// Buka halaman profil statis di GitHub Pages (Sejarah, Visi Misi, Sarpras, Sambutan)
+function bukaHalamanProfil(slug) {
+    var base = 'https://sman15tebo-web.github.io/utama'; // fallback default
+    if (window.dbGlobal && window.dbGlobal.settings) {
+        for (var i = 0; i < window.dbGlobal.settings.length; i++) {
+            if (window.dbGlobal.settings[i].key === 'domain_resmi' && window.dbGlobal.settings[i].value) {
+                base = window.dbGlobal.settings[i].value.replace(/\/$/, '');
+                break;
+            }
+        }
+    }
+    window.open(base + '/profil/' + slug + '.html', '_blank');
+}
+
 async function navigate(pageId) {
     var mm1 = document.getElementById('mobile-menu'); if (mm1 && !mm1.classList.contains('hidden')) { toggleMobileMenu('mobile-menu', 'btn-mobile-icon'); }
     var mm2 = document.getElementById('mobile-admin'); if (mm2 && !mm2.classList.contains('hidden')) { toggleMobileMenu('mobile-admin', 'btn-admin-icon'); }
