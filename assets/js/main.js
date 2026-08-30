@@ -6,6 +6,10 @@ window.onload = async function () {
         bukaModal('modal-reset-pass');
     }
 
+    // Handler ?page= dari link di HTML berita GitHub
+    // Contoh: index.html?page=halaman-berita atau index.html?page=halaman-pengumuman
+    var pageParam = urlParams.get('page');
+
     if (curRole === 'admin') {
         document.getElementById('nav-publik').classList.add('hidden');
         document.getElementById('nav-admin').classList.add('hidden'); // Sembunyikan global nav-admin agar tidak tumpang tindih
@@ -19,7 +23,13 @@ window.onload = async function () {
         document.getElementById('bottom-nav-pegawai').classList.remove('hidden');
         await navigate('pegawai-dash');
     } else {
-        await navigate('home');
+        // Jika ada ?page= parameter (dari link di halaman berita GitHub), navigate ke section itu
+        var targetPage = pageParam || 'home';
+        await navigate(targetPage);
+        if (pageParam) {
+            // Bersihkan URL setelah navigate agar tidak loop
+            try { window.history.replaceState(null, null, window.location.pathname); } catch(e) {}
+        }
     }
     muatDataServer();
     var Quill = window.Quill;
