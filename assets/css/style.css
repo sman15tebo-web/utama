@@ -1,5 +1,13 @@
-        html {
+        html, body {
             scroll-behavior: smooth;
+            /* Cegah ruang kosong mubazir di bawah konten */
+            min-height: 100%;
+            height: auto;
+        }
+
+        /* Wrapper utama app tidak boleh ada min-height tetap */
+        #app-wrapper {
+            min-height: 0;
         }
 
         .page-section {
