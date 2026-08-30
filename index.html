@@ -31,7 +31,7 @@
   </script>
   <script defer="" src="https://unpkg.com/aos@2.3.1/dist/aos.js">
   </script>
-  <link href="./assets/css/style.css?v=202608301123" rel="stylesheet" />
+  <link href="./assets/css/style.css?v=202608301425" rel="stylesheet" />
 </head>
 
 <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
@@ -125,9 +125,14 @@
           <div
             class="dropdown-menu absolute left-0 top-full w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl hidden py-2">
             <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              onclick="navigate('profil-sejarah')">
+              onclick="bukaHalamanProfil('sejarah')">
               Sejarah
               Singkat
+            </button>
+            <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              onclick="bukaHalamanProfil('sambutan')">
+              Sambutan
+              Pimpinan
             </button>
             <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               onclick="navigate('profil-identitas')">
@@ -135,7 +140,7 @@
               Sekolah
             </button>
             <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              onclick="navigate('profil-visimisi')">
+              onclick="bukaHalamanProfil('visi-misi')">
               Visi
               Misi
             </button>
@@ -150,7 +155,7 @@
               Organisasi
             </button>
             <button class="block w-full text-left px-5 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              onclick="navigate('profil-sarpras')">
+              onclick="bukaHalamanProfil('sarpras')">
               Sarana
               Prasarana
             </button>
@@ -246,9 +251,13 @@
       <div class="hidden flex-col bg-gray-50 dark:bg-gray-800 pl-6 border-b border-gray-200 dark:border-gray-700"
         id="mob-profil">
         <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
-          onclick="navigate('profil-sejarah')">
+          onclick="bukaHalamanProfil('sejarah')">
           Sejarah
           Singkat
+        </button>
+        <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
+          onclick="bukaHalamanProfil('sambutan')">
+          Sambutan Pimpinan
         </button>
         <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
           onclick="navigate('profil-identitas')">
@@ -256,7 +265,7 @@
           Sekolah
         </button>
         <button class="p-3 text-left border-b border-gray-200 dark:border-gray-700 font-medium"
-          onclick="navigate('profil-visimisi')">
+          onclick="bukaHalamanProfil('visi-misi')">
           Visi
           Misi
         </button>
@@ -270,7 +279,7 @@
           Struktur
           Organisasi
         </button>
-        <button class="p-3 text-left font-medium" onclick="navigate('profil-sarpras')">
+        <button class="p-3 text-left font-medium" onclick="bukaHalamanProfil('sarpras')">
           Sarana Prasarana
         </button>
       </div>
@@ -847,14 +856,17 @@
   </div>
 
   <!-- Modular Scripts -->
-  <script src="./assets/js/core/globals.js?v=202608301123"></script>
-  <script src="./assets/js/ui/utils.js?v=202608301123"></script>
-  <script src="./assets/js/core/api.js?v=202608301123"></script>
-  <script src="./assets/js/core/auth.js?v=202608301123"></script>
-  <script src="./assets/js/ui/components.js?v=202608301123"></script>
-  <script src="./assets/js/ui/render.js?v=202608301123"></script>
-  <script src="./assets/js/ui/forms.js?v=202608301123"></script>
-  <script src="./assets/js/main.js?v=202608301123"></script>
+  <script src="./assets/js/core/globals.js?v=202608301425"></script>
+  <script src="./assets/js/ui/utils.js?v=202608301425"></script>
+  <script src="./assets/js/core/api.js?v=202608301425"></script>
+  <script src="./assets/js/core/auth.js?v=202608301425"></script>
+  <script src="./assets/js/ui/components.js?v=202608301425"></script>
+  <script src="./assets/js/ui/render.js?v=202608301425"></script>
+  <script src="./assets/js/ui/forms.js?v=202608301425"></script>
+  <script src="./assets/js/main.js?v=202608301425"></script>
 </body>
 
 </html>
+
+
+
