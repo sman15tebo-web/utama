@@ -17,6 +17,7 @@ var curKey = '';
 var curPrevId = '';
 var editDataId = { berita: null, guru: null, tu: null, siswa: null, galeri: null, slider: null, eksternal: null };
 var pdfBase64 = null;
+var curResetToken = ''; // Simpan reset token saat URL dibuka (global agar tidak hilang)
 var quillEditor;
 
 // Helper: SweetAlert selalu tampil DI ATAS semua modal (z-index > 9999)
