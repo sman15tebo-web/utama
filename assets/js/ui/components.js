@@ -133,6 +133,9 @@ async function terapkanCrop() {
     } else if (curKey === 'struktur') {
         // Bagan struktur: bebas ukuran, JPEG 85% — akan diupload ke Cloudinary
         base64 = cropCanvas.toDataURL('image/jpeg', 0.85);
+    } else if (curKey === 'eksternal') {
+        // Icon/logo aplikasi: simpan sebagai PNG agar transparansi tetap terjaga
+        base64 = cropCanvas.toDataURL('image/png');
     } else {
         // Default (galeri, slider, dll): JPEG 70%
         base64 = cropCanvas.toDataURL('image/jpeg', 0.7);
