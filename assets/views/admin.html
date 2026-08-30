@@ -87,7 +87,7 @@
             </div>
 
             <!-- VIEW: POSTING -->
-            <div id="admin-posting" class="admin-view-content hidden animate-fade-in">
+            <div id="admin-posting" class="admin-view-content hidden animate-fade-in pt-2">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 border-b dark:border-gray-700 pb-4 gap-4">
                     <div class="w-full">
                         <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-4">Kelola Posting</h2>
@@ -128,7 +128,7 @@
             </div>
 
             <!-- VIEW: PEGAWAI -->
-            <div id="admin-pegawai" class="admin-view-content hidden animate-fade-in">
+            <div id="admin-pegawai" class="admin-view-content hidden animate-fade-in pt-2">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 border-b dark:border-gray-700 pb-4 gap-4">
                     <div class="w-full">
                         <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-4">Data Pegawai</h2>
@@ -175,7 +175,7 @@
             </div>
 
             <!-- VIEW: SISWA -->
-            <div id="admin-siswa" class="admin-view-content hidden animate-fade-in">
+            <div id="admin-siswa" class="admin-view-content hidden animate-fade-in pt-2">
                 <div class="flex justify-between items-end mb-6 border-b dark:border-gray-700 pb-4">
                     <div class="w-full">
                         <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-4">Statistik Siswa</h2>
@@ -228,7 +228,7 @@
 
 
             <!-- VIEW: GALERI -->
-            <div id="admin-galeri" class="admin-view-content hidden animate-fade-in">
+            <div id="admin-galeri" class="admin-view-content hidden animate-fade-in pt-2">
                 <div class="flex justify-between items-end mb-6 border-b dark:border-gray-700 pb-4">
                     <div class="w-full">
                         <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-4">Media & Galeri</h2>
@@ -283,7 +283,7 @@
 
             <!-- VIEW: PENGATURAN -->
             <!-- VIEW: PROFIL SEKOLAH -->
-            <div id="admin-profil" class="admin-view-content hidden animate-fade-in">
+            <div id="admin-profil" class="admin-view-content hidden animate-fade-in pt-2">
                 <div class="mb-6 border-b dark:border-gray-700 pb-4">
                     <h2 class="text-2xl font-black text-gray-800 dark:text-white">Profil Sekolah</h2>
                     <p class="text-sm text-gray-500 mt-1">Kelola identitas, sejarah, visi misi, sarana prasarana, dan struktur organisasi sekolah.</p>
@@ -342,7 +342,7 @@
             </div>
 
             <!-- VIEW: PENGATURAN -->
-            <div id="admin-pengaturan" class="admin-view-content hidden animate-fade-in">
+            <div id="admin-pengaturan" class="admin-view-content hidden animate-fade-in pt-2">
                 <div class="flex mb-6 border-b dark:border-gray-700 pb-4 gap-4 overflow-x-auto">
                     <button onclick="switchTab('pengaturan', 'tab-sistem')" id="btn-tab-sistem" class="tab-btn-pengaturan shrink-0 px-5 py-2.5 font-bold text-sm rounded-xl bg-yellow-500 text-gray-900 shadow-sm transition-all"><i class="fas fa-cog mr-1"></i> Sistem</button>
                     <button onclick="switchTab('pengaturan', 'tab-widget')" id="btn-tab-widget" class="tab-btn-pengaturan shrink-0 px-5 py-2.5 font-bold text-sm rounded-xl text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"><i class="fas fa-puzzle-piece mr-1"></i> Widget &amp; Kontak</button>
@@ -415,7 +415,7 @@
             </div>
 
             <!-- VIEW: LINK EKSTERNAL -->
-            <div id="admin-link" class="admin-view-content hidden animate-fade-in">
+            <div id="admin-link" class="admin-view-content hidden animate-fade-in pt-2">
                 <div class="flex justify-between items-end mb-6 border-b dark:border-gray-700 pb-4">
                     <h2 class="text-2xl font-black text-gray-800 dark:text-white">Tautan Aplikasi Eksternal</h2>
                     <button onclick="batalEdit('eksternal'); bukaModal('modal-eksternal')" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"><i class="fas fa-plus mr-2"></i> Tambah Link</button>
@@ -433,23 +433,22 @@
 </table>
             </div>
 
-        <!-- Footer Admin: simpel seperti copyright bar web publik -->
-        <footer class="bg-gray-900 border-t-4 border-secondary mt-auto">
-            <div class="px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
+        </div>
+        <!-- Footer Admin: selalu di bawah viewport, di luar scrollable area -->
+        <footer class="bg-gray-900 border-t-4 border-secondary flex-shrink-0">
+            <div class="px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-1">
                 <p class="text-xs text-gray-400 text-center md:text-left">
-                    © <span id="footer-admin-tahun"></span>
+                    &copy; <span id="footer-admin-tahun"></span>
                     Website Resmi <span class="text-white font-semibold" id="footer-admin-copy-nama">Sekolah</span>.
                     Hak Cipta Dilindungi.
                 </p>
                 <p class="text-xs text-gray-600 text-center md:text-right">
-                    <i class="fas fa-shield-alt mr-1 text-secondary"></i> Panel Kontrol Admin &nbsp;·&nbsp;
-                    <span class="text-gray-500">Sistem Manajemen Website Sekolah</span>
+                    <i class="fas fa-code mr-1 text-secondary"></i>
+                    <span class="text-gray-500">Developed by <span class="text-gray-400 font-semibold">PT Farypin Indovasi Teknologi</span></span>
                 </p>
             </div>
             <script>document.getElementById('footer-admin-tahun').textContent = new Date().getFullYear();</script>
         </footer>
-
-        </div>
     </main>
 </section>
 
