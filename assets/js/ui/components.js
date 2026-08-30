@@ -72,44 +72,44 @@ function batalCrop() {
     for (var i = 0; i < inps.length; i++) inps[i].value = '';
 }
 
-function compressEmployeePhotoCanvas(cropCanvas, minLongSide, targetSizeKB) {
+// Compress foto pegawai: paksa MAX 250px sisi terpanjang, target ≤ 30KB
+// → base64 ≈ 40,000 karakter → aman untuk batas 50,000 karakter Google Sheets
+function compressEmployeePhotoCanvas(cropCanvas, maxSide, targetSizeKB) {
     return new Promise(function (resolve) {
-        var sourceCanvas = cropCanvas || document.createElement('canvas');
-        var maxSide = Math.max(sourceCanvas.width || 0, sourceCanvas.height || 0);
+        maxSide    = maxSide    || 250;
+        targetSizeKB = targetSizeKB || 30;
+
+        var sw = cropCanvas.width  || 250;
+        var sh = cropCanvas.height || 250;
+
+        // Hitung dimensi output: SKALA TURUN ke maxSide (tidak pernah diperbesar)
         var scale = 1;
-        if (maxSide > 1200) scale = 1200 / maxSide;
-        var targetW = Math.max(250, Math.round((sourceCanvas.width || 250) * scale));
-        var targetH = Math.max(250, Math.round((sourceCanvas.height || 250) * scale));
-
-        var outCanvas = document.createElement('canvas');
-        outCanvas.width = targetW;
-        outCanvas.height = targetH;
-        var ctx = outCanvas.getContext('2d');
-        ctx.clearRect(0, 0, targetW, targetH);
-        ctx.drawImage(sourceCanvas, 0, 0, targetW, targetH);
-
-        var quality = 0.82;
-        var result = outCanvas.toDataURL('image/jpeg', quality);
-        var targetBytes = (targetSizeKB || 50) * 1024;
-
-        for (var i = 0; i < 8; i++) {
-            var sizeBytes = Math.round((result.length * 3) / 4);
-            if (sizeBytes <= targetBytes) break;
-            quality = Math.max(0.35, quality - 0.08);
-            result = outCanvas.toDataURL('image/jpeg', quality);
+        if (sw > sh) {
+            if (sw > maxSide) scale = maxSide / sw;
+        } else {
+            if (sh > maxSide) scale = maxSide / sh;
         }
+        var outW = Math.round(sw * scale);
+        var outH = Math.round(sh * scale);
 
-        if (minLongSide && (targetW < minLongSide || targetH < minLongSide)) {
-            var finalCanvas = document.createElement('canvas');
-            finalCanvas.width = Math.max(minLongSide, targetW);
-            finalCanvas.height = Math.max(minLongSide, targetH);
-            var fctx = finalCanvas.getContext('2d');
-            fctx.fillStyle = '#ffffff';
-            fctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-            var x = Math.round((finalCanvas.width - targetW) / 2);
-            var y = Math.round((finalCanvas.height - targetH) / 2);
-            fctx.drawImage(outCanvas, x, y, targetW, targetH);
-            result = finalCanvas.toDataURL('image/jpeg', 0.72);
+        // Gambar ke canvas berukuran kecil
+        var outCanvas = document.createElement('canvas');
+        outCanvas.width  = outW;
+        outCanvas.height = outH;
+        var ctx = outCanvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, outW, outH);
+        ctx.drawImage(cropCanvas, 0, 0, outW, outH);
+
+        // Kompresi iteratif sampai base64 ≤ targetSizeKB × 1.4 (overhead base64)
+        var quality    = 0.80;
+        var targetChars = Math.floor(targetSizeKB * 1024 * 1.37); // bytes → base64 chars
+        var result     = outCanvas.toDataURL('image/jpeg', quality);
+
+        for (var i = 0; i < 10; i++) {
+            if (result.length <= targetChars) break;
+            quality = Math.max(0.30, quality - 0.08);
+            result  = outCanvas.toDataURL('image/jpeg', quality);
         }
 
         resolve(result);
@@ -118,20 +118,32 @@ function compressEmployeePhotoCanvas(cropCanvas, minLongSide, targetSizeKB) {
 
 async function terapkanCrop() {
     if (!cropperInst) return;
-    var isT = (curKey === 'logo' || curKey === 'struktur' || curKey === 'eksternal');
     var cropCanvas = cropperInst.getCroppedCanvas({ imageSmoothingEnabled: true, imageSmoothingQuality: 'high' });
 
     var base64 = '';
     if (curKey === 'guru' || curKey === 'tu' || curKey === 'pegawai_foto') {
-        base64 = await compressEmployeePhotoCanvas(cropCanvas, 250, 50);
+        // Foto pegawai: MAX 250px, target 30KB → base64 ≈ 40K chars (aman batas 50K Sheets)
+        base64 = await compressEmployeePhotoCanvas(cropCanvas, 250, 30);
+    } else if (curKey === 'kepsek') {
+        // Foto kepsek: MAX 300px, target 30KB
+        base64 = await compressEmployeePhotoCanvas(cropCanvas, 300, 30);
+    } else if (curKey === 'logo') {
+        // Logo sekolah: MAX 300px, JPEG 80%, target 30KB
+        base64 = await compressEmployeePhotoCanvas(cropCanvas, 300, 30);
+    } else if (curKey === 'struktur') {
+        // Bagan struktur: MAX 800px, JPEG 75%, target 35KB
+        base64 = await compressEmployeePhotoCanvas(cropCanvas, 800, 35);
     } else {
-        base64 = cropCanvas.toDataURL(isT ? 'image/png' : 'image/jpeg', isT ? undefined : 0.7);
+        // Default (galeri, slider, dll): JPEG 70% tanpa resize paksa
+        base64 = cropCanvas.toDataURL('image/jpeg', 0.7);
     }
 
     cropData[curKey] = base64;
     var p = document.getElementById(curPrevId); p.src = base64; p.classList.remove('hidden');
     batalCrop();
 }
+
+
 
 function kembaliKeDash() { if (curRole === 'admin') navigate('admin-dashboard'); else navigate('pegawai-dash'); }
 
