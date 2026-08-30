@@ -11,7 +11,7 @@ function startTimer() {
 function stopTimer() { clearInterval(loadingInterval); }
 
 async function callAPI(action, payload = {}) {
-    if (!GAS_URL || GAS_URL === "ISI_URL_EXEC_ANDA_DISINI") { Swal.fire('Error', 'Anda belum memasukkan GAS_URL di script.js.', 'error'); throw new Error('URL Missing'); }
+    if (!GAS_URL || GAS_URL === "ISI_URL_EXEC_ANDA_DISINI") { showAlert('Error', 'Anda belum memasukkan GAS_URL di script.js.', 'error'); throw new Error('URL Missing'); }
     payload.action = action;
     try { const res = await fetch(GAS_URL, { redirect: "follow", method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }); const text = await res.text(); try { return JSON.parse(text); } catch (e) { return text; } } catch (e) { throw e; }
 }
@@ -69,7 +69,7 @@ async function muatDataServer() {
                     dbGlobal = parsedData;
                     if (dbGlobal.status === 'error') { 
                         stopTimer(); document.getElementById('loader').style.display = 'none'; 
-                        Swal.fire('Error Database', dbGlobal.message, 'error');
+                        showAlert('Error Database', dbGlobal.message, 'error');
                         return;
                     }
                     
@@ -84,10 +84,60 @@ async function muatDataServer() {
                     document.getElementById('loader').style.display = 'none'; stopTimer();
                 } catch(errRender) {
                     stopTimer(); document.getElementById('loader').style.display = 'none';
-                    Swal.fire('Error Tampilan', errRender.toString(), 'error');
+                    showAlert('Error Tampilan', errRender.toString(), 'error');
                     console.error("Critical error in UI pipeline:", errRender);
                 }
             }, 100);
-        } catch (e) { clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none'; Swal.fire('Koneksi Gagal', 'Gagal memuat data dari Google: ' + e.toString(), 'error'); }
+        } catch (e) { clearTimeout(tFailsafe); stopTimer(); document.getElementById('loader').style.display = 'none'; showAlert('Koneksi Gagal', 'Gagal memuat data dari Google: ' + e.toString(), 'error'); }
     }
 }
+
+// ============================================================
+// AUTO-REFRESH: Cek perubahan data tiap 2 menit di background
+// Jika server mencatat perubahan (serverTime berubah), data
+// langsung diperbarui ke semua pengunjung tanpa reload manual.
+// ============================================================
+var _autoRefreshInterval = null;
+
+function mulaiAutoRefresh() {
+    if (_autoRefreshInterval) return; // Jangan double-start
+    _autoRefreshInterval = setInterval(function () {
+        // Hanya cek jika tab sedang aktif (hemat kuota saat di-minimize)
+        if (document.visibilityState !== 'visible') return;
+        var localTime = localStorage.getItem('edupro_time');
+        callAPI('getServerTime').then(function(res) {
+            if (res && res.time && res.time !== localTime) {
+                // Ada perubahan data dari admin/pegawai — refresh tanpa gangguan UI
+                localStorage.removeItem('edupro_cache_v4');
+                // Ambil data baru di background, render ulang setelah dapat
+                (async function() {
+                    try {
+                        var resStr;
+                        if (curToken && (curRole === 'admin' || curRole === 'guru' || curRole === 'tu')) {
+                            var resAdmin = await callAPI('getAdminData', { token: curToken });
+                            resStr = (resAdmin && resAdmin.status === 'success') ? JSON.stringify(resAdmin) : null;
+                        }
+                        if (!resStr) {
+                            var getUrl = GAS_URL + "?action=getAllData&nocache=" + new Date().getTime();
+                            var resp = await fetch(getUrl); resStr = await resp.text();
+                        }
+                        var parsed = typeof resStr === 'string' ? JSON.parse(resStr) : resStr;
+                        if (parsed && parsed.status !== 'error') {
+                            dbGlobal = parsed;
+                            localStorage.setItem('edupro_cache_v4', JSON.stringify(dbGlobal));
+                            localStorage.setItem('edupro_time', res.time);
+                            renderSemuaData(dbGlobal);
+                            console.log('[AutoRefresh] Data diperbarui:', new Date().toLocaleTimeString('id-ID'));
+                        }
+                    } catch(e) { console.warn('[AutoRefresh] Gagal ambil data:', e.message); }
+                })();
+            }
+        }).catch(function() { /* silent fail */ });
+    }, 2 * 60 * 1000); // 2 menit
+}
+
+// Mulai auto-refresh setelah halaman pertama kali selesai dimuat
+// (dipanggil dari main.js setelah muatDataServer selesai)
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(mulaiAutoRefresh, 15000); // Delay 15 detik agar load awal selesai dulu
+});
