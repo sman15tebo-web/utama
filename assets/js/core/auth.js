@@ -170,7 +170,7 @@ async function prosesLupaPassword() {
             showAlert({
                 title: '📧 Email Terkirim!',
                 html: (res.message || 'Link reset password berhasil dikirim ke email Anda.') +
-                      '<br><br><small class="text-gray-400">Cek folder <b>Spam/Junk</b> jika tidak muncul di Inbox.</small>',
+                      '<br><br><small style="color:#9ca3af">Cek folder <b>Spam/Junk</b> jika tidak muncul di Inbox.</small>',
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
@@ -211,7 +211,7 @@ async function prosesResetPassToken() {
             curResetToken = ''; // Hapus token dari memory setelah dipakai
             document.getElementById('rp-baru').value = '';
             document.getElementById('rp-konfirm').value = '';
-            showAlert('✅ Berhasil!', (res.message || 'Password berhasil diubah.') + '<br>Silakan login kembali.', 'success').then(() => {
+            showAlert({ title: '✅ Berhasil!', html: (res.message || 'Password berhasil diubah.') + '<br>Silakan login kembali.', icon: 'success' }).then(() => {
                 navigate('login');
             });
         } else {
