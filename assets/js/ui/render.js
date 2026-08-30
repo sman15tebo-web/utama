@@ -2,8 +2,13 @@ function renderSemuaData(data) {
     try {
         var setArr = data.settings || []; var widArr = data.widget || []; var nSekolah = getVal('nama_sekolah', setArr) || 'SMA EduPro';
         setTextAman('nav-nama-sekolah', nSekolah); setTextAman('foot-nama', nSekolah); setTextAman('id-nama', nSekolah); setTextAman('id-npsn', getVal('npsn', setArr) || '-'); setTextAman('id-nss', getVal('nss', setArr) || '-'); setTextAman('id-akreditasi', getVal('akreditasi', setArr) || '-'); setTextAman('id-tahun', getVal('tahun_berdiri', setArr) || '-'); setTextAman('id-status', getVal('status_jenjang', setArr) || '-'); setTextAman('id-alamat', getVal('alamat', setArr)); setTextAman('id-desc', getVal('deskripsi', setArr)); setTextAman('foot-alamat', getVal('alamat', setArr)); setTextAman('home-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('home-kepsek-sambutan', '"' + (getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.') + '"'); setTextAman('detail-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('detail-kepsek-sambutan', getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.'); setTextAman('teks-sejarah', getVal('sejarah', setArr) || 'Sejarah belum ditulis.'); setTextAman('teks-visimisi', getVal('visi_misi', setArr) || 'Visi Misi belum ditulis.'); setTextAman('teks-sarpras', getVal('sarpras', setArr) || 'Sarana Prasarana belum diisi.'); setTextAman('teks-privasi', getVal('privasi', setArr) || 'Kebijakan privasi belum diatur.'); setTextAman('teks-syarat', getVal('syarat', setArr) || 'Syarat dan ketentuan belum diatur.'); setTextAman('foot-copy-nama', nSekolah); setTextAman('teks-berjalan', getVal('teks_berjalan', setArr) || 'Selamat datang di website resmi kami.');
-        // Footer admin
+        // Footer admin - isi nama, alamat, dan tautan
         setTextAman('footer-admin-nama', nSekolah);
+        setTextAman('footer-admin-copy-nama', nSekolah);
+        setTextAman('footer-admin-alamat', getVal('alamat', setArr) || 'Jl. Pendidikan No 1.');
+        setLinkAman('adm-link-ppdb', getVal('link_ppdb', widArr));
+        setLinkAman('adm-link-dinas', getVal('link_dinas', widArr));
+        setLinkAman('adm-link-dapodik', getVal('link_dapodik', widArr));
         var faLogo = document.getElementById('footer-admin-logo'); if (faLogo) { var logoUrl = getVal('logo_url', setArr); if (logoUrl) { faLogo.src = logoUrl; faLogo.classList.remove('hidden'); } }
 
 
@@ -213,6 +218,11 @@ function renderSemuaData(data) {
         
         if ((curRole === 'guru' || curRole === 'tu') && typeof siapkanFormPegawai === 'function' && document.getElementById('pegawai-nip')) {
             siapkanFormPegawai();
+        }
+        // Render tabel berita & galeri milik pegawai sendiri
+        if ((curRole === 'guru' || curRole === 'tu') && typeof renderTabelBeritaPegawai === 'function') {
+            renderTabelBeritaPegawai();
+            renderTabelGaleriPegawai();
         }
 
     } catch (e) { console.error(e); setTimeout(function() { var l = document.getElementById('loader'); if(l) l.style.display = 'none'; var lt = document.getElementById('loader-text'); if(lt) lt.innerText = 'Terjadi Kesalahan di Render. Cek Console.'; if(typeof stopTimer !== 'undefined') stopTimer(); }, 500); }
