@@ -400,6 +400,7 @@ function simpanDataMentahPaginasi(data) {
 
 // Buat HTML baris tabel berita/pengumuman (dengan kolom tanggal)
 function _buildRowBerita(ib) {
+    if (!ib || !ib.id) return '';
     var isP = ((ib.kategori||'').toLowerCase().indexOf('pengumuman') !== -1);
     var nowWaktu = new Date().getTime();
     var tglPost = new Date(ib.tanggal).getTime();
@@ -410,8 +411,9 @@ function _buildRowBerita(ib) {
         var d = new Date(tglPost);
         tglFormat = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     }
+    var pemosting = amankanTeks(ib.penulis || 'Admin');
     var btnAksi = '<td class="p-3 text-center whitespace-nowrap"><button onclick="bukaBerita(\'' + ib.id + '\')" class="text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2" title="Lihat"><i class="fas fa-eye"></i></button><button onclick="siapkanEdit(\'berita\',\'' + ib.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\'' + ib.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
-    return '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 ' + (isP ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-primary') + ' rounded text-xs font-bold">' + (isP ? 'Pengumuman' : 'Berita') + '</span></td><td class="p-3"><img src="' + getValidImg(ib.gambar_url,'') + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul||'-') + badgeJadwal + '</td><td class="p-3 text-xs text-gray-500 whitespace-nowrap">' + tglFormat + '</td>' + btnAksi;
+    return '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 ' + (isP ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-primary') + ' rounded text-xs font-bold">' + (isP ? 'Pengumuman' : 'Berita') + '</span></td><td class="p-3"><img src="' + getValidImg(ib.gambar_url,'') + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul||'-') + badgeJadwal + '</td><td class="p-3 text-xs text-gray-500 whitespace-nowrap">' + tglFormat + '</td><td class="p-3 text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap"><i class="fas fa-user-edit mr-1 text-indigo-400"></i>' + pemosting + '</td>' + btnAksi;
 }
 
 // Buat HTML baris tabel pegawai
@@ -419,11 +421,11 @@ function _buildRowPegawai(ig, mdl) {
     var nmAm = amankanTeks(ig.nama || '-');
     var stKlp = '<span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">' + amankanTeks(ig.jabatan || '-') + '</span>';
     var toggleAkses = '';
-    if (mdl === 'guru') {
+    if (mdl === 'guru' || mdl === 'tu') {
         var isAktif = (ig.akses_berita === 'Y' || ig.akses_berita === 'Aktif');
         var btnColor = isAktif ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600';
         var btnText = isAktif ? '<i class="fas fa-check"></i> ON' : '<i class="fas fa-times"></i> OFF';
-        toggleAkses = '<button onclick="ubahAksesBerita(\'' + ig.id + '\', \'' + (isAktif ? 'N' : 'Y') + '\')" class="text-white text-xs ' + btnColor + ' px-3 py-1 rounded-full mr-2 shadow-sm transition">' + btnText + '</button>';
+        toggleAkses = '<button onclick="ubahAksesBerita(\'' + ig.id + '\', \'' + (isAktif ? 'N' : 'Y') + '\', \'' + mdl + '\')" class="text-white text-xs ' + btnColor + ' px-3 py-1 rounded-full mr-2 shadow-sm transition" title="Akses Posting Berita">' + btnText + '</button>';
     }
     return '<tr class="border-b dark:border-gray-700"><td class="p-3 font-mono text-blue-600 dark:text-blue-400 font-bold">' + amankanTeks(ig.nip||'-') + '</td><td class="p-3 font-bold">' + nmAm + '</td><td class="p-3 text-center text-xs">' + stKlp + '</td><td class="p-3 text-center whitespace-nowrap">' + toggleAkses + '<button onclick="siapkanEdit(\'' + mdl + '\',\'' + ig.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i> Edit</button><button onclick="resetPasswordPegawai(\'' + mdl + '\',\'' + ig.id + '\')" class="text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full mr-2" title="Reset Password"><i class="fas fa-key"></i></button><button onclick="hapusData(\'' + mdl + '\',\'' + ig.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i> Hapus</button></td></tr>';
 }
@@ -465,7 +467,7 @@ function _renderTabelBeritaPag() {
     });
     var pg = _pagState.berita;
     var slice = filtered.slice((pg.page-1)*pg.perPage, pg.page*pg.perPage);
-    var html = slice.length ? slice.map(_buildRowBerita).join('') : '<tr><td colspan="5" class="text-center py-8 text-gray-400">Tidak ada data ditemukan.</td></tr>';
+    var html = slice.length ? slice.map(_buildRowBerita).join('') : '<tr><td colspan="6" class="text-center py-8 text-gray-400">Tidak ada data ditemukan.</td></tr>';
     setHTMLAman('tbl-berita', html);
     _renderPagBtns('btn-pag-berita', 'info-pag-berita', filtered.length, pg.page, pg.perPage, 'function(p){_pagState.berita.page=p;_renderTabelBeritaPag();}');
 }
@@ -485,7 +487,7 @@ function _renderTabelPengumumanPag() {
     });
     var pg = _pagState.pengumuman;
     var slice = filtered.slice((pg.page-1)*pg.perPage, pg.page*pg.perPage);
-    var html = slice.length ? slice.map(_buildRowBerita).join('') : '<tr><td colspan="5" class="text-center py-8 text-gray-400">Tidak ada data ditemukan.</td></tr>';
+    var html = slice.length ? slice.map(_buildRowBerita).join('') : '<tr><td colspan="6" class="text-center py-8 text-gray-400">Tidak ada data ditemukan.</td></tr>';
     setHTMLAman('tbl-pengumuman', html);
     _renderPagBtns('btn-pag-pengumuman', 'info-pag-pengumuman', filtered.length, pg.page, pg.perPage, 'function(p){_pagState.pengumuman.page=p;_renderTabelPengumumanPag();}');
 }
