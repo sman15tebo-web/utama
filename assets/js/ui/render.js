@@ -4,6 +4,7 @@ function renderSemuaData(data) {
         setTextAman('nav-nama-sekolah', nSekolah); setTextAman('foot-nama', nSekolah); setTextAman('id-nama', nSekolah); setTextAman('id-npsn', getVal('npsn', setArr) || '-'); setTextAman('id-nss', getVal('nss', setArr) || '-'); setTextAman('id-akreditasi', getVal('akreditasi', setArr) || '-'); setTextAman('id-tahun', getVal('tahun_berdiri', setArr) || '-'); setTextAman('id-status', getVal('status_jenjang', setArr) || '-'); setTextAman('id-alamat', getVal('alamat', setArr)); setTextAman('id-desc', getVal('deskripsi', setArr)); setTextAman('foot-alamat', getVal('alamat', setArr)); setTextAman('home-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('home-kepsek-sambutan', '"' + (getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.') + '"'); setTextAman('detail-kepsek-nama', getVal('kepsek_nama', setArr) || 'Bpk/Ibu Kepala Sekolah'); setTextAman('detail-kepsek-sambutan', getVal('kepsek_sambutan', setArr) || 'Pendidikan adalah kunci kesuksesan.'); setTextAman('teks-sejarah', getVal('sejarah', setArr) || 'Sejarah belum ditulis.'); setTextAman('teks-visimisi', getVal('visi_misi', setArr) || 'Visi Misi belum ditulis.'); setTextAman('teks-sarpras', getVal('sarpras', setArr) || 'Sarana Prasarana belum diisi.'); setTextAman('teks-privasi', getVal('privasi', setArr) || 'Kebijakan privasi belum diatur.'); setTextAman('teks-syarat', getVal('syarat', setArr) || 'Syarat dan ketentuan belum diatur.'); setTextAman('foot-copy-nama', nSekolah); setTextAman('teks-berjalan', getVal('teks_berjalan', setArr) || 'Selamat datang di website resmi kami.');
         // Footer admin simpel - hanya isi nama sekolah di copyright bar
         setTextAman('footer-admin-copy-nama', nSekolah);
+        setTextAman('footer-peg-nama', nSekolah);
 
 
         setTextAman('kk-nama', nSekolah); setTextAman('kk-alamat', getVal('alamat', setArr) || '-'); setTextAman('kk-wa', getVal('wa', widArr) || '-'); setTextAman('kk-email', getVal('email', widArr) || '-'); setTextAman('kk-web', getVal('domain_resmi', setArr) || window.location.hostname); setTextAman('kk-fb', getVal('fb', widArr) || 'Facebook'); setTextAman('kk-ig', getVal('ig', widArr) || 'Instagram');
@@ -104,6 +105,10 @@ function renderSemuaData(data) {
             var eT = document.getElementById(tblId); if (eT) eT.innerHTML = tbl;
         }
         renderPerson(data.guru, 'guru-container', 'tbl-guru-admin', 'guru'); renderPerson(data.tu, 'tu-container', 'tbl-admin-tu', 'tu');
+        // Simpan data mentah untuk pagination admin lalu render halaman 1
+        simpanDataMentahPaginasi(data);
+        _renderTabelPegawaiPag('guru');
+        _renderTabelPegawaiPag('tu');
 
         var htmlBerita = '', htmlPengumuman = '', tTblBerita = '', tTblPengumuman = '';
         var gabungRev = (data.berita || []).slice().reverse();
@@ -142,8 +147,9 @@ function renderSemuaData(data) {
                 if (isP) htmlPengumuman += cardHTML; else htmlBerita += cardHTML;
             }
         }
-        setHTMLAman('tbl-berita', tTblBerita);
-        setHTMLAman('tbl-pengumuman', tTblPengumuman);
+        // tbl-berita & tbl-pengumuman sekarang dirender via sistem pagination
+        _renderTabelBeritaPag();
+        _renderTabelPengumumanPag();
         setHTMLAman('berita-utama-container', htmlBerita || '<p class="col-span-3 text-center">Belum ada berita.</p>');
         setHTMLAman('pengumuman-utama-container', htmlPengumuman || '<p class="col-span-3 text-center">Belum ada pengumuman.</p>');
 
@@ -369,4 +375,140 @@ function _fallbackCopy(text) {
     try { document.execCommand('copy'); showAlert({ title: '✅ Berhasil!', text: 'Link disalin.', icon: 'success', timer: 2000, showConfirmButton: false }); }
     catch (e) { showAlert('Salin Manual', text, 'info'); }
     document.body.removeChild(ta);
+}
+
+// ============================================================
+// PAGINATION + SEARCH ADMIN: Berita, Pengumuman, Guru, TU
+// ============================================================
+var _pagState = {
+    berita:      { page: 1, perPage: 10 },
+    pengumuman:  { page: 1, perPage: 10 },
+    guru:        { page: 1, perPage: 10 },
+    tu:          { page: 1, perPage: 10 }
+};
+var _rawBerita = [], _rawPengumuman = [], _rawGuru = [], _rawTU = [];
+
+// Simpan data mentah setelah render selesai (dipanggil dari renderSemuaData)
+function simpanDataMentahPaginasi(data) {
+    var nowWaktu = new Date().getTime();
+    var semua = (data.berita || []).slice().reverse();
+    _rawBerita = semua.filter(function(b){ return ((b.kategori||'').toLowerCase().indexOf('pengumuman') === -1); });
+    _rawPengumuman = semua.filter(function(b){ return ((b.kategori||'').toLowerCase().indexOf('pengumuman') !== -1); });
+    _rawGuru = data.guru || [];
+    _rawTU   = data.tu   || [];
+}
+
+// Buat HTML baris tabel berita/pengumuman (dengan kolom tanggal)
+function _buildRowBerita(ib) {
+    var isP = ((ib.kategori||'').toLowerCase().indexOf('pengumuman') !== -1);
+    var nowWaktu = new Date().getTime();
+    var tglPost = new Date(ib.tanggal).getTime();
+    var belumWaktunya = (!isNaN(tglPost) && tglPost > nowWaktu);
+    var badgeJadwal = belumWaktunya ? '<br><span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded font-bold">Terjadwal</span>' : '';
+    var tglFormat = ib.tanggal;
+    if (!isNaN(tglPost)) {
+        var d = new Date(tglPost);
+        tglFormat = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    var btnAksi = '<td class="p-3 text-center whitespace-nowrap"><button onclick="bukaBerita(\'' + ib.id + '\')" class="text-green-500 bg-green-100 px-3 py-1 rounded-full mr-2" title="Lihat"><i class="fas fa-eye"></i></button><button onclick="siapkanEdit(\'berita\',\'' + ib.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'berita\',\'' + ib.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
+    return '<tr class="border-b dark:border-gray-700"><td class="p-3"><span class="px-2 py-1 ' + (isP ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-primary') + ' rounded text-xs font-bold">' + (isP ? 'Pengumuman' : 'Berita') + '</span></td><td class="p-3"><img src="' + getValidImg(ib.gambar_url,'') + '" loading="lazy" class="h-10 w-16 aspect-[5/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(ib.judul||'-') + badgeJadwal + '</td><td class="p-3 text-xs text-gray-500 whitespace-nowrap">' + tglFormat + '</td>' + btnAksi;
+}
+
+// Buat HTML baris tabel pegawai
+function _buildRowPegawai(ig, mdl) {
+    var nmAm = amankanTeks(ig.nama || '-');
+    var stKlp = '<span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">' + amankanTeks(ig.jabatan || '-') + '</span>';
+    var toggleAkses = '';
+    if (mdl === 'guru') {
+        var isAktif = (ig.akses_berita === 'Y' || ig.akses_berita === 'Aktif');
+        var btnColor = isAktif ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600';
+        var btnText = isAktif ? '<i class="fas fa-check"></i> ON' : '<i class="fas fa-times"></i> OFF';
+        toggleAkses = '<button onclick="ubahAksesBerita(\'' + ig.id + '\', \'' + (isAktif ? 'N' : 'Y') + '\')" class="text-white text-xs ' + btnColor + ' px-3 py-1 rounded-full mr-2 shadow-sm transition">' + btnText + '</button>';
+    }
+    return '<tr class="border-b dark:border-gray-700"><td class="p-3 font-mono text-blue-600 dark:text-blue-400 font-bold">' + amankanTeks(ig.nip||'-') + '</td><td class="p-3 font-bold">' + nmAm + '</td><td class="p-3 text-center text-xs">' + stKlp + '</td><td class="p-3 text-center whitespace-nowrap">' + toggleAkses + '<button onclick="siapkanEdit(\'' + mdl + '\',\'' + ig.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i> Edit</button><button onclick="resetPasswordPegawai(\'' + mdl + '\',\'' + ig.id + '\')" class="text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full mr-2" title="Reset Password"><i class="fas fa-key"></i></button><button onclick="hapusData(\'' + mdl + '\',\'' + ig.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i> Hapus</button></td></tr>';
+}
+
+// Render pagination buttons
+function _renderPagBtns(btnContId, infoId, totalItems, currentPage, perPage, onPageClick) {
+    var totalPages = Math.ceil(totalItems / perPage) || 1;
+    var info = document.getElementById(infoId);
+    var btnCont = document.getElementById(btnContId);
+    if (!info || !btnCont) return;
+    var dari = Math.min((currentPage-1)*perPage+1, totalItems);
+    var sampai = Math.min(currentPage*perPage, totalItems);
+    info.textContent = 'Menampilkan ' + dari + '-' + sampai + ' dari ' + totalItems + ' data';
+    var html = '';
+    // Prev
+    html += '<button onclick="(' + onPageClick + ')(' + (currentPage-1) + ')" ' + (currentPage<=1?'disabled':'') + ' class="px-3 py-1 rounded-lg border text-xs font-bold ' + (currentPage<=1?'opacity-40 cursor-not-allowed':'hover:bg-blue-50 dark:hover:bg-gray-700') + '"><i class="fas fa-chevron-left"></i></button>';
+    // Pages
+    var start = Math.max(1, currentPage-2); var end = Math.min(totalPages, start+4);
+    for (var p = start; p <= end; p++) {
+        html += '<button onclick="(' + onPageClick + ')(' + p + ')" class="px-3 py-1 rounded-lg border text-xs font-bold ' + (p===currentPage?'bg-blue-600 text-white border-blue-600':'hover:bg-blue-50 dark:hover:bg-gray-700') + '">' + p + '</button>';
+    }
+    // Next
+    html += '<button onclick="(' + onPageClick + ')(' + (currentPage+1) + ')" ' + (currentPage>=totalPages?'disabled':'') + ' class="px-3 py-1 rounded-lg border text-xs font-bold ' + (currentPage>=totalPages?'opacity-40 cursor-not-allowed':'hover:bg-blue-50 dark:hover:bg-gray-700') + '"><i class="fas fa-chevron-right"></i></button>';
+    btnCont.innerHTML = html;
+}
+
+// --- Filter & Render Berita Admin ---
+function filterTabelBerita() {
+    _pagState.berita.page = 1;
+    _renderTabelBeritaPag();
+}
+function _renderTabelBeritaPag() {
+    var q = (document.getElementById('cari-berita')||{value:''}).value.toLowerCase();
+    var tgl = (document.getElementById('filter-tgl-berita')||{value:''}).value; // YYYY-MM-DD
+    var filtered = _rawBerita.filter(function(b){
+        var cocokQ = !q || (b.judul||'').toLowerCase().indexOf(q) !== -1;
+        var cocokTgl = !tgl || (b.tanggal||'').indexOf(tgl) !== -1;
+        return cocokQ && cocokTgl;
+    });
+    var pg = _pagState.berita;
+    var slice = filtered.slice((pg.page-1)*pg.perPage, pg.page*pg.perPage);
+    var html = slice.length ? slice.map(_buildRowBerita).join('') : '<tr><td colspan="5" class="text-center py-8 text-gray-400">Tidak ada data ditemukan.</td></tr>';
+    setHTMLAman('tbl-berita', html);
+    _renderPagBtns('btn-pag-berita', 'info-pag-berita', filtered.length, pg.page, pg.perPage, 'function(p){_pagState.berita.page=p;_renderTabelBeritaPag();}');
+}
+
+// --- Filter & Render Pengumuman Admin ---
+function filterTabelPengumuman() {
+    _pagState.pengumuman.page = 1;
+    _renderTabelPengumumanPag();
+}
+function _renderTabelPengumumanPag() {
+    var q = (document.getElementById('cari-pengumuman')||{value:''}).value.toLowerCase();
+    var tgl = (document.getElementById('filter-tgl-pengumuman')||{value:''}).value;
+    var filtered = _rawPengumuman.filter(function(b){
+        var cocokQ = !q || (b.judul||'').toLowerCase().indexOf(q) !== -1;
+        var cocokTgl = !tgl || (b.tanggal||'').indexOf(tgl) !== -1;
+        return cocokQ && cocokTgl;
+    });
+    var pg = _pagState.pengumuman;
+    var slice = filtered.slice((pg.page-1)*pg.perPage, pg.page*pg.perPage);
+    var html = slice.length ? slice.map(_buildRowBerita).join('') : '<tr><td colspan="5" class="text-center py-8 text-gray-400">Tidak ada data ditemukan.</td></tr>';
+    setHTMLAman('tbl-pengumuman', html);
+    _renderPagBtns('btn-pag-pengumuman', 'info-pag-pengumuman', filtered.length, pg.page, pg.perPage, 'function(p){_pagState.pengumuman.page=p;_renderTabelPengumumanPag();}');
+}
+
+// --- Filter & Render Pegawai Admin (Guru / TU) ---
+function filterTabelPegawai(tipe) {
+    _pagState[tipe].page = 1;
+    _renderTabelPegawaiPag(tipe);
+}
+function _renderTabelPegawaiPag(tipe) {
+    var raw = tipe === 'guru' ? _rawGuru : _rawTU;
+    var mdl = tipe === 'guru' ? 'guru' : 'tu';
+    var tblId = tipe === 'guru' ? 'tbl-guru-admin' : 'tbl-admin-tu';
+    var infId = 'info-pag-' + tipe;
+    var btnId = 'btn-pag-' + tipe;
+    var q = (document.getElementById('cari-' + tipe)||{value:''}).value.toLowerCase();
+    var filtered = raw.filter(function(ig){
+        return !q || (ig.nip||'').toLowerCase().indexOf(q) !== -1 || (ig.nama||'').toLowerCase().indexOf(q) !== -1;
+    });
+    var pg = _pagState[tipe];
+    var slice = filtered.slice((pg.page-1)*pg.perPage, pg.page*pg.perPage);
+    var html = slice.length ? slice.map(function(ig){ return _buildRowPegawai(ig, mdl); }).join('') : '<tr><td colspan="4" class="text-center py-8 text-gray-400">Tidak ada data ditemukan.</td></tr>';
+    setHTMLAman(tblId, html);
+    var cbStr = 'function(p){_pagState.' + tipe + '.page=p;_renderTabelPegawaiPag(\'' + tipe + '\');}';
+    _renderPagBtns(btnId, infId, filtered.length, pg.page, pg.perPage, cbStr);
 }
