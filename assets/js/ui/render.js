@@ -38,7 +38,7 @@ function renderSemuaData(data) {
         var sContainer = document.getElementById('slider-container'); var tSlid = '', tTblSl = '';
         if ((data.slider || []).length > 0) {
             for (var s = 0; s < data.slider.length; s++) {
-                var isld = data.slider[s]; if (!isld.id) continue; var iUrl = getValidImg(isld.gambar_url, 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600');
+                var isld = data.slider[s]; if (!isld || !isld.id) continue; var iUrl = getValidImg(isld.gambar_url, 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600');
                 tSlid += '<div class="slide-item ' + (s === 0 ? 'active' : '') + ' bg-cover bg-center" style="background-image: url(\'' + iUrl + '\');"><div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center px-4"><h1 class="text-2xl md:text-6xl font-extrabold text-white mb-2 md:mb-4 drop-shadow-2xl">' + amankanTeks(isld.judul || '') + '</h1><p class="text-sm md:text-2xl text-gray-200 mb-4 md:mb-8 max-w-3xl drop-shadow-md">' + amankanTeks(isld.subjudul || '') + '</p></div></div>';
                 tTblSl += '<tr class="border-b dark:border-gray-700"><td class="p-3"><img src="' + iUrl + '" loading="lazy" class="h-10 w-16 aspect-[7/3] object-cover rounded shadow"></td><td class="p-3 font-bold">' + amankanTeks(isld.judul || '-') + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'slider\',\'' + isld.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'slider\',\'' + isld.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
             }
@@ -49,7 +49,7 @@ function renderSemuaData(data) {
 
         var htmlExt = '', tblExt = ''; var eData = data.eksternal || [];
         for (var e = 0; e < eData.length; e++) {
-            var ex = eData[e]; if (!ex.id) continue;
+            var ex = eData[e]; if (!ex || !ex.id) continue;
             var eIco = ex.icon_url ? ex.icon_url : 'https://via.placeholder.com/150';
             htmlExt += '<a href="' + amankanTeks(ex.url) + '" target="_blank" title="' + amankanTeks(ex.nama) + '" class="block hover:-translate-y-2 hover:scale-110 transition duration-300 p-2"><img src="' + eIco + '" class="w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-lg mx-auto"></a>';
             tblExt += '<tr class="border-b dark:border-gray-700"><td class="p-3"><img src="' + eIco + '" class="h-10 w-10 object-contain rounded bg-white shadow"></td><td class="p-3 font-bold">' + amankanTeks(ex.nama || '-') + '</td><td class="p-3 text-blue-500 underline truncate max-w-xs">' + amankanTeks(ex.url || '-') + '</td><td class="p-3 text-center whitespace-nowrap"><button onclick="siapkanEdit(\'eksternal\',\'' + ex.id + '\')" class="text-blue-500 bg-blue-100 px-3 py-1 rounded-full mr-2"><i class="fas fa-edit"></i></button><button onclick="hapusData(\'eksternal\',\'' + ex.id + '\')" class="text-red-500 bg-red-100 px-3 py-1 rounded-full"><i class="fas fa-trash"></i></button></td></tr>';
@@ -184,7 +184,7 @@ function renderSemuaData(data) {
 
         var tGaleriFoto = '', tGaleriVideo = '', tTblGaleri = '', tTblVideo = ''; var gRev = (data.galeri || []).slice().reverse();
         for (var k = 0; k < gRev.length; k++) {
-            var igl = gRev[k]; if (!igl.id) continue; var kateg = amankanTeks(igl.kategori) || 'Foto'; var jdlAman = amankanTeks(igl.judul); var descAman = amankanTeks(igl.deskripsi); var vidUrl = amankanTeks(igl.video_url); var iUrlGal = getValidImg(igl.gambar_url, '');
+            var igl = gRev[k]; if (!igl || !igl.id) continue; var kateg = amankanTeks(igl.kategori) || 'Foto'; var jdlAman = amankanTeks(igl.judul); var descAman = amankanTeks(igl.deskripsi); var vidUrl = amankanTeks(igl.video_url); var iUrlGal = getValidImg(igl.gambar_url, '');
 
             var uploaderInfo = '<p class="text-xs text-yellow-400 mt-2 font-bold"><i class="fas fa-user mr-1"></i> ' + amankanTeks(igl.uploader || 'Admin') + '  ' + amankanTeks(igl.tanggal || '-') + '</p>';
 
