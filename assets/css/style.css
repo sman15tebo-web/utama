@@ -17,10 +17,13 @@
             overflow: visible !important;
         }
         
-        /* Admin & Pegawai layout menggunakan flex, bukan block */
+        /* Admin & Pegawai layout menggunakan flex dan harus full height */
         #admin-layout.page-section.active,
         #pegawai-layout.page-section.active {
             display: flex !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            overflow: hidden !important;
         }
 
         @keyframes fadeIn {
