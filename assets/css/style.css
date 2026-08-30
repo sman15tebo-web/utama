@@ -4,11 +4,17 @@
 
         .page-section {
             display: none !important;
+            min-height: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
             animation: fadeIn 0.3s ease-out;
         }
 
         .page-section.active {
             display: block !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
         }
         
         /* Admin & Pegawai layout menggunakan flex, bukan block */
