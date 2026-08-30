@@ -246,16 +246,23 @@ async function simpanPengaturanLengkap() {
         var setObj = { 'nama_sekolah': getInp('set-nama'), 'alamat': getInp('set-alamat'), 'deskripsi': getInp('set-deskripsi'), 'npsn': getInp('set-npsn'), 'nss': getInp('set-nss'), 'status_jenjang': getInp('set-status'), 'akreditasi': getInp('set-akreditasi'), 'tahun_berdiri': getInp('set-tahun'), 'sejarah': getInp('set-sejarah'), 'visi_misi': getInp('set-visimisi'), 'sarpras': getInp('set-sarpras'), 'privasi': getInp('set-privasi'), 'syarat': getInp('set-syarat'), 'domain_resmi': getInp('set-domain'), 'kepsek_nama': getInp('set-kepsek-nama'), 'kepsek_sambutan': getInp('set-kepsek-sambutan'), 'teks_berjalan': getInp('set-teks-berjalan'), 'maps_url': getInp('set-maps') };
         document.getElementById('loader-text').innerText = 'Menyimpan Profil Web...'; document.getElementById('loader').style.display = 'flex'; startTimer();
 
-        if (cropData.logo) { document.getElementById('loader-text').innerText = 'Menyimpan Logo...'; setObj.logo_url = cropData.logo; }
-        if (cropData.struktur) { document.getElementById('loader-text').innerText = 'Menyimpan Struktur...'; setObj.struktur_url = cropData.struktur; }
+        // Logo & Kepsek: base64 langsung di spreadsheet (ukuran kecil, aman)
+        if (cropData.logo)   { document.getElementById('loader-text').innerText = 'Menyimpan Logo...';        setObj.logo_url   = cropData.logo; }
         if (cropData.kepsek) { document.getElementById('loader-text').innerText = 'Menyimpan Foto Kepsek...'; setObj.kepsek_foto = cropData.kepsek; }
 
-        // Kirim null untuk base64Logo/Str/Kepsek agar GAS tidak upload ke Drive
-        // Logo, struktur, kepsek foto disimpan langsung sebagai base64 di spreadsheet
+        // Struktur organisasi: upload ke Cloudinary (bebas ukuran, resolusi tinggi)
+        if (cropData.struktur) {
+            document.getElementById('loader-text').innerText = 'Mengunggah Bagan Struktur ke Cloudinary...';
+            var strUrl = await uploadKeCloudinary(cropData.struktur);
+            setObj.struktur_url = strUrl;
+        }
+
+        // Semua base64 sudah dimasukkan ke setObj, kirim null untuk parameter lama
         callAPI('simpanPengaturan', { token: curToken, setObj: setObj, base64Logo: null, namaFileLogo: null, base64Str: null, namaFileStr: null, base64Kepsek: null, namaFileKepsek: null }).then(selesaiSimpan).catch(gagalSimpan);
 
     } catch (e) { Swal.fire('Error System', e.message, 'error'); document.getElementById('loader').style.display = 'none'; stopTimer(); }
 }
+
 
 function simpanPengaturanWidget() {
     var getInp = function (id) { var el = document.getElementById(id); return el ? el.value : ''; };
