@@ -11,13 +11,26 @@ var curNama = sessionStorage.getItem('edupro_nama') || '';
 var curToken = sessionStorage.getItem('edupro_token') || '';
 
 var dbGlobal = {}; var sliderInterval; var curShareId = ''; var curShareTitle = '';
-var cropData = { berita: null, guru: null, tu: null, galeri: null, slider: null, logo: null, struktur: null, kepsek: null, pegawai_foto: null, eksternal: null };
+var cropData = { berita: null, guru: null, tu: null, galeri: null, slider: null, logo: null, struktur: null, kepsek: null, pegawai_foto: null, eksternal: null, berita_guru: null };
 var cropperInst = null;
 var curKey = '';
 var curPrevId = '';
 var editDataId = { berita: null, guru: null, tu: null, siswa: null, galeri: null, slider: null, eksternal: null };
 var pdfBase64 = null;
 var quillEditor;
+
+// Helper: SweetAlert selalu tampil DI ATAS semua modal (z-index > 9999)
+function showAlert(titleOrObj, text, icon) {
+    var opts = (typeof titleOrObj === 'object') ? titleOrObj : { title: titleOrObj, text: text, icon: icon };
+    opts.customClass = opts.customClass || {};
+    opts.customClass.container = opts.customClass.container || '';
+    // Paksa z-index container SweetAlert di atas modal z-[9999]
+    opts.didOpen = opts.didOpen || function(popup) {
+        var cont = popup ? popup.closest('.swal2-container') : document.querySelector('.swal2-container');
+        if (cont) cont.style.zIndex = '99999';
+    };
+    return Swal.fire(opts);
+}
 
 const viewCache = {};
 const viewMap = {
