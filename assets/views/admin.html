@@ -435,6 +435,29 @@
             
         </div>
     </main>
+
+    <!-- Footer Admin -->
+    <footer class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4 flex-shrink-0">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+            <div class="flex items-center gap-2">
+                <img id="footer-admin-logo" src="" class="h-6 w-6 object-contain rounded hidden" />
+                <span class="font-bold text-gray-500 dark:text-gray-400" id="footer-admin-nama">Panel Admin</span>
+            </div>
+            <div class="text-center">
+                <span>© <span id="footer-admin-tahun"></span> Website Resmi Sekolah &nbsp;·&nbsp; Panel Kontrol Admin</span>
+                <script>document.getElementById('footer-admin-tahun').textContent = new Date().getFullYear();</script>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="navigate('home')" class="flex items-center gap-1 hover:text-blue-500 transition font-bold">
+                    <i class="fas fa-globe text-xs"></i> Web Publik
+                </button>
+                <span class="text-gray-300">|</span>
+                <button onclick="logout()" class="flex items-center gap-1 hover:text-red-500 transition font-bold">
+                    <i class="fas fa-sign-out-alt text-xs"></i> Logout
+                </button>
+            </div>
+        </div>
+    </footer>
 </section>
 
 <!-- MODAL OVERLAYS -->
