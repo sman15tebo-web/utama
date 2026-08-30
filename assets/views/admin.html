@@ -153,34 +153,59 @@
 
                 <!-- Tab Berita -->
                 <div id="tab-berita" class="tab-content-posting block">
+                    <!-- Search & Filter Berita -->
+                    <div class="flex flex-col md:flex-row gap-3 mb-4">
+                        <input type="text" id="cari-berita" oninput="filterTabelBerita()" placeholder="🔍 Cari judul berita..." class="flex-1 px-4 py-2 border rounded-xl dark:bg-gray-700 text-sm outline-none focus:border-blue-400" />
+                        <input type="date" id="filter-tgl-berita" onchange="filterTabelBerita()" class="px-4 py-2 border rounded-xl dark:bg-gray-700 text-sm outline-none focus:border-blue-400" title="Filter Tanggal Publish" />
+                        <button onclick="document.getElementById('cari-berita').value='';document.getElementById('filter-tgl-berita').value='';filterTabelBerita()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition"><i class="fas fa-times mr-1"></i> Reset</button>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border dark:border-gray-700">
                     <table class="w-full text-left min-w-max">
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
                                 <th class="p-4">Kategori</th>
                                 <th class="p-4">Thumbnail</th>
                                 <th class="p-4">Judul</th>
+                                <th class="p-4">Tgl Publish</th>
                                 <th class="p-4 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="tbl-berita"></tbody>
                     </table>
+                    </div>
+                    <!-- Pagination Berita -->
+                    <div class="flex items-center justify-between mt-4 flex-wrap gap-2" id="pag-berita">
+                        <span class="text-xs text-gray-500" id="info-pag-berita"></span>
+                        <div class="flex gap-1" id="btn-pag-berita"></div>
+                    </div>
                 </div>
 
                 <!-- Tab Pengumuman -->
                 <div id="tab-pengumuman" class="tab-content-posting hidden">
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-x-auto">
-                        <table class="w-full text-left text-sm min-w-max">
-                            <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300">
-                                <tr>
-                                    <th class="p-4 font-bold">Kategori</th>
-                                    <th class="p-4 font-bold">Thumbnail</th>
-                                    <th class="p-4 font-bold">Judul Pengumuman</th>
-                                    <th class="p-4 text-center font-bold">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="tbl-pengumuman"></tbody>
-                        </table>
+                    <!-- Search & Filter Pengumuman -->
+                    <div class="flex flex-col md:flex-row gap-3 mb-4">
+                        <input type="text" id="cari-pengumuman" oninput="filterTabelPengumuman()" placeholder="🔍 Cari judul pengumuman..." class="flex-1 px-4 py-2 border rounded-xl dark:bg-gray-700 text-sm outline-none focus:border-yellow-400" />
+                        <input type="date" id="filter-tgl-pengumuman" onchange="filterTabelPengumuman()" class="px-4 py-2 border rounded-xl dark:bg-gray-700 text-sm outline-none" title="Filter Tanggal Publish" />
+                        <button onclick="document.getElementById('cari-pengumuman').value='';document.getElementById('filter-tgl-pengumuman').value='';filterTabelPengumuman()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition"><i class="fas fa-times mr-1"></i> Reset</button>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border dark:border-gray-700">
+                    <table class="w-full text-left text-sm min-w-max">
+                        <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                            <tr>
+                                <th class="p-4 font-bold">Kategori</th>
+                                <th class="p-4 font-bold">Thumbnail</th>
+                                <th class="p-4 font-bold">Judul Pengumuman</th>
+                                <th class="p-4 font-bold">Tgl Publish</th>
+                                <th class="p-4 text-center font-bold">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="tbl-pengumuman"></tbody>
+                    </table>
+                    </div>
+                    <!-- Pagination Pengumuman -->
+                    <div class="flex items-center justify-between mt-4 flex-wrap gap-2" id="pag-pengumuman">
+                        <span class="text-xs text-gray-500" id="info-pag-pengumuman"></span>
+                        <div class="flex gap-1" id="btn-pag-pengumuman"></div>
                     </div>
                 </div>
             </div>
@@ -214,6 +239,12 @@
 
                 <!-- Tab Guru -->
                 <div id="tab-guru" class="tab-content-pegawai block">
+                    <!-- Search Guru -->
+                    <div class="flex gap-3 mb-4">
+                        <input type="text" id="cari-guru" oninput="filterTabelPegawai('guru')" placeholder="🔍 Cari NIP atau Nama Guru..." class="flex-1 px-4 py-2 border rounded-xl dark:bg-gray-700 text-sm outline-none focus:border-green-400" />
+                        <button onclick="document.getElementById('cari-guru').value='';filterTabelPegawai('guru')" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border dark:border-gray-700">
                     <table class="w-full text-left min-w-max">
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
@@ -225,9 +256,21 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="tbl-guru-admin"></tbody>
                     </table>
+                    </div>
+                    <!-- Pagination Guru -->
+                    <div class="flex items-center justify-between mt-4 flex-wrap gap-2">
+                        <span class="text-xs text-gray-500" id="info-pag-guru"></span>
+                        <div class="flex gap-1" id="btn-pag-guru"></div>
+                    </div>
                 </div>
                 <!-- Tab TU -->
                 <div id="tab-tu" class="tab-content-pegawai hidden">
+                    <!-- Search TU -->
+                    <div class="flex gap-3 mb-4">
+                        <input type="text" id="cari-tu" oninput="filterTabelPegawai('tu')" placeholder="🔍 Cari NIP atau Nama Tenaga TU..." class="flex-1 px-4 py-2 border rounded-xl dark:bg-gray-700 text-sm outline-none focus:border-teal-400" />
+                        <button onclick="document.getElementById('cari-tu').value='';filterTabelPegawai('tu')" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border dark:border-gray-700">
                     <table class="w-full text-left min-w-max">
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
@@ -239,6 +282,12 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="tbl-admin-tu"></tbody>
                     </table>
+                    </div>
+                    <!-- Pagination TU -->
+                    <div class="flex items-center justify-between mt-4 flex-wrap gap-2">
+                        <span class="text-xs text-gray-500" id="info-pag-tu"></span>
+                        <div class="flex gap-1" id="btn-pag-tu"></div>
+                    </div>
                 </div>
             </div>
 
