@@ -1,6 +1,6 @@
 function prosesLogin() {
     var u = document.getElementById('log-user').value; var p = document.getElementById('log-pass').value;
-    if (!u || !p) { Swal.fire('Peringatan', 'Username/NIP dan Password wajib diisi!', 'warning'); return; }
+    if (!u || !p) { showAlert('Peringatan', 'Username/NIP dan Password wajib diisi!', 'warning'); return; }
 
     document.getElementById('loader-text').innerText = 'Otentikasi...'; document.getElementById('loader').style.display = 'flex'; startTimer();
     callAPI('authLogin', { username: u, password: p }).then(function (res) {
@@ -21,7 +21,7 @@ function prosesLogin() {
                 document.getElementById('nav-admin').classList.remove('hidden');
                 document.getElementById('bottom-nav-publik').classList.add('hidden');
                 document.getElementById('bottom-nav-admin').classList.remove('hidden');
-                Swal.fire({ title: 'Selamat Datang Admin', icon: 'success', timer: 1500, showConfirmButton: false });
+                showAlert({ title: 'Selamat Datang Admin', icon: 'success', timer: 1500, showConfirmButton: false });
                 Promise.resolve(navigate('admin-dashboard')).then(function() {
                     if (dbGlobal && Object.keys(dbGlobal).length > 0) {
                         renderSemuaData(dbGlobal);
@@ -49,11 +49,11 @@ function prosesLogin() {
                             bukaModal('modal-forced-pass');
                         }, 500);
                     } else {
-                        Swal.fire({ title: 'Selamat Datang, ' + res.nama, icon: 'success', timer: 1500, showConfirmButton: false });
+                        showAlert({ title: 'Selamat Datang, ' + res.nama, icon: 'success', timer: 1500, showConfirmButton: false });
                     }
                 });
             }
-        } else { Swal.fire('Gagal Login', res.message, 'error'); }
+        } else { showAlert('Gagal Login', res.message, 'error'); }
     }).catch(gagalSimpan);
 }
 
@@ -62,9 +62,9 @@ function prosesGantiForcedPassword() {
     var newP  = document.getElementById('fp-baru').value;
     var confP = document.getElementById('fp-konfirm').value;
     var email = document.getElementById('fp-email').value;
-    if (!newP || !confP) return Swal.fire('Peringatan', 'Password baru dan konfirmasi wajib diisi!', 'warning');
-    if (newP !== confP)  return Swal.fire('Peringatan', 'Password baru tidak sama!', 'warning');
-    if (newP.length < 6) return Swal.fire('Peringatan', 'Password minimal 6 karakter!', 'warning');
+    if (!newP || !confP) return showAlert('Peringatan', 'Password baru dan konfirmasi wajib diisi!', 'warning');
+    if (newP !== confP)  return showAlert('Peringatan', 'Password baru tidak sama!', 'warning');
+    if (newP.length < 6) return showAlert('Peringatan', 'Password minimal 6 karakter!', 'warning');
 
     window.isSavingPassword = true;
 
@@ -83,28 +83,28 @@ function prosesGantiForcedPassword() {
             if (email) sessionStorage.setItem('edupro_email', email);
             // Hapus cache lama dan reload data agar email baru tampil di profil
             localStorage.removeItem('edupro_cache_v4');
-            Swal.fire({ title: '✅ Password Diperbarui!', text: 'Selamat datang, ' + curNama + '. Gunakan password baru Anda untuk login berikutnya.', icon: 'success', timer: 2500, showConfirmButton: false })
+            showAlert({ title: '✅ Password Diperbarui!', text: 'Selamat datang, ' + curNama + '. Gunakan password baru Anda untuk login berikutnya.', icon: 'success', timer: 2500, showConfirmButton: false })
                 .then(function() { muatDataServer(); });
         } else {
-            Swal.fire('Gagal', res.message || 'Gagal menyimpan password.', 'error');
+            showAlert('Gagal', res.message || 'Gagal menyimpan password.', 'error');
         }
     }).catch(function(err) {
         window.isSavingPassword = false;
         if (btn) { btn.disabled = false; btn.innerHTML = btnOrigHTML; }
-        Swal.fire('Error', err.message || err.toString(), 'error');
+        showAlert('Error', err.message || err.toString(), 'error');
     });
 }
 
 
 function prosesUbahPassword() {
-    if (!curUsername) return Swal.fire('Error', 'Sesi tidak ditemukan.', 'error');
+    if (!curUsername) return showAlert('Error', 'Sesi tidak ditemukan.', 'error');
     var oldP = document.getElementById('pass-lama').value;
     var newP = document.getElementById('pass-baru').value;
     var confP = document.getElementById('pass-konfirm').value;
 
-    if (!oldP || !newP || !confP) return Swal.fire('Peringatan', 'Semua kolom password wajib diisi!', 'warning');
-    if (newP !== confP) return Swal.fire('Peringatan', 'Password baru tidak sama!', 'warning');
-    if (newP.length < 6) return Swal.fire('Peringatan', 'Password baru minimal 6 karakter!', 'warning');
+    if (!oldP || !newP || !confP) return showAlert('Peringatan', 'Semua kolom password wajib diisi!', 'warning');
+    if (newP !== confP) return showAlert('Peringatan', 'Password baru tidak sama!', 'warning');
+    if (newP.length < 6) return showAlert('Peringatan', 'Password baru minimal 6 karakter!', 'warning');
 
     // PERBAIKAN: Gunakan curUserId || curUsername untuk targetId
     var targetAman = curUserId || curUsername;
@@ -112,17 +112,17 @@ function prosesUbahPassword() {
     callAPI('ubahPasswordUser', { token: curToken, role: curRole, targetId: targetAman, oldPass: oldP, newPass: newP }).then(function (res) {
         document.getElementById('loader').style.display = 'none'; stopTimer();
         if (res.status === 'success') {
-            Swal.fire('Berhasil!', 'Password diubah.', 'success');
+            showAlert('Berhasil!', 'Password diubah.', 'success');
             document.getElementById('pass-lama').value = '';
             document.getElementById('pass-baru').value = '';
             document.getElementById('pass-konfirm').value = '';
         }
-        else { Swal.fire('Gagal', res.message, 'error'); }
+        else { showAlert('Gagal', res.message, 'error'); }
     }).catch(gagalSimpan);
 }
 
 function logout() {
-    Swal.fire({ title: 'Akhiri sesi ini?', icon: 'question', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Ya' }).then((result) => {
+    showAlert({ title: 'Akhiri sesi ini?', icon: 'question', showCancelButton: true, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33', confirmButtonText: 'Ya' }).then((result) => {
         if (result.isConfirmed) {
             isAdmin = false; curRole = ''; curUsername = ''; curUserId = ''; curToken = ''; curNama = '';
             sessionStorage.removeItem('edupro_token');
@@ -147,10 +147,10 @@ function logout() {
 async function prosesLupaPassword() {
     var nip   = document.getElementById('req-nip').value.trim();
     var email = document.getElementById('req-email').value.trim();
-    if (!nip || !email) { return Swal.fire('Error', 'NIP dan Email wajib diisi!', 'error'); }
+    if (!nip || !email) { return showAlert('Error', 'NIP dan Email wajib diisi!', 'error'); }
 
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) { return Swal.fire('Error', 'Format email tidak valid!', 'error'); }
+    if (!emailRegex.test(email)) { return showAlert('Error', 'Format email tidak valid!', 'error'); }
 
     var appUrl = window.location.href.split('?')[0];
 
@@ -167,7 +167,7 @@ async function prosesLupaPassword() {
             tutupModal('modal-lupa-pass');
             document.getElementById('req-nip').value = '';
             document.getElementById('req-email').value = '';
-            Swal.fire({
+            showAlert({
                 title: '📧 Email Terkirim!',
                 html: (res.message || 'Link reset password berhasil dikirim ke email Anda.') +
                       '<br><br><small class="text-gray-400">Cek folder <b>Spam/Junk</b> jika tidak muncul di Inbox.</small>',
@@ -176,12 +176,12 @@ async function prosesLupaPassword() {
             });
         } else {
             var errMsg = (res && res.message) || 'NIP/NIK atau Email tidak terdaftar atau tidak cocok.';
-            Swal.fire('Gagal Mengirim', errMsg, 'error');
+            showAlert('Gagal Mengirim', errMsg, 'error');
         }
     } catch (err) {
         if (btn) { btn.disabled = false; btn.innerHTML = btnOrig; }
         console.error('[LupaPassword] Error:', err);
-        Swal.fire('Gagal', 'Terjadi kesalahan koneksi. Coba lagi beberapa saat.', 'error');
+        showAlert('Gagal', 'Terjadi kesalahan koneksi. Coba lagi beberapa saat.', 'error');
     }
 }
 
@@ -190,12 +190,12 @@ async function prosesLupaPassword() {
 async function prosesResetPassToken() {
     var passBaru = document.getElementById('rp-baru').value;
     var konfirm  = document.getElementById('rp-konfirm').value;
-    if (!passBaru || passBaru.length < 6) return Swal.fire('Error', 'Password baru minimal 6 karakter.', 'error');
-    if (passBaru !== konfirm) return Swal.fire('Error', 'Konfirmasi password tidak cocok!', 'error');
+    if (!passBaru || passBaru.length < 6) return showAlert('Error', 'Password baru minimal 6 karakter.', 'error');
+    if (passBaru !== konfirm) return showAlert('Error', 'Konfirmasi password tidak cocok!', 'error');
 
-    var urlParams = new URLSearchParams(window.location.search);
-    var token = urlParams.get('reset_token');
-    if (!token) return Swal.fire('Error', 'Token tidak ditemukan.', 'error');
+    // Baca token dari global variable (tersimpan saat URL dibuka, tidak hilang meski URL dibersihkan)
+    var token = curResetToken || '';
+    if (!token) return showAlert('Error', 'Token tidak ditemukan. Silakan buka kembali link dari email.', 'error');
 
     // Loading state di dalam tombol modal (tidak pakai loader global yang tertutup modal)
     var btn = document.querySelector('#modal-reset-pass button[onclick="prosesResetPassToken()"]');
@@ -208,18 +208,18 @@ async function prosesResetPassToken() {
 
         if (res && res.status === 'success') {
             tutupModal('modal-reset-pass');
+            curResetToken = ''; // Hapus token dari memory setelah dipakai
             document.getElementById('rp-baru').value = '';
             document.getElementById('rp-konfirm').value = '';
-            window.history.replaceState({}, document.title, window.location.pathname);
-            Swal.fire('✅ Berhasil!', (res.message || 'Password berhasil diubah.') + '<br>Silakan login kembali.', 'success').then(() => {
+            showAlert('✅ Berhasil!', (res.message || 'Password berhasil diubah.') + '<br>Silakan login kembali.', 'success').then(() => {
                 navigate('login');
             });
         } else {
-            Swal.fire('Gagal', (res && res.message) || 'Link pemulihan tidak valid atau sudah kadaluarsa.', 'error');
+            showAlert('Gagal', (res && res.message) || 'Link pemulihan tidak valid atau sudah kadaluarsa.', 'error');
         }
     } catch (err) {
         if (btn) { btn.disabled = false; btn.innerHTML = btnOrig; }
         console.error('[ResetPass] Error:', err);
-        Swal.fire('Gagal', 'Terjadi kesalahan saat memperbarui password.', 'error');
+        showAlert('Gagal', 'Terjadi kesalahan saat memperbarui password.', 'error');
     }
 }
