@@ -3,7 +3,10 @@ window.onload = async function () {
     var urlParams = new URLSearchParams(window.location.search);
     var resetToken = urlParams.get('reset_token');
     if (resetToken) {
+        curResetToken = resetToken; // Simpan ke global agar tidak hilang jika URL dibersihkan
         bukaModal('modal-reset-pass');
+        // Bersihkan token dari URL (agar tidak terekspos) tapi token sudah tersimpan di curResetToken
+        try { window.history.replaceState(null, null, window.location.pathname); } catch(e) {}
     }
 
     // Handler ?page= dari link di HTML berita GitHub
