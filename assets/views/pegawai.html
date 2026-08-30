@@ -72,55 +72,159 @@
 </div>
 </section>
 
-<section class="page-section py-20 px-4 max-w-5xl mx-auto" id="pegawai-galeri">
-<div class="flex justify-between items-center mb-8">
-<h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">
-                    Upload Galeri</h2>
-</div>
-<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
-<p class="text-sm text-gray-500 mb-6 border-b dark:border-gray-700 pb-4">Postingan galeri akan otomatis
-                    mencantumkan nama Anda di halaman publik.</p>
-<select class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-purple-600 dark:text-purple-400" id="pg-kategori" onchange="ubahTipeGaleriPegawai()">
-<option value="Foto">Kategori: Galeri Foto</option>
-<option value="Video">Kategori: Galeri Video (YouTube)</option>
-</select>
-<input class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold" id="pg-judul" placeholder="Judul Kegiatan" type="text"/>
-<textarea class="w-full px-5 py-3 border rounded-xl mb-5 dark:bg-gray-700 outline-none" id="pg-deskripsi" placeholder="Deskripsi singkat kegiatan..." rows="2"></textarea>
-<div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600" id="wrap-pg-foto">
-<label class="block text-sm font-bold mb-2">Pilih Foto Kegiatan (Crop 5:3)</label>
-<input accept="image/*" class="w-full text-sm" id="file-pg-foto" onchange="bukaCropper(event, 5/3, 'galeri', 'prev-pg-galeri')" type="file"/>
-<img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-pg-galeri"/>
-</div>
-<div class="mb-6" id="wrap-pg-video" style="display:none;">
-<label class="block text-sm font-bold mb-2 ml-1">Link Embed Video Youtube</label>
-<input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 outline-none text-red-500 font-mono" id="pg-video" placeholder="Contoh: https://www.youtube.com/embed/..." type="text"/>
-</div>
-<button class="w-full py-4 bg-purple-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-purple-700 transition" onclick="simpanGaleriPegawai()"><i class="fas fa-upload mr-2"></i> Upload ke Publik</button>
-</div>
+<section class="page-section py-10 px-4 max-w-6xl mx-auto" id="pegawai-galeri">
+  <!-- Header -->
+  <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
+    <h2 class="text-2xl md:text-3xl font-black border-l-8 border-purple-500 pl-4 text-gray-800 dark:text-white">Galeri Saya</h2>
+    <button onclick="toggleFormPegawai('form-galeri-pegawai', this)"
+      class="flex items-center gap-2 px-5 py-2.5 bg-purple-600 text-white rounded-xl font-bold shadow hover:bg-purple-700 transition text-sm"
+      id="btn-toggle-galeri">
+      <i class="fas fa-plus"></i> Upload Galeri Baru
+    </button>
+  </div>
+
+  <!-- Form (toggle) -->
+  <div class="hidden mb-8" id="form-galeri-pegawai">
+    <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+      <h3 class="font-black text-lg text-gray-800 dark:text-white mb-5 flex items-center gap-2">
+        <i class="fas fa-camera-retro text-purple-500"></i> Upload ke Galeri Publik
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Kategori</label>
+          <select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-purple-600 dark:text-purple-400" id="pg-kategori" onchange="ubahTipeGaleriPegawai()">
+            <option value="Foto">Galeri Foto</option>
+            <option value="Video">Galeri Video (YouTube)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Judul Kegiatan</label>
+          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="pg-judul" placeholder="Judul Kegiatan" type="text"/>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-gray-500 mb-1">Deskripsi Singkat</label>
+        <textarea class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none" id="pg-deskripsi" placeholder="Deskripsi singkat kegiatan..." rows="2"></textarea>
+      </div>
+      <div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900" id="wrap-pg-foto">
+        <label class="block text-sm font-bold mb-2">Pilih Foto Kegiatan (Crop 5:3)</label>
+        <input accept="image/*" class="w-full text-sm" id="file-pg-foto" onchange="bukaCropper(event, 5/3, 'galeri', 'prev-pg-galeri')" type="file"/>
+        <img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-pg-galeri"/>
+      </div>
+      <div class="mb-6" id="wrap-pg-video" style="display:none;">
+        <label class="block text-sm font-bold mb-2 ml-1">Link Embed Video YouTube</label>
+        <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 outline-none text-red-500 font-mono" id="pg-video" placeholder="https://www.youtube.com/embed/..." type="text"/>
+      </div>
+      <div class="flex gap-3">
+        <button class="flex-1 py-3 bg-purple-600 text-white rounded-xl font-black shadow-lg hover:bg-purple-700 transition" onclick="simpanGaleriPegawai()">
+          <i class="fas fa-upload mr-2"></i> Upload ke Publik
+        </button>
+        <button onclick="toggleFormPegawai('form-galeri-pegawai', document.getElementById('btn-toggle-galeri'))" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold hover:bg-gray-300 transition text-sm">
+          Batal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel Galeri Milik Sendiri -->
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div class="px-6 py-4 border-b dark:border-gray-700 flex justify-between items-center">
+      <h3 class="font-bold text-gray-700 dark:text-gray-200">Galeri Saya</h3>
+      <span class="text-xs text-gray-400">Hanya menampilkan upload milik Anda</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 dark:bg-gray-900 text-gray-500 text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3 text-left">Judul</th>
+            <th class="px-4 py-3 text-left">Kategori</th>
+            <th class="px-4 py-3 text-left">Tanggal</th>
+            <th class="px-4 py-3 text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="tbl-galeri-pegawai">
+          <tr><td colspan="4" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
-<section class="page-section py-20 px-4 max-w-5xl mx-auto" id="pegawai-berita">
-<div class="flex justify-between items-center mb-8">
-<h2 class="text-2xl md:text-3xl font-black border-l-8 border-secondary pl-4 text-gray-800 dark:text-white">
-                    Tulis Berita</h2>
-</div>
-<div class="bg-white dark:bg-gray-800 p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
-<select class="w-full px-5 py-3 border rounded-xl mb-4 dark:bg-gray-700 font-bold outline-none text-primary dark:text-white" id="pg-b-kategori">
-<option value="Berita">Kategori: BERITA</option>
-<option value="Pengumuman">Kategori: PENGUMUMAN</option>
-</select>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-<div class="md:col-span-2"><input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="pg-b-judul" placeholder="Judul Berita" type="text"/></div>
-<div><label class="block text-[10px] font-bold text-gray-500 ml-1">Tgl Publish (Kosong=Hari
-                            ini)</label>
-<input class="w-full px-5 py-3 border rounded-xl dark:bg-gray-700 font-bold text-gray-500" id="pg-b-tanggal" type="datetime-local"/>
-</div>
-</div>
-<div class="mb-4 rounded-xl overflow-hidden border dark:border-gray-600 bg-white text-gray-800">
-<div id="pg-b-konten" style="height: 250px; font-size: 16px;"></div>
-</div>
-<div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600"><label class="block text-sm font-bold mb-2">Gambar Utama (Crop 5:3)</label><input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 5/3, 'berita_guru', 'prev-pg-berita')" type="file"/><img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-pg-berita"/></div>
-<button class="w-full py-4 bg-blue-600 text-white rounded-xl font-black text-lg shadow-lg hover:bg-blue-700 transition" onclick="simpanBeritaPegawai()"><i class="fas fa-paper-plane mr-2"></i> Publikasikan Berita</button>
-</div>
-</section>
+<section class="page-section py-10 px-4 max-w-6xl mx-auto" id="pegawai-berita">
+  <!-- Header -->
+  <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
+    <h2 class="text-2xl md:text-3xl font-black border-l-8 border-blue-500 pl-4 text-gray-800 dark:text-white">Berita & Pengumuman Saya</h2>
+    <button onclick="toggleFormPegawai('form-berita-pegawai', this)"
+      class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold shadow hover:bg-blue-700 transition text-sm"
+      id="btn-toggle-berita">
+      <i class="fas fa-plus"></i> Tulis Berita Baru
+    </button>
+  </div>
 
+  <!-- Form (toggle) -->
+  <div class="hidden mb-8" id="form-berita-pegawai">
+    <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700">
+      <h3 class="font-black text-lg text-gray-800 dark:text-white mb-5 flex items-center gap-2" id="judul-form-berita-pegawai">
+        <i class="fas fa-newspaper text-blue-500"></i> Tulis Berita / Pengumuman
+      </h3>
+      <input type="hidden" id="pg-b-edit-id" value="" />
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-gray-500 mb-1">Judul</label>
+          <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold" id="pg-b-judul" placeholder="Judul Berita / Pengumuman" type="text"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Kategori</label>
+          <select class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold outline-none text-primary dark:text-white" id="pg-b-kategori">
+            <option value="Berita">BERITA</option>
+            <option value="Pengumuman">PENGUMUMAN</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-gray-500 mb-1">Tanggal Publish <span class="font-normal">(kosong = hari ini)</span></label>
+        <input class="w-full px-4 py-3 border rounded-xl dark:bg-gray-700 font-bold text-gray-500" id="pg-b-tanggal" type="datetime-local"/>
+      </div>
+      <div class="mb-4 rounded-xl overflow-hidden border dark:border-gray-600 bg-white text-gray-800">
+        <div id="pg-b-konten" style="height: 280px; font-size: 16px;"></div>
+      </div>
+      <div class="mb-6 p-4 border-2 border-dashed rounded-xl border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900">
+        <label class="block text-sm font-bold mb-2">Gambar Utama (Crop 5:3)</label>
+        <input accept="image/*" class="w-full text-sm" onchange="bukaCropper(event, 5/3, 'berita_guru', 'prev-pg-berita')" type="file"/>
+        <img class="mt-4 hidden aspect-[5/3] w-full md:w-64 object-cover rounded shadow border" id="prev-pg-berita"/>
+        <p class="text-xs text-gray-400 mt-2" id="info-gambar-berita-pegawai">Kosongkan jika tidak ingin mengubah gambar (saat edit)</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-black shadow-lg hover:bg-blue-700 transition" onclick="simpanBeritaPegawai()">
+          <i class="fas fa-paper-plane mr-2"></i> <span id="label-btn-berita-pegawai">Publikasikan</span>
+        </button>
+        <button onclick="batalEditBeritaPegawai()" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold hover:bg-gray-300 transition text-sm">
+          Batal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel Berita Milik Sendiri -->
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div class="px-6 py-4 border-b dark:border-gray-700 flex justify-between items-center">
+      <h3 class="font-bold text-gray-700 dark:text-gray-200">Postingan Saya</h3>
+      <span class="text-xs text-gray-400">Hanya menampilkan postingan milik Anda</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 dark:bg-gray-900 text-gray-500 text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3 text-left">Judul</th>
+            <th class="px-4 py-3 text-left">Kategori</th>
+            <th class="px-4 py-3 text-left">Tgl Publish</th>
+            <th class="px-4 py-3 text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700" id="tbl-berita-pegawai">
+          <tr><td colspan="4" class="text-center py-8 text-gray-400">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
