@@ -59,7 +59,8 @@ function batalEdit(modul) {
 
 function siapkanEdit(modul, id) {
     batalEdit(modul); editDataId[modul] = id; var dt = null; for (var i = 0; i < dbGlobal[modul].length; i++) { if (dbGlobal[modul][i].id == id) { dt = dbGlobal[modul][i]; break; } } if (!dt) return;
-    if (modul === 'berita') { document.getElementById('b-judul').value = dt.judul; quillEditor.root.innerHTML = dt.konten || ''; document.getElementById('b-kategori').value = (((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita'); }
+    if (modul === 'berita') { document.getElementById('b-judul').value = dt.judul; quillEditor.root.innerHTML = dt.konten || ''; document.getElementById('b-kategori').value = (((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita'); var bTgl = document.getElementById('b-tanggal'); if (bTgl) bTgl.value = formatTanggal(dt.tanggal) || ''; }
+
     if (modul === 'siswa') { document.getElementById('sw-kategori').value = dt.kategori; document.getElementById('sw-label').value = dt.label; document.getElementById('sw-l').value = dt.jumlah_l || 0; document.getElementById('sw-p').value = dt.jumlah_p || 0; document.getElementById('sw-jumlah').value = dt.jumlah; pdfBase64 = null; document.getElementById('sw-pdf').value = ''; var pdfl = document.getElementById('sw-pdf-link'); var pdfn = document.getElementById('sw-pdf-name'); if (pdfn) pdfn.classList.add('hidden'); if (dt.dokumen_url) { pdfl.href = dt.dokumen_url; pdfl.classList.remove('hidden'); } else { pdfl.classList.add('hidden'); } }
     if (modul === 'slider') { document.getElementById('sl-judul').value = dt.judul; document.getElementById('sl-sub').value = dt.subjudul; }
     if (modul === 'eksternal') { document.getElementById('ex-nama').value = dt.nama; document.getElementById('ex-url').value = dt.url; }
@@ -110,12 +111,15 @@ async function simpanAtauUpdate(modul) {
     var d = {}; var base64 = cropData[modul]; var isEdit = editDataId[modul] !== null;
     if (modul === 'berita') {
         var inputTgl = document.getElementById('b-tanggal').value;
-        if (!inputTgl) {
+        if (!inputTgl && !isEdit) {
+            // Berita BARU tanpa tanggal → pakai waktu sekarang
             var now = new Date();
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
             inputTgl = now.toISOString().slice(0, 16);
         }
-        d.tanggal = inputTgl;
+        // Saat EDIT: jika tanggal kosong (tidak diisi user), jangan kirim
+        // agar GAS mempertahankan tanggal lama dari spreadsheet
+        if (inputTgl) d.tanggal = inputTgl;
 
         // PERBAIKAN: Hanya set nama penulis jika sedang membuat berita BARU
         if (!isEdit) { d.penulis = curNama; }
