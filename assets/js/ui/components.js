@@ -353,14 +353,29 @@ function bukaModal(modalId) {
     if(m) {
         m.classList.remove('hidden');
         m.classList.add('flex');
-        // Simple animation trigger
         setTimeout(() => {
             let content = m.querySelector('div');
             if(content && content.classList.contains('scale-95')) {
                 content.classList.remove('scale-95');
                 content.classList.add('scale-100');
             }
-        }, 10);
+            // Init Quill admin saat modal-berita pertama kali dibuka (deferred agar toolbar render)
+            if (modalId === 'modal-berita') {
+                var Quill = window.Quill;
+                var cont = document.getElementById('editor-container');
+                if (Quill && cont && !cont.__quill_inited) {
+                    cont.__quill_inited = true;
+                    var tb = window._quillToolbar || [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'align': [] }], [{ 'color': [] }, { 'background': [] }],
+                        ['link', 'image'], ['clean']
+                    ];
+                    quillEditor = new Quill(cont, { theme: 'snow', modules: { toolbar: tb } });
+                }
+            }
+        }, 50);
     }
 }
 
