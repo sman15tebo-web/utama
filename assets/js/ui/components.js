@@ -211,10 +211,38 @@ async function navigate(pageId) {
     if (pageId.startsWith('admin-') || pageId.startsWith('pegawai-') || pageId === 'login') {
         if(fp) fp.classList.add('hidden');
         if(np) np.classList.add('hidden');
-        if(na) na.classList.add('hidden'); // Selalu sembunyikan nav-admin global di dashboard agar menu tidak tertutup
+        if(na) na.classList.add('hidden');
+    } else if (curRole === 'admin') {
+        // Admin buka web publik: sembunyikan nav-publik, tampilkan footer, beri banner kembali ke panel
+        if(fp) fp.classList.remove('hidden');
+        if(np) np.classList.add('hidden'); // admin tidak perlu nav publik
+        if(na) na.classList.add('hidden');
+        // Tampilkan/buat banner kembali ke admin
+        var bannerAdm = document.getElementById('banner-kembali-admin');
+        if (!bannerAdm) {
+            bannerAdm = document.createElement('div');
+            bannerAdm.id = 'banner-kembali-admin';
+            bannerAdm.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9000;background:linear-gradient(90deg,#1e3a8a,#2563eb);color:#fff;padding:8px 16px;display:flex;align-items:center;justify-between;gap:12px;font-family:sans-serif;';
+            bannerAdm.innerHTML = '<span style="font-size:13px;"><i class="fas fa-shield-alt mr-2"></i>Anda sedang login sebagai <b>Admin</b> — melihat tampilan publik</span><button onclick="navigate(\'admin-dashboard\')" style="background:rgba(255,255,255,0.2);border:none;color:#fff;padding:4px 12px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:12px;"><i class="fas fa-arrow-left mr-1"></i>Kembali ke Panel Admin</button>';
+            document.body.prepend(bannerAdm);
+        } else {
+            bannerAdm.style.display = 'flex';
+        }
+        // Beri padding atas agar konten tidak tertutup banner
+        document.body.style.paddingTop = bannerAdm.offsetHeight + 'px';
+    } else if (curRole === 'guru' || curRole === 'tu') {
+        // Pegawai buka web publik: nav-pegawai tetap ada, sembunyikan nav-publik
+        if(fp) fp.classList.remove('hidden');
+        if(np) np.classList.add('hidden');
     } else {
         if(fp) fp.classList.remove('hidden');
         if(np) np.classList.remove('hidden');
+    }
+    // Sembunyikan banner admin jika sudah kembali ke admin/pegawai panel
+    if (pageId.startsWith('admin-') || pageId.startsWith('pegawai-') || pageId === 'login') {
+        var bannerAdmHide = document.getElementById('banner-kembali-admin');
+        if (bannerAdmHide) bannerAdmHide.style.display = 'none';
+        document.body.style.paddingTop = '';
     }
 
     // Khusus Admin Dashboard
