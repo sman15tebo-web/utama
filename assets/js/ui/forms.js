@@ -59,7 +59,26 @@ function batalEdit(modul) {
 
 function siapkanEdit(modul, id) {
     batalEdit(modul); editDataId[modul] = id; var dt = null; for (var i = 0; i < dbGlobal[modul].length; i++) { if (dbGlobal[modul][i].id == id) { dt = dbGlobal[modul][i]; break; } } if (!dt) return;
-    if (modul === 'berita') { document.getElementById('b-judul').value = dt.judul; quillEditor.root.innerHTML = dt.konten || ''; document.getElementById('b-kategori').value = (((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita'); var bTgl = document.getElementById('b-tanggal'); if (bTgl) bTgl.value = formatTanggal(dt.tanggal) || ''; }
+    if (modul === 'berita') {
+        document.getElementById('b-judul').value = dt.judul;
+        quillEditor.root.innerHTML = dt.konten || '';
+        document.getElementById('b-kategori').value = (((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita');
+        var bTgl = document.getElementById('b-tanggal');
+        if (bTgl && dt.tanggal) {
+            // datetime-local butuh format: YYYY-MM-DDTHH:MM
+            try {
+                var dObj = new Date(dt.tanggal);
+                if (!isNaN(dObj.getTime())) {
+                    // Sesuaikan ke waktu lokal
+                    dObj.setMinutes(dObj.getMinutes() - dObj.getTimezoneOffset());
+                    bTgl.value = dObj.toISOString().slice(0, 16);
+                } else {
+                    // Fallback: coba langsung isi jika sudah berformat YYYY-MM-DDTHH:MM
+                    bTgl.value = dt.tanggal.toString().slice(0, 16);
+                }
+            } catch(e) { bTgl.value = dt.tanggal.toString().slice(0, 16); }
+        }
+    }
 
     if (modul === 'siswa') { document.getElementById('sw-kategori').value = dt.kategori; document.getElementById('sw-label').value = dt.label; document.getElementById('sw-l').value = dt.jumlah_l || 0; document.getElementById('sw-p').value = dt.jumlah_p || 0; document.getElementById('sw-jumlah').value = dt.jumlah; pdfBase64 = null; document.getElementById('sw-pdf').value = ''; var pdfl = document.getElementById('sw-pdf-link'); var pdfn = document.getElementById('sw-pdf-name'); if (pdfn) pdfn.classList.add('hidden'); if (dt.dokumen_url) { pdfl.href = dt.dokumen_url; pdfl.classList.remove('hidden'); } else { pdfl.classList.add('hidden'); } }
     if (modul === 'slider') { document.getElementById('sl-judul').value = dt.judul; document.getElementById('sl-sub').value = dt.subjudul; }
