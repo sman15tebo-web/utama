@@ -218,6 +218,13 @@ function bukaBerita(id) {
     var dt = null;
     for (var i = 0; i < (dbGlobal.berita || []).length; i++) { if (dbGlobal.berita[i].id == id) { dt = dbGlobal.berita[i]; break; } }
     if (dt) {
+        // Jika ada URL GitHub Pages, buka langsung di tab baru
+        if (dt.html_url) {
+            window.open(dt.html_url, '_blank');
+            return;
+        }
+
+        // Fallback: tampilkan detail di dalam app (berita lama tanpa html_url)
         curShareId = id; curShareTitle = dt.judul;
 
         var tglTampil = dt.tanggal;
@@ -229,19 +236,19 @@ function bukaBerita(id) {
         var nmPenulis = dt.penulis ? dt.penulis : 'Admin';
         var infoPenulis = '<div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"><p class="font-bold text-gray-500 text-sm md:text-base"><i class="fas fa-pencil-alt text-primary mr-2"></i> Post by : <span class="text-gray-800 dark:text-white">' + amankanTeks(nmPenulis) + '</span></p></div>';
 
-        var detailJudul = document.getElementById('detail-judul');
+        var detailJudul  = document.getElementById('detail-judul');
         var detailKonten = document.getElementById('detail-konten');
-        var detailTgl = document.getElementById('detail-tgl');
-        var detailCat = document.getElementById('detail-cat');
-        var detailImg = document.getElementById('detail-img');
+        var detailTgl    = document.getElementById('detail-tgl');
+        var detailCat    = document.getElementById('detail-cat');
+        var detailImg    = document.getElementById('detail-img');
 
-        if (detailJudul) detailJudul.innerText = dt.judul;
-        if (detailKonten) detailKonten.innerHTML = dt.konten + infoPenulis;
-        if (detailTgl) detailTgl.innerText = tglTampil;
-        if (detailCat) detailCat.innerText = ((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita';
-        if (detailImg) detailImg.src = getValidImg(dt.gambar_url, '');
+        if (detailJudul)  detailJudul.innerText  = dt.judul;
+        if (detailKonten) detailKonten.innerHTML  = dt.konten + infoPenulis;
+        if (detailTgl)    detailTgl.innerText     = tglTampil;
+        if (detailCat)    detailCat.innerText     = ((dt.kategori || '').toString().toLowerCase() === 'pengumuman') ? 'Pengumuman' : 'Berita';
+        if (detailImg)    detailImg.src           = getValidImg(dt.gambar_url, '');
 
-        try { window.history.replaceState(null, null, "?article=" + id); } catch (e) { }
+        try { window.history.replaceState(null, null, '?article=' + id); } catch (e) { }
         navigate('detail-berita');
     }
 }
@@ -279,10 +286,22 @@ function bagikanBerita(platform) {
     } else if (article && article.link_html) {
         shareUrl = article.link_html;
     } else {
-        var baseShareUrl = dbGlobal && dbGlobal.domainResmi
-            ? dbGlobal.domainResmi.replace(/\/$/, '')
-            : (window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://sman15tebo-web.github.io/utama');
-        shareUrl = baseShareUrl.replace(/\/$/, '') + '/berita/' + curShareId + '.html';
+        shareUrl = 'https://sman15tebo-web.github.io/utama/berita/' + curShareId + '.html';
+    }
+
+    // Ganti domain GitHub dengan domain resmi jika tersedia di settings
+    var domainResmi = '';
+    if (dbGlobal && dbGlobal.settings) {
+        for (var si = 0; si < dbGlobal.settings.length; si++) {
+            if (dbGlobal.settings[si].key === 'domain_resmi' && dbGlobal.settings[si].value) {
+                domainResmi = dbGlobal.settings[si].value.replace(/\/$/, '');
+                break;
+            }
+        }
+    }
+    if (domainResmi) {
+        // Ganti bagian origin GitHub dengan domain resmi, pertahankan path slug
+        shareUrl = shareUrl.replace(/^https?:\/\/[^/]+\/[^/]+\//, domainResmi + '/');
     }
 
     // Buat ringkasan teks dari konten (hapus HTML tag, ambil 120 karakter)
